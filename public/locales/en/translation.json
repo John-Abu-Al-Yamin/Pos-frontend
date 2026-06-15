@@ -1,0 +1,66 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "agencies": "Agencies",
+    "subscriptions": "Subscriptions",
+    "users": "Users",
+    "reports": "Reports",
+    "leads": "Leads",
+    "activityL": "Activity Log",
+    "settings": "Settings",
+    "pro": "Pro",
+    "menu": "Menu",
+    "logout": "Logout"
+  },
+
+  "login": {
+    "welcomeBack": "Welcome Back",
+    "enterCredentials": "Enter your credentials to continue",
+    "email": "Email",
+    "emailPlaceholder": "name@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign in",
+    "signingIn": "Signing in...",
+    "allFieldsRequired": "All fields are required",
+    "passwordLength": "Password must be at least 6 characters",
+    "success": "Logged in successfully"
+  },
+  "forgotPassword": {
+    "title": "Forgot password?",
+    "description": "No worries, we'll send you reset instructions",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@example.com",
+    "resetButton": "Reset password",
+    "sending": "Sending...",
+    "backToLogin": "Back to login",
+    "emailSent": "Reset instructions sent!"
+  },
+  "otp": {
+    "title": "Verify your identity",
+    "description": "Enter the 6-digit code sent to your email",
+    "enterAllDigits": "Please enter all 6 digits",
+    "resend": "Resend code in",
+    "verifyButton": "Verify code",
+    "backToLogin": "Back to login"
+  },
+    "resetPassword": {
+    "title": "Reset your password",
+    "description": "Enter and confirm your new password",
+    "newPassword": "New password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "fillFields": "Please fill in all fields",
+    "passwordLength": "Password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match",
+    "success": "Password changed successfully",
+    "confirmButton": "Confirm",
+    "backToLogin": "Back to login"
+  },
+  "dashboard": {
+    "welcomeBack": "Welcome Back"
+  }
+}
