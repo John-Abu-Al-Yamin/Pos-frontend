@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import getRequest from "../handleRequest/GetRequest";
 
 const useGetData = ({
@@ -9,7 +8,6 @@ const useGetData = ({
   params = { page: 1, limit: 30 },
   other = {},
 } = {}) => {
-  const token = useSelector((state) => state.auth.token);
 
   const GetDataRequest = () => {
     return getRequest(url, token, {

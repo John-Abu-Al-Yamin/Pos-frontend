@@ -8,6 +8,9 @@ import Dashboard from "@/pages/dashboard/Dashboard";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
+import CategoryPage from "@/pages/categories/CategoryPage";
+import CategoryPageDetalis from "@/pages/categories/CategoryPageDetalis";
+import AddCategories from "@/pages/categories/AddCategories";
 
 const router = createBrowserRouter([
   {
@@ -23,7 +26,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <ProtectedRoute>
-      <MainLayout />
+        <MainLayout />
       </ProtectedRoute>
     ),
     errorElement: <ErrorPage />,
@@ -31,6 +34,28 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Dashboard />,
+      },
+
+      {
+        path: "/categories",
+        element: <CategoryPage />,
+      },
+      {
+        path: "/categories/:id",
+        element: <CategoryPageDetalis />,
+      },
+      {
+        path: "/categories/add",
+        element: <AddCategories />,
+      },
+      // {
+      //   path: "/categories/edit/:id",
+      //   element: <AddCategories />,
+      // },
+
+      {
+        path: "*",
+        element: <ErrorPage />,
       },
     ],
   },

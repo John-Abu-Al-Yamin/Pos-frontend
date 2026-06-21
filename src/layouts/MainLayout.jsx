@@ -31,7 +31,9 @@ const MainLayout = () => {
 
       {/* Main content */}
       <div className={`flex-1 transition-all duration-300 ${marginClass}`}>
-        <Outlet />
+        <div className="bg-background dark:bg-background p-4 md:p-6">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

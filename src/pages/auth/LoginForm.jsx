@@ -22,10 +22,10 @@ const LoginForm = () => {
     email: z.string().email({
       message: isRtl ? "البريد الإلكتروني غير صالح" : "Invalid email address",
     }),
-    password: z.string().min(8, {
+    password: z.string().min(6, {
       message: isRtl
-        ? "كلمة المرور يجب أن تكون 8 أحرف على الأقل"
-        : "Password must be at least 8 characters",
+        ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+        : "Password must be at least 6 characters",
     }),
   });
 
@@ -135,7 +135,7 @@ const LoginForm = () => {
         </div>
 
         {/* Remember + Forgot */}
-        <div className="flex items-center justify-between text-sm">
+        {/* <div className="flex items-center justify-between text-sm">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -152,7 +152,7 @@ const LoginForm = () => {
           >
             {t("login.forgotPassword")}
           </Link>
-        </div>
+        </div> */}
 
         {/* Submit */}
         <Button

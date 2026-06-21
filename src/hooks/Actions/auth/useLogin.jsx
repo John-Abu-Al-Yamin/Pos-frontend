@@ -27,6 +27,10 @@ const useLogin = () => {
 
       if (typeof apiToken === "string" && apiToken.length > 0) {
         setAuthCookie(apiToken);
+        const user = data?.data?.data?.user;
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+        }
       }
     }
 

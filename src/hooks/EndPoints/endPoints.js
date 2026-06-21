@@ -1,5 +1,6 @@
 const endPoints = {
-  login: "/admin/login",
+  login: "/login",
+  categories: "/categories",
 };
 
 

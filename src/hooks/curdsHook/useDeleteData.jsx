@@ -1,10 +1,8 @@
-import { useAuthContext } from "@/context/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import deleteRequest from "../handleRequest/DeleteRequest";
 
 const useDeleteData = (url, mutationKeys, invalidateQueryKey) => {
-  const { token } = useAuthContext();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({

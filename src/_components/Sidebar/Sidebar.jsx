@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Settings, Menu, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, Settings, Menu, LogOut, } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
@@ -7,7 +7,11 @@ import { removeAuthToken } from "@/services/cookies";
 const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
 
-  const navItems = [{ key: "لوحة التحكم", href: "/", icon: LayoutDashboard }];
+  const navItems = [
+    { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
+    { key: "التصنيفات", href: "/categories", icon: LayoutDashboard }
+
+  ];
 
   return (
     <div
@@ -20,9 +24,9 @@ const Sidebar = ({ isOpen, onToggle }) => {
       <div className="mb-8 flex items-center justify-between px-4 pt-6">
         {isOpen && (
           <h1 className="text-xl font-semibold tracking-tight text-sidebar-foreground dark:text-sidebar-foreground">
-            Menedz
+            POS
             <span className="inline-block w-8 border-b-2 border-sidebar-foreground dark:border-sidebar-foreground mx-1"></span>
-            her
+            System
           </h1>
         )}
 
