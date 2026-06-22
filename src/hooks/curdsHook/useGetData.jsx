@@ -8,26 +8,14 @@ const useGetData = ({
   params = { page: 1, limit: 30 },
   other = {},
 } = {}) => {
-
   const GetDataRequest = () => {
-    return getRequest(url, token, {
-      params: {
-        ...params,
-      },
-    });
+    return getRequest(url, null, { params: { ...params } });
   };
 
   const responses = useQuery({
     queryKey: [...queryKeys, params.page, params.limit],
     queryFn: GetDataRequest,
     enabled: typeof enabled === "function" ? enabled : !!enabled,
-    // staleTime: 1000 * 30,
-    // cacheTime: 1000 * 60 * 10,
-    // retry: 1,
-    // refetchOnWindowFocus: true,
-    // refetchOnMount: true,
-    // refetchInterval: 1000 * 60 * 2,
-    // keepPreviousData: true,
     staleTime: 0,
     cacheTime: 0,
     retry: 1,
@@ -37,11 +25,6 @@ const useGetData = ({
     keepPreviousData: false,
     ...other,
   });
-
-  // const updateParams = (newParams) => {
-  //   setParamsState((prev) => ({ ...prev, ...newParams }));
-  //   s.refetch();
-  // };
 
   return { ...responses };
 };

@@ -9,7 +9,7 @@ const useDeleteData = (url, mutationKeys, invalidateQueryKey) => {
     mutationKey: mutationKeys,
     mutationFn: async ({ url: overrideUrl, id }) => {
       const finalUrl = id ? `${url}/${id}` : overrideUrl;
-      return deleteRequest(finalUrl, token);
+      return deleteRequest(finalUrl);
     },
     onMutate: () => {
       const loadingToastId = toast.loading("جاري الحذف...");
@@ -37,6 +37,7 @@ const useDeleteData = (url, mutationKeys, invalidateQueryKey) => {
       const errors = error?.response?.data?.errors;
       const message = error?.response?.data?.message || "حدث خطأ ما";
       const toastId = context?.loadingToastId;
+      console.log(error)
 
       if (errors && typeof errors === "object") {
         for (const key in errors) {

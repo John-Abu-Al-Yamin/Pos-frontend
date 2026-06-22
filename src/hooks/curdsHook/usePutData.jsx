@@ -2,12 +2,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import putRequest from "../handleRequest/PutRequest";
 
 const usePutData = (url, mutationKeys, invalidateQueryKey) => {
-  const token = useSelector((state) => state.auth.token);
+  
   const queryClient = useQueryClient();
   const [requestData, setRequestData] = useState(null);
   const [toastId, setToastId] = useState(null);
@@ -22,7 +21,7 @@ const usePutData = (url, mutationKeys, invalidateQueryKey) => {
       const loadingToast = toast.loading("جاري المعالجة...");
       setToastId(loadingToast);
 
-      return putRequest(finalUrl, data, token);
+      return putRequest(finalUrl, data);
     },
 
     onSuccess: (data, variables) => {
