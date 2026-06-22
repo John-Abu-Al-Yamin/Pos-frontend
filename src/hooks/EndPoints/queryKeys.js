@@ -7,6 +7,12 @@ const queryKeys = {
   deleteCategories: "/deleteCategories",
   updatecategories: "/updatecategories",
 
+  // products
+  products: "/products",
+  addproducts: "/addproducts",
+  deleteproducts: "/deleteproducts",
+  updateproducts: "/updateproducts",
+
   
 
 };

@@ -1,4 +1,12 @@
-import { LayoutDashboard, Users, Settings, Menu, LogOut, } from "lucide-react";
+import {
+  LayoutDashboard,
+  Tags,
+  Smartphone,
+  Settings,
+  Menu,
+  LogOut,
+  
+} from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
@@ -9,8 +17,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   const navItems = [
     { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
-    { key: "التصنيفات", href: "/categories", icon: LayoutDashboard }
-
+    { key: "التصنيفات", href: "/categories", icon: Tags },
+    { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
   ];
 
   return (
