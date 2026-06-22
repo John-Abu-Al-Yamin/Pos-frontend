@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import CategoryPage from "@/pages/categories/CategoryPage";
 import ProductPage from "@/pages/Product/ProductPage";
+import SuppliersPage from "@/pages/suppliers/SuppliersPage";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,11 @@ const router = createBrowserRouter([
         element: <ProductPage />,
       },
 
+      // suppliers Routes
+      {
+        path: "/suppliers",
+        element: <SuppliersPage />,
+      },
       {
         path: "*",
         element: <ErrorPage />,

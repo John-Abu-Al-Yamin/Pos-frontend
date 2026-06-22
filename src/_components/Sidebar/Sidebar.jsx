@@ -19,6 +19,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
     { key: "التصنيفات", href: "/categories", icon: Tags },
     { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
+    { key: "الموردين", href: "/suppliers", icon: Smartphone },
   ];
 
   return (

@@ -13,6 +13,12 @@ const queryKeys = {
   deleteproducts: "/deleteproducts",
   updateproducts: "/updateproducts",
 
+  // suppliers
+  suppliers: "/suppliers",
+  addsuppliers: "/addsuppliers",
+  deletesuppliers: "/deletesuppliers",
+  updatesuppliers: "/updatesuppliers",
+
   
 
 };

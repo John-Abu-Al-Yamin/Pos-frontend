@@ -123,7 +123,7 @@ const CategoryPage = () => {
       </AppModalEdite>
 
       <div className="grid gap-4 grid-cols-3">
-        {categories.map((category) => (
+        {categories?.map((category) => (
           <div
             key={category.id}
             className="bg-white rounded-xl border shadow-sm p-4 cursor-pointer hover:shadow-lg transition-all duration-300"
@@ -143,9 +143,14 @@ const CategoryPage = () => {
               </div>
             </div>
 
-            <div className="mt-3">
-              <div className="text-xs text-gray-400">
-                {new Date(category.created_at).toLocaleDateString("ar-EG")}
+         
+            <div className="mt-3 space-y-1">
+              <div className="text-xs text-muted-foreground/80 font-medium">
+                  {new Date(category.created_at).toLocaleDateString("ar-EG", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </div>
             </div>
           </div>

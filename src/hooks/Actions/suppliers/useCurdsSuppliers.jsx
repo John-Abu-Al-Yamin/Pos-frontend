@@ -7,11 +7,11 @@ import usePostData from "@/hooks/curdsHook/usePostData";
 
 /* Main Units*/
 
-export const useGetAllProducts = (page = 1, limit = 20) => {
+export const useGetAllSuppliers = (page = 1, limit = 20) => {
   const { data, isPending, refetch, ...rest } = useGetData({
-    url: endPoints.products,
+    url: endPoints.suppliers,
     params: { page, limit },
-    queryKeys: [queryKeys.products, page, limit],
+    queryKeys: [queryKeys.suppliers, page, limit],
   });
 
   return {
@@ -24,14 +24,14 @@ export const useGetAllProducts = (page = 1, limit = 20) => {
   };
 };
 
-export const useGetproductById = (id) => {
+export const useGetSuppliersById = (id) => {
   const { data, isPending, refetch, ...rest } = useGetData({
-    url: `${endPoints.products}/${id}`,
+    url: `${endPoints.suppliers}/${id}`,
     params: {
       id,
     },
 
-    queryKeys: [queryKeys.products, id],
+    queryKeys: [queryKeys.suppliers, id],
   });
 
   return {
@@ -42,33 +42,33 @@ export const useGetproductById = (id) => {
   };
 };
 
-export const useAddProducts = () => {
+export const useAddSuppliers = () => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePostData(
-    endPoints.products,
-    [queryKeys.addproducts],
-    [queryKeys.products, queryKeys.addproducts],
+    endPoints.suppliers,
+    [queryKeys.addsuppliers],
+    [queryKeys.suppliers, queryKeys.addsuppliers],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
 };
 
 
-export const useUpdateProducts = (id) => {
+export const useUpdateSuppliers = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
-    `${endPoints.products}/${id}`,
-    [queryKeys.products, id],
-    [queryKeys.products, queryKeys.dashboard],
+    `${endPoints.suppliers}/${id}`,
+    [queryKeys.suppliers, id],
+    [queryKeys.suppliers, queryKeys.dashboard],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
 };
 
 
-export const useDeleteProducts = (id) => {
+export const useDeleteSuppliers = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = useDeleteData(
-    endPoints.products,
-    [queryKeys.deleteproducts],
-    [queryKeys.products, queryKeys.deleteproducts],
+    endPoints.suppliers,
+    [queryKeys.deletesuppliers],
+    [queryKeys.suppliers, queryKeys.deletesuppliers],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
