@@ -5,6 +5,7 @@ import {
   Settings,
   Menu,
   LogOut,
+  Users 
   
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -19,7 +20,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
     { key: "التصنيفات", href: "/categories", icon: Tags },
     { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
-    { key: "الموردين", href: "/suppliers", icon: Smartphone },
+    { key: "الموردين", href: "/suppliers", icon: Users  },
   ];
 
   return (

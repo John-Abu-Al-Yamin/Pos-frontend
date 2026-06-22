@@ -10,7 +10,6 @@ import usePutData from "@/hooks/curdsHook/usePutData";
 import endPoints from "@/hooks/EndPoints/endPoints";
 import queryKeys from "@/hooks/EndPoints/queryKeys";
 import CustomHeader from "@/customs/CustomHeader";
-import LoadingSkeleton from "@/customs/LoadingSkeleton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AppModalEdite from "@/customs/AppModalEdite";
 import Loading from "@/customs/Loading";
+import { formatDate } from "@/lib/utils";
 
 const CategoryPage = () => {
   const { data, isPending } = useGetAllCategories();
@@ -122,7 +122,7 @@ const CategoryPage = () => {
         </div>
       </AppModalEdite>
 
-      <div className="grid gap-4 grid-cols-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {categories?.map((category) => (
           <div
             key={category.id}
@@ -146,11 +146,7 @@ const CategoryPage = () => {
          
             <div className="mt-3 space-y-1">
               <div className="text-xs text-muted-foreground/80 font-medium">
-                  {new Date(category.created_at).toLocaleDateString("ar-EG", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                  {formatDate(category.created_at)}
               </div>
             </div>
           </div>

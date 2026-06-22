@@ -26,6 +26,7 @@ import Loading from "@/customs/Loading";
 import usePutData from "@/hooks/curdsHook/usePutData";
 import endPoints from "@/hooks/EndPoints/endPoints";
 import queryKeys from "@/hooks/EndPoints/queryKeys";
+import { formatDate } from "@/lib/utils";
 
 const ProductPage = () => {
   const {
@@ -372,11 +373,7 @@ const ProductPage = () => {
               </span>
 
               <div className="text-xs text-muted-foreground/80 font-medium">
-                {new Date(product.created_at).toLocaleDateString("ar-EG", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {formatDate(product.created_at)}
               </div>
             </div>
           </div>

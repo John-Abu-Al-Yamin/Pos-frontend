@@ -18,6 +18,7 @@ import { suppliersSchema } from "@/validation/suppliers/suppliers";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AppModalEdite from "@/customs/AppModalEdite";
+import { formatDate } from "@/lib/utils";
 
 const SuppliersPage = () => {
   const { data, isPending } = useGetAllSuppliers();
@@ -64,9 +65,9 @@ const SuppliersPage = () => {
   };
 
   const confirmDelete = (supplierId) => {
-    toast("هل أنت متأكد من الحذف؟", {
+    toast("Are you sure you want to delete?", {
       action: {
-        label: "نعم",
+        label: "Yes",
         onClick: () => deleteMutate({ id: supplierId }),
       },
       duration: Infinity,
@@ -82,10 +83,10 @@ const SuppliersPage = () => {
       <CustomHeader
         title="الموردين"
         description="قائمة الموردين"
-        buttonText="اضافة مورد"
+        buttonText="مورد جدید"
         addModal={{
-          title: "اضافة مورد",
-          description: "ادخل بيانات المورد",
+          title: "اضافة مورد جديد",
+          description: "اضافه تفاصيل المورد",
           onSubmit: form.handleSubmit(onSubmit),
           isLoading: addIsPending,
           error: addError?.response?.data?.errors?.map(e => e.message),
@@ -139,7 +140,7 @@ const SuppliersPage = () => {
         </div>
       </AppModalEdite>
 
-      <div className="grid gap-4 grid-cols-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {suppliers.map((supplier) => (
           <div
             key={supplier.id}
@@ -163,11 +164,7 @@ const SuppliersPage = () => {
             <div className="mt-3 space-y-1">
               <p className="text-sm font-semibold text-black">{supplier.phone}</p>
               <div className="text-xs text-muted-foreground/80 font-medium">
-                  {new Date(supplier.created_at).toLocaleDateString("ar-EG", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {formatDate(supplier.created_at)}
               </div>
             </div>
           </div>
