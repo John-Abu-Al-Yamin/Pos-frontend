@@ -7,6 +7,21 @@ import usePostData from "@/hooks/curdsHook/usePostData";
 
 /* Purchase Items */
 
+export const useGetPurchaseItemById = (id) => {
+  const { data, isPending, refetch, ...rest } = useGetData({
+    url: `${endPoints.purchaseItems}/${id}`,
+    queryKeys: [queryKeys.purchaseItems, id],
+    enabled: !!id,
+  });
+
+  return {
+    data,
+    isPending,
+    isError: rest.error,
+    refetch,
+  };
+};
+
 export const useGetAllPurchaseItems = (headerId, page = 1, limit = 50) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.purchaseItems,

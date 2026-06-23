@@ -15,6 +15,8 @@ import PurchasesPage from "@/pages/purchases/purchasesPage";
 import PurchasesAdd from "@/pages/purchases/PurchasesAdd";
 import PurchasesEdit from "@/pages/purchases/PurchasesEdit";
 import PurchasesDetails from "@/pages/purchases/PurchasesDetails";
+import PurchaseItemEdit from "@/pages/purchases/PurchaseItemEdit";
+import PurchaseItemDetails from "@/pages/purchases/PurchaseItemDetails";
 
 const router = createBrowserRouter([
   {
@@ -79,6 +81,14 @@ const router = createBrowserRouter([
       {
         path: "/purchases/:id",
         element: <PurchasesDetails />,
+      },
+      {
+        path: "/purchases/:purchaseId/items/:itemId",
+        element: <PurchaseItemDetails />,
+      },
+      {
+        path: "/purchases/:purchaseId/items/:itemId/edit",
+        element: <PurchaseItemEdit />,
       },
       {
         path: "*",
