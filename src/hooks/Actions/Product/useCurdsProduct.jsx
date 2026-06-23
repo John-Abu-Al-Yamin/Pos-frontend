@@ -57,7 +57,7 @@ export const useUpdateProducts = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
     `${endPoints.products}/${id}`,
     [queryKeys.products, id],
-    [queryKeys.products, queryKeys.dashboard],
+    [queryKeys.products, ],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };

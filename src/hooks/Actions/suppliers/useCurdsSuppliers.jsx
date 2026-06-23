@@ -57,7 +57,7 @@ export const useUpdateSuppliers = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
     `${endPoints.suppliers}/${id}`,
     [queryKeys.suppliers, id],
-    [queryKeys.suppliers, queryKeys.dashboard],
+    [queryKeys.suppliers, ],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };

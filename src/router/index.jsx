@@ -11,6 +11,10 @@ import PublicRoute from "./PublicRoute";
 import CategoryPage from "@/pages/categories/CategoryPage";
 import ProductPage from "@/pages/Product/ProductPage";
 import SuppliersPage from "@/pages/suppliers/SuppliersPage";
+import PurchasesPage from "@/pages/purchases/purchasesPage";
+import PurchasesAdd from "@/pages/purchases/PurchasesAdd";
+import PurchasesEdit from "@/pages/purchases/PurchasesEdit";
+import PurchasesDetails from "@/pages/purchases/PurchasesDetails";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +61,24 @@ const router = createBrowserRouter([
       {
         path: "/suppliers",
         element: <SuppliersPage />,
+      },
+
+      // purchases Routes
+      {
+        path: "/purchases",
+        element: <PurchasesPage />,
+      },
+      {
+        path: "/purchases/add",
+        element: <PurchasesAdd />,
+      },
+      {
+        path: "/purchases/edit/:id",
+        element: <PurchasesEdit />,
+      },
+      {
+        path: "/purchases/:id",
+        element: <PurchasesDetails />,
       },
       {
         path: "*",

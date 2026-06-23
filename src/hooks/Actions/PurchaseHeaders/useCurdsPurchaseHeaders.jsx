@@ -7,11 +7,11 @@ import usePostData from "@/hooks/curdsHook/usePostData";
 
 /* Main Units*/
 
-export const useGetAllCategories = (page = 1, limit = 20) => {
+export const useGetAllPurchaseHeaders = (page = 1, limit = 20) => {
   const { data, isPending, refetch, ...rest } = useGetData({
-    url: endPoints.categories,
+    url: endPoints.purchaseHeaders,
     params: { page, limit },
-    queryKeys: [queryKeys.categories, page, limit],
+    queryKeys: [queryKeys.purchaseHeaders, page, limit],
   });
 
   return {
@@ -24,14 +24,14 @@ export const useGetAllCategories = (page = 1, limit = 20) => {
   };
 };
 
-export const useGetCategoriesById = (id) => {
+export const useGetPurchaseHeadersById = (id) => {
   const { data, isPending, refetch, ...rest } = useGetData({
-    url: `${endPoints.categories}/${id}`,
+    url: `${endPoints.purchaseHeaders}/${id}`,
     params: {
       id,
     },
 
-    queryKeys: [queryKeys.categories, id],
+    queryKeys: [queryKeys.purchaseHeaders, id],
   });
 
   return {
@@ -42,33 +42,33 @@ export const useGetCategoriesById = (id) => {
   };
 };
 
-export const useAddCategories = () => {
+export const useAddPurchaseHeaders = () => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePostData(
-    endPoints.categories,
-    [queryKeys.addcategories],
-    [queryKeys.categories, queryKeys.addcategories],
+    endPoints.purchaseHeaders,
+    [queryKeys.addpurchaseHeaders],
+    [queryKeys.purchaseHeaders, queryKeys.addpurchaseHeaders],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
 };
 
 
-export const useUpdateCategories = (id) => {
+export const useUpdatePurchaseHeaders = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
-    `${endPoints.categories}/${id}`,
-    [queryKeys.categories, id],
-    [queryKeys.categories, ],
+    `${endPoints.purchaseHeaders}/${id}`,
+    [queryKeys.purchaseHeaders, id],
+    [queryKeys.purchaseHeaders],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
 };
 
 
-export const useDeleteCategories = (id) => {
+export const useDeletePurchaseHeaders = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = useDeleteData(
-    endPoints.categories,
-    [queryKeys.deleteCategories],
-    [queryKeys.categories, queryKeys.deleteCategories],
+    endPoints.purchaseHeaders,
+    [queryKeys.deletepurchaseHeaders],
+    [queryKeys.purchaseHeaders, queryKeys.deletepurchaseHeaders],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };

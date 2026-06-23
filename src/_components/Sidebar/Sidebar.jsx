@@ -5,8 +5,8 @@ import {
   Settings,
   Menu,
   LogOut,
-  Users 
-  
+  Users,
+  ShoppingCart,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -20,7 +20,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
     { key: "التصنيفات", href: "/categories", icon: Tags },
     { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
-    { key: "الموردين", href: "/suppliers", icon: Users  },
+    { key: "الموردين", href: "/suppliers", icon: Users },
+    { key: "المشتريات", href: "/purchases", icon: ShoppingCart },
   ];
 
   return (

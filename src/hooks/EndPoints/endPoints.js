@@ -3,6 +3,8 @@ const endPoints = {
   categories: "/categories",
   products: "/products",
   suppliers: "/suppliers",
+  purchaseHeaders: "/purchase-headers",
+  purchaseItems: "/purchase-items",
 };
 
 
