@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, Package, Hash, DollarSign, CalendarDays, User, CreditCard, FileText, Layers } from "lucide-react";
+import { Printer, Package, Hash, DollarSign, CalendarDays, User, CreditCard, FileText } from "lucide-react";
 
 import { useGetSaleById } from "@/hooks/Actions/sales/useCurdsSales";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import Loading from "@/customs/Loading";
 import InfoCard from "@/customs/InfoCard";
 import AddEditHeader from "@/customs/AddEditHeader";
-import { formatDate } from "@/lib/utils";
+import Receipt from "@/_components/pos/Receipt";
 import {
   Table,
   TableHeader,
@@ -48,14 +48,45 @@ const SaleDetails = () => {
   const items = sale.sale_items ?? [];
   const paymentInfo = paymentLabels[sale.payment_method] ?? { label: sale.payment_method, color: "" };
 
+  const receiptSale = {
+    id: sale.id,
+    reference_code: sale.reference_code,
+    date: sale.date,
+    customer_name: sale.customer?.name || null,
+    payment_method: sale.payment_method,
+    total: Number(sale.total),
+    items: items.map((item) => ({
+      product_name: item.product?.name ?? `منتج #${item.product_id}`,
+      quantity: Number(item.quantity),
+      unit_price: Number(item.unit_price),
+      serial_number: item.serial_number,
+    })),
+  };
+
+  const handlePrint = () => {
+    const afterPrint = () => {
+      window.removeEventListener("afterprint", afterPrint);
+      clearTimeout(timer);
+    };
+    window.addEventListener("afterprint", afterPrint);
+    const timer = setTimeout(afterPrint, 2000);
+    window.print();
+  };
+
   return (
     <div className="mx-auto p-4 space-y-6">
-      <AddEditHeader
-        title={`فاتورة بيع #${sale.id}`}
-        description={`كود المرجع: ${sale.reference_code ?? "—"}`}
-        backPath="/sales"
-        backText="العودة للمبيعات"
-      />
+      <div className="flex items-center justify-between gap-4">
+        <AddEditHeader
+          title={`فاتورة بيع #${sale.id}`}
+          description={`كود المرجع: ${sale.reference_code ?? "—"}`}
+          backPath="/sales"
+          backText="العودة للمبيعات"
+        />
+        <Button onClick={handlePrint} variant="outline" className="gap-2 shrink-0">
+          <Printer className="h-4 w-4" />
+          طباعة
+        </Button>
+      </div>
 
       {/* Info Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" dir="rtl">
@@ -126,6 +157,11 @@ const SaleDetails = () => {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Printable receipt - hidden on screen, visible during print */}
+      <div className="hidden print:block">
+        <Receipt sale={receiptSale} />
       </div>
     </div>
   );

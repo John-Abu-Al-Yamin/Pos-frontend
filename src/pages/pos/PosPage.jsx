@@ -11,6 +11,7 @@ import ProductPanel from "@/_components/pos/ProductPanel";
 import CartPanel from "@/_components/pos/CartPanel";
 import CustomerDialog from "@/_components/pos/CustomerDialog";
 import PaymentDialog from "@/_components/pos/PaymentDialog";
+import PrintDialog from "@/_components/pos/PrintDialog";
 
 const PosPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const PosPage = () => {
   const [paymentMethod, setPaymentMethod] = React.useState("cash");
   const [customerDialogOpen, setCustomerDialogOpen] = React.useState(false);
   const [payDialogOpen, setPayDialogOpen] = React.useState(false);
+  const [completedSale, setCompletedSale] = React.useState(null);
 
   const { data: stockRes, isPending: stockPending } = useGetAvailableStock({
     search,
@@ -189,14 +191,26 @@ const PosPage = () => {
       { data: payload },
       {
         onSuccess: (res) => {
-          const saleId = res?.data?.data?.id;
-          // toast.success("تم إتمام البيع بنجاح");
+          const saleData = res?.data?.data;
+          setCompletedSale({
+            id: saleData.id,
+            reference_code: saleData.reference_code,
+            date: saleData.date || new Date().toISOString(),
+            customer_name: selectedCustomer?.name || null,
+            payment_method: paymentMethod,
+            total: total,
+            items: cart.map((item) => ({
+              product_name: item.product_name,
+              quantity: item.quantity,
+              unit_price: item.unit_price,
+              serial_number: item.serial_number,
+            })),
+          });
           setCart([]);
           setAddForm({});
           setCustomerId("");
           setPaymentMethod("cash");
           setPayDialogOpen(false);
-          if (saleId) navigate(`/sales/${saleId}`);
         },
         onError: () => {
           toast.error("فشل في إتمام البيع");
@@ -204,6 +218,23 @@ const PosPage = () => {
       },
     );
   };
+
+  const goToSaleDetails = React.useCallback(() => {
+    const id = completedSale?.id;
+    setCompletedSale(null);
+    if (id) navigate(`/sales/${id}`);
+  }, [completedSale, navigate]);
+
+  const handlePrint = React.useCallback(() => {
+    const afterPrint = () => {
+      window.removeEventListener("afterprint", afterPrint);
+      clearTimeout(timer);
+      goToSaleDetails();
+    };
+    window.addEventListener("afterprint", afterPrint);
+    const timer = setTimeout(afterPrint, 2000);
+    window.print();
+  }, [goToSaleDetails]);
 
   const selectedCustomer = customers.find(
     (c) => String(c.id) === String(customerId),
@@ -262,6 +293,14 @@ const PosPage = () => {
         salePending={salePending}
         onCompleteSale={handleCompleteSale}
       />
+
+      {completedSale && (
+        <PrintDialog
+          sale={completedSale}
+          onPrint={handlePrint}
+          onSkip={goToSaleDetails}
+        />
+      )}
     </div>
   );
 };
