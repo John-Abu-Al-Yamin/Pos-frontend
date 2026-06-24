@@ -7,11 +7,11 @@ import usePostData from "@/hooks/curdsHook/usePostData";
 
 /* Main Units*/
 
-export const useGetAllProducts = (page = 1, limit = 20) => {
+export const useGetAllProducts = (page = 1, per_page = 20) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.products,
-    params: { page, limit },
-    queryKeys: [queryKeys.products, page, limit],
+    params: { page, per_page },
+    queryKeys: [queryKeys.products, page, per_page],
   });
 
   return {
@@ -20,7 +20,7 @@ export const useGetAllProducts = (page = 1, limit = 20) => {
     isError: rest.error,
     refetch,
     page,
-    limit,
+    per_page,
   };
 };
 

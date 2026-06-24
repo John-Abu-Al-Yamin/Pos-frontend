@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import AppModalEdite from "@/customs/AppModalEdite";
 import Loading from "@/customs/Loading";
+import CustomPagination from "@/customs/CustomPagination";
 import usePutData from "@/hooks/curdsHook/usePutData";
 import endPoints from "@/hooks/EndPoints/endPoints";
 import queryKeys from "@/hooks/EndPoints/queryKeys";
@@ -39,7 +40,10 @@ const ProductPage = () => {
   const { data: categoriesData } = useGetAllCategories(1, 100);
   const categories = categoriesData?.data?.data ?? [];
 
-  const { data: productsData, isPending: getIsPending } = useGetAllProducts();
+  const [page, setPage] = React.useState(1);
+  const per_page = 12;
+
+  const { data: productsData, isPending: getIsPending } = useGetAllProducts(page, per_page);
   const { mutate: deleteMutate } = useDeleteProducts();
   const {
     mutate: updateMutate,
@@ -129,6 +133,7 @@ const ProductPage = () => {
   if (getIsPending) return <Loading />;
 
   const products = productsData?.data?.data ?? [];
+  const pagination = productsData?.data?.pagination;
 
   return (
     <div>
@@ -379,6 +384,11 @@ const ProductPage = () => {
           </div>
         ))}
       </div>
+
+      <CustomPagination
+        pagination={pagination}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 };

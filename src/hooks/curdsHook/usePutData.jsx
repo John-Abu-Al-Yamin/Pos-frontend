@@ -1,6 +1,6 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Check, X } from "lucide-react";
+
 import { useState } from "react";
 import { toast } from "sonner";
 import putRequest from "../handleRequest/PutRequest";
@@ -50,26 +50,6 @@ const usePutData = (url, mutationKeys, invalidateQueryKey) => {
         const successMessage = data?.data?.message || "Success!";
         toast.success(successMessage, {
           duration: 2000,
-          icon: (
-            <Check
-              size={20}
-              className="text-white bg-success-400 rounded-full"
-            />
-          ),
-          style: {
-            border: "1px solid #81D4A9",
-            color: "#2E2E34",
-            backgroundColor: "#D7F4E1",
-            fontSize: "18px",
-            fontWeight: "800",
-            height: "20px",
-            width: "512px",
-            padding: "30px 20px",
-            borderRadius: "12px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          },
         });
       }
 
@@ -92,79 +72,13 @@ const usePutData = (url, mutationKeys, invalidateQueryKey) => {
         if (errorData?.message) {
           if (typeof errorData.message === "object") {
             Object.entries(errorData.message).forEach(([field, message]) => {
-              toast.error(message, {
-                duration: 2000,
-                icon: (
-                  <X
-                    size={20}
-                    className="text-white bg-danger-500 rounded-full"
-                  />
-                ),
-                style: {
-                  border: "1px solid #FFA2A2",
-                  color: "#2E2E34",
-                  backgroundColor: "#FFE1E1",
-                  fontSize: "18px",
-                  fontWeight: "800",
-                  height: "20px",
-                  width: "512px",
-                  padding: "30px 20px",
-                  borderRadius: "12px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                },
-              });
+              toast.error(message);
             });
           } else if (typeof errorData.message === "string") {
-            toast.error(errorData.message, {
-              duration: 2000,
-              icon: (
-                <X
-                  size={20}
-                  className="text-white bg-danger-500 rounded-full"
-                />
-              ),
-              style: {
-                border: "1px solid #FFA2A2",
-                color: "#2E2E34",
-                backgroundColor: "#FFE1E1",
-                fontSize: "18px",
-                fontWeight: "800",
-                height: "20px",
-                width: "512px",
-                padding: "30px 20px",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-              },
-            });
+            toast.error(errorData.message);
           }
         } else {
-          toast.error("حدث خطأ غير متوقع", {
-            duration: 2000,
-            icon: (
-              <X
-                size={20}
-                className="text-white bg-danger-500 rounded-full"
-              />
-            ),
-            style: {
-              border: "1px solid #FFA2A2",
-              color: "#2E2E34",
-              backgroundColor: "#FFE1E1",
-              fontSize: "18px",
-              fontWeight: "800",
-              height: "20px",
-              width: "512px",
-              padding: "30px 20px",
-              borderRadius: "12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            },
-          });
+          toast.error("حدث خطأ غير متوقع");
         }
       }
 

@@ -30,6 +30,9 @@ const queryKeys = {
   addPurchaseItems: "/addPurchaseItems",
   deletePurchaseItems: "/deletePurchaseItems",
   updatePurchaseItems: "/updatePurchaseItems",
+  
+  // stock-items
+  stockItems: "/stock-items",
 
   
 

@@ -1,5 +1,6 @@
 import CustomHeader from "@/customs/CustomHeader";
 import Loading from "@/customs/Loading";
+import CustomPagination from "@/customs/CustomPagination";
 import { useGetAllPurchaseHeaders } from "@/hooks/Actions/PurchaseHeaders/useCurdsPurchaseHeaders";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,12 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
-import {
-  MoreHorizontal,
-  Pencil,
-  Ban,
-  Eye,
-} from "lucide-react";
+import { MoreHorizontal, Pencil, Ban, Eye } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,11 +26,11 @@ import {
 const purchasesPage = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(1);
-  const limit = 10;
+  const per_page = 10;
 
   const { data: purchaseHeaders, isPending } = useGetAllPurchaseHeaders(
     page,
-    limit,
+    per_page,
   );
   const purchaseHeadersData = purchaseHeaders?.data?.data ?? [];
   const pagination = purchaseHeaders?.data?.pagination;
@@ -48,9 +44,9 @@ const purchasesPage = () => {
   return (
     <div>
       <CustomHeader
-        title="المشتريات"
-        description="قائمة المشتريات"
-        buttonText="مشتريات"
+        title="الفوتير"
+        description="قائمة الفوتير"
+        buttonText=" فاتورة"
         onButtonClick={() => navigate("/purchases/add")}
       />
 
@@ -113,7 +109,7 @@ const purchasesPage = () => {
                         onClick={() => navigate(`/purchases/${header.id}`)}
                       >
                         <Eye className="h-4 w-4" />
-                        عرض التفاصيل
+                        عرض التفاصيل واضافه والمشتريات{" "}
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => navigate(`/purchases/edit/${header.id}`)}
@@ -132,8 +128,12 @@ const purchasesPage = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
 
+        <CustomPagination
+          pagination={pagination}
+          onPageChange={(p) => setPage(p)}
+        />
+      </div>
     </div>
   );
 };

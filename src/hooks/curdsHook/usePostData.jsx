@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import postRequest from "../handleRequest/PostRequest";
@@ -49,26 +48,6 @@ const usePostData = (url, mutationKeys, invalidateQueryKey) => {
         const successMessage = data?.data?.message || "Success!";
         toast.success(successMessage, {
           duration: 2000,
-          icon: (
-            <Check
-              size={20}
-              className="text-white bg-success-400 rounded-full"
-            />
-          ),
-          style: {
-            border: "1px solid #81D4A9",
-            color: "#2E2E34",
-            backgroundColor: "#D7F4E1",
-            fontSize: "18px",
-            fontWeight: "800",
-            height: "20px",
-            width: "100%",
-            padding: "30px 20px",
-            borderRadius: "12px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          },
         });
       }
 

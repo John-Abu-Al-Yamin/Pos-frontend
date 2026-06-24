@@ -18,10 +18,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AppModalEdite from "@/customs/AppModalEdite";
 import Loading from "@/customs/Loading";
+import CustomPagination from "@/customs/CustomPagination";
 import { formatDate } from "@/lib/utils";
 
 const CategoryPage = () => {
-  const { data, isPending } = useGetAllCategories();
+  const [page, setPage] = React.useState(1);
+  const per_page = 12;
+
+  const { data, isPending } = useGetAllCategories(page, per_page);
   const { mutate: addMutate, isPending: addIsPending, error: addError } = useAddCategories();
   const { mutate: updateMutate, isPending: updateIsPending, error: updateError } = usePutData(
     endPoints.categories,
@@ -77,6 +81,7 @@ const CategoryPage = () => {
   if (isPending) return <Loading />;
 
   const categories = data?.data?.data ?? [];
+  const pagination = data?.data?.pagination;
 
   return (
     <div>
@@ -152,6 +157,11 @@ const CategoryPage = () => {
           </div>
         ))}
       </div>
+
+      <CustomPagination
+        pagination={pagination}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 };

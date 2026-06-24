@@ -18,10 +18,14 @@ import { suppliersSchema } from "@/validation/suppliers/suppliers";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import AppModalEdite from "@/customs/AppModalEdite";
+import CustomPagination from "@/customs/CustomPagination";
 import { formatDate } from "@/lib/utils";
 
 const SuppliersPage = () => {
-  const { data, isPending } = useGetAllSuppliers();
+  const [page, setPage] = React.useState(1);
+  const per_page = 12;
+
+  const { data, isPending } = useGetAllSuppliers(page, per_page);
   const { mutate: addMutate, isPending: addIsPending, error: addError } = useAddSuppliers();
   const { mutate: updateMutate, isPending: updateIsPending, error: updateError } = usePutData(
     endPoints.suppliers,
@@ -77,6 +81,7 @@ const SuppliersPage = () => {
   if (isPending) return <Loading />;
 
   const suppliers = data?.data?.data ?? [];
+  const pagination = data?.data?.pagination;
 
   return (
     <div>
@@ -170,6 +175,11 @@ const SuppliersPage = () => {
           </div>
         ))}
       </div>
+
+      <CustomPagination
+        pagination={pagination}
+        onPageChange={(p) => setPage(p)}
+      />
     </div>
   );
 };

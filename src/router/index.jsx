@@ -17,6 +17,8 @@ import PurchasesEdit from "@/pages/purchases/PurchasesEdit";
 import PurchasesDetails from "@/pages/purchases/PurchasesDetails";
 import PurchaseItemEdit from "@/pages/purchases/PurchaseItemEdit";
 import PurchaseItemDetails from "@/pages/purchases/PurchaseItemDetails";
+import StockPage from "@/pages/Stock/StockPage";
+import StockDetails from "@/pages/Stock/StockDetails";
 
 const router = createBrowserRouter([
   {
@@ -39,7 +41,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <Dashboard />,
+        element: <StockPage />,
       },
 
       // categories Routes
@@ -63,6 +65,12 @@ const router = createBrowserRouter([
       {
         path: "/suppliers",
         element: <SuppliersPage />,
+      },
+
+      // stock Routes
+      {
+        path: "/stock/:id",
+        element: <StockDetails />,
       },
 
       // purchases Routes

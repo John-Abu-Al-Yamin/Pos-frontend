@@ -22,10 +22,10 @@ export const useGetPurchaseItemById = (id) => {
   };
 };
 
-export const useGetAllPurchaseItems = (headerId, page = 1, limit = 50) => {
+export const useGetAllPurchaseItems = (headerId, page = 1, per_page = 50) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.purchaseItems,
-    params: { purchase_header_id: headerId, page, limit },
+    params: { purchase_header_id: headerId, page, per_page },
     queryKeys: [queryKeys.purchaseItems, headerId],
     enabled: !!headerId,
   });

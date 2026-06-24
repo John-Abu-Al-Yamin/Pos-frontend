@@ -5,7 +5,7 @@ const useGetData = ({
   url = "",
   queryKeys = [],
   enabled = true,
-  params = { page: 1, limit: 30 },
+  params = { page: 1, per_page: 30 },
   other = {},
 } = {}) => {
   const GetDataRequest = () => {
@@ -13,7 +13,7 @@ const useGetData = ({
   };
 
   const responses = useQuery({
-    queryKey: [...queryKeys, params.page, params.limit],
+    queryKey: [...queryKeys, params.page, params.per_page],
     queryFn: GetDataRequest,
     enabled: typeof enabled === "function" ? enabled : !!enabled,
     staleTime: 0,

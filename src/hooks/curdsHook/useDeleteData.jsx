@@ -42,14 +42,7 @@ const useDeleteData = (url, mutationKeys, invalidateQueryKey) => {
       if (errors && typeof errors === "object") {
         for (const key in errors) {
           if (errors[key]) {
-            toast.error(errors[key], {
-              duration: 2000,
-              style: {
-                borderRadius: "10px",
-                color: "#fff",
-                backgroundColor: "red",
-              },
-            });
+            toast.error(errors[key]);
           }
         }
 

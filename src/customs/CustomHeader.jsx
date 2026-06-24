@@ -2,7 +2,13 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 import AppModalAdd from "./AppModalAdd";
 
-const CustomHeader = ({ title, description, buttonText, onButtonClick, addModal }) => {
+const CustomHeader = ({
+  title,
+  description,
+  buttonText,
+  onButtonClick,
+  addModal,
+}) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const prevLoading = React.useRef(addModal?.isLoading);
 
@@ -30,14 +36,15 @@ const CustomHeader = ({ title, description, buttonText, onButtonClick, addModal 
             <p className="mt-1 text-sm text-muted-foreground">{description}</p>
           )}
         </div>
-
-        <Button
-          onClick={handleClick}
-          className="shrink-0 ml-4"
-          aria-label="Go back"
-        >
-          اضافه {buttonText}
-        </Button>
+        {buttonText && (
+          <Button
+            onClick={handleClick}
+            className="shrink-0 ml-4"
+            aria-label="Go back"
+          >
+            إضافة {buttonText}
+          </Button>
+        )}
       </header>
 
       {addModal && (
