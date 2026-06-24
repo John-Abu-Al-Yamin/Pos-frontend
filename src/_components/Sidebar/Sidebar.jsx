@@ -21,7 +21,10 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "التصنيفات", href: "/categories", icon: Tags },
     { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
     { key: "الموردين", href: "/suppliers", icon: Users },
+    { key: "العملاء", href: "/customers", icon: Users },
+    { key: "المبيعات", href: "/sales", icon: ShoppingCart },
     { key: "المشتريات", href: "/purchases", icon: ShoppingCart },
+    { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
   ];
 
   return (

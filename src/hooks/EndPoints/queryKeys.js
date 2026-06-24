@@ -31,6 +31,16 @@ const queryKeys = {
   deletePurchaseItems: "/deletePurchaseItems",
   updatePurchaseItems: "/updatePurchaseItems",
   
+  // customers
+  customers: "/customers",
+  addcustomers: "/addcustomers",
+  deletecustomers: "/deletecustomers",
+  updatecustomers: "/updatecustomers",
+
+  // sales
+  sales: "/sales",
+  addsales: "/addsales",
+
   // stock-items
   stockItems: "/stock-items",
 

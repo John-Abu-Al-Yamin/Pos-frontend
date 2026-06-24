@@ -17,8 +17,12 @@ import PurchasesEdit from "@/pages/purchases/PurchasesEdit";
 import PurchasesDetails from "@/pages/purchases/PurchasesDetails";
 import PurchaseItemEdit from "@/pages/purchases/PurchaseItemEdit";
 import PurchaseItemDetails from "@/pages/purchases/PurchaseItemDetails";
+import CustomersPage from "@/pages/customers/CustomersPage";
 import StockPage from "@/pages/Stock/StockPage";
 import StockDetails from "@/pages/Stock/StockDetails";
+import SalesPage from "@/pages/sales/SalesPage";
+import SaleDetails from "@/pages/sales/SaleDetails";
+import PosPage from "@/pages/pos/PosPage";
 
 const router = createBrowserRouter([
   {
@@ -65,6 +69,28 @@ const router = createBrowserRouter([
       {
         path: "/suppliers",
         element: <SuppliersPage />,
+      },
+
+      // customers Routes
+      {
+        path: "/customers",
+        element: <CustomersPage />,
+      },
+
+      // sales Routes
+      {
+        path: "/sales",
+        element: <SalesPage />,
+      },
+      {
+        path: "/sales/:id",
+        element: <SaleDetails />,
+      },
+
+      // pos Routes
+      {
+        path: "/pos",
+        element: <PosPage />,
       },
 
       // stock Routes
