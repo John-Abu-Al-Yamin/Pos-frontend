@@ -11,7 +11,7 @@ export const useGetAllPurchaseHeaders = (page = 1, limit = 20) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.purchaseHeaders,
     params: { page, limit },
-    queryKeys: [queryKeys.purchaseHeaders, page, limit],
+    queryKeys: [queryKeys.purchaseHeaders],
   });
 
   return {
@@ -45,8 +45,8 @@ export const useGetPurchaseHeadersById = (id) => {
 export const useAddPurchaseHeaders = () => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePostData(
     endPoints.purchaseHeaders,
-    [queryKeys.addpurchaseHeaders],
-    [queryKeys.purchaseHeaders, queryKeys.addpurchaseHeaders],
+    [queryKeys.addPurchaseHeaders],
+    [queryKeys.purchaseHeaders, queryKeys.addPurchaseHeaders],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
@@ -64,11 +64,11 @@ export const useUpdatePurchaseHeaders = (id) => {
 };
 
 
-export const useDeletePurchaseHeaders = (id) => {
+export const useDeletePurchaseHeaders = () => {
   const { mutate, data, error, isPending, isSuccess, isError } = useDeleteData(
     endPoints.purchaseHeaders,
-    [queryKeys.deletepurchaseHeaders],
-    [queryKeys.purchaseHeaders, queryKeys.deletepurchaseHeaders],
+    [queryKeys.deletePurchaseHeaders],
+    [queryKeys.purchaseHeaders, queryKeys.deletePurchaseHeaders],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };

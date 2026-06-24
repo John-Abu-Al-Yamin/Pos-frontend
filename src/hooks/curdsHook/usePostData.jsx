@@ -85,30 +85,15 @@ const usePostData = (url, mutationKeys, invalidateQueryKey) => {
         setToastId(null);
       }
 
-      const errorData = error?.response?.data;
-
       if (!disableErrorToast) {
-        // 1. لو فيه errors array (ده المهم عندك)
         const errorData = error?.response?.data;
+        const messages = errorData?.errors?.map((e) => e.message);
 
-        if (!disableErrorToast) {
-          const messages = errorData?.errors?.map((e) => e.message);
-
-          if (messages?.length) {
-            toast.error(messages.join("\n"));
-          } else if (typeof errorData?.message === "string") {
-            toast.error(errorData.message);
-          } else {
-            toast.error("حدث خطأ غير متوقع");
-          }
-        }
-        // 2. fallback لو message string
-        else if (typeof errorData?.message === "string") {
+        if (messages?.length) {
+          toast.error(messages.join("\n"));
+        } else if (typeof errorData?.message === "string") {
           toast.error(errorData.message);
-        }
-
-        // 3. fallback عام
-        else {
+        } else {
           toast.error("حدث خطأ غير متوقع");
         }
       }

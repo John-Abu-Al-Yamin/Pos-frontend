@@ -118,7 +118,7 @@ const PurchaseItemEdit = () => {
       { data: payload },
       {
         onSuccess: () => {
-          toast.success("تم تعديل الصنف بنجاح");
+          // toast.success("تم تعديل الصنف بنجاح");
           navigate(`/purchases/${purchaseId}`);
         },
         onError: () => {

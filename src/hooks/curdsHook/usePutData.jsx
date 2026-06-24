@@ -144,28 +144,25 @@ const usePutData = (url, mutationKeys, invalidateQueryKey) => {
         } else {
           toast.error("حدث خطأ غير متوقع", {
             duration: 2000,
+            icon: (
+              <X
+                size={20}
+                className="text-white bg-danger-500 rounded-full"
+              />
+            ),
             style: {
-              duration: 2000,
-              icon: (
-                <X
-                  size={20}
-                  className="text-white bg-danger-500 rounded-full"
-                />
-              ),
-              style: {
-                border: "1px solid #FFA2A2",
-                color: "#2E2E34",
-                backgroundColor: "#FFE1E1",
-                fontSize: "18px",
-                fontWeight: "800",
-                height: "20px",
-                width: "512px",
-                padding: "30px 20px",
-                borderRadius: "12px",
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-              },
+              border: "1px solid #FFA2A2",
+              color: "#2E2E34",
+              backgroundColor: "#FFE1E1",
+              fontSize: "18px",
+              fontWeight: "800",
+              height: "20px",
+              width: "512px",
+              padding: "30px 20px",
+              borderRadius: "12px",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
             },
           });
         }

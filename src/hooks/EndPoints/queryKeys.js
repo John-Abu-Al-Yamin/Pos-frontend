@@ -21,15 +21,15 @@ const queryKeys = {
 
   // purchase-headers
   purchaseHeaders: "/purchase-headers",
-  addpurchaseHeaders: "/addpurchaseHeaders",
-  deletepurchaseHeaders: "/deletepurchaseHeaders",
-  updatepurchaseHeaders: "/updatepurchaseHeaders",
+  addPurchaseHeaders: "/addPurchaseHeaders",
+  deletePurchaseHeaders: "/deletePurchaseHeaders",
+  updatePurchaseHeaders: "/updatePurchaseHeaders",
 
   // purchase-items
   purchaseItems: "/purchase-items",
-  addpurchaseItems: "/addpurchaseItems",
-  deletepurchaseItems: "/deletepurchaseItems",
-  updatepurchaseItems: "/updatepurchaseItems",
+  addPurchaseItems: "/addPurchaseItems",
+  deletePurchaseItems: "/deletePurchaseItems",
+  updatePurchaseItems: "/updatePurchaseItems",
 
   
 

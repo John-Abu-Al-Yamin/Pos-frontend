@@ -70,7 +70,7 @@ const PurchasesAdd = () => {
       { data: payload },
       {
         onSuccess: () => {
-          toast.success("تم إضافة فاتورة المشتريات بنجاح");
+          // toast.success("تم إضافة فاتورة المشتريات بنجاح");
           navigate("/purchases");
         },
         onError: () => {
