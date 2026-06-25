@@ -2,7 +2,19 @@ import React from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Package, Loader2 } from "lucide-react";
+import {
+  Package,
+  Loader2,
+  Battery,
+  Monitor,
+  Smartphone,
+  PackageOpen,
+  StickyNote,
+  ScanFace,
+  Fingerprint,
+  Camera,
+  Volume2,
+} from "lucide-react";
 
 import {
   useUpdatePurchaseItem,
@@ -14,6 +26,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import AddEditHeader from "@/customs/AddEditHeader";
 import Loading from "@/customs/Loading";
 
@@ -95,6 +115,7 @@ const PurchaseItemEdit = () => {
     useUpdatePurchaseItem(itemId);
 
   const [initialized, setInitialized] = React.useState(false);
+  const [deviceDetails, setDeviceDetails] = React.useState(null);
 
   React.useEffect(() => {
     if (item) {
@@ -103,16 +124,42 @@ const PurchaseItemEdit = () => {
         unit_cost: String(item.unit_cost ?? item.unit_price ?? ""),
         condition: item.condition ?? "",
       });
+
+      const firstStock = item.stockItems?.[0];
+      if (firstStock && item.condition && item.condition !== "new") {
+        setDeviceDetails({
+          battery_health: firstStock.battery_health ?? null,
+          screen_condition: firstStock.screen_condition ?? "",
+          body_condition: firstStock.body_condition ?? "",
+          face_id_working: firstStock.face_id_working ?? true,
+          fingerprint_working: firstStock.fingerprint_working ?? true,
+          camera_working: firstStock.camera_working ?? true,
+          speaker_working: firstStock.speaker_working ?? true,
+          accessories: firstStock.accessories ?? "",
+          notes: firstStock.notes ?? "",
+        });
+      } else {
+        setDeviceDetails(null);
+      }
+
       setInitialized(true);
     }
   }, [item, reset]);
 
   const onSubmit = (formData) => {
+    const condition = isSerialized ? formData.condition : "new";
     const payload = {
       quantity: Number(formData.quantity),
       unit_cost: Number(formData.unit_cost),
-      condition: isSerialized ? formData.condition : "new",
+      condition,
     };
+
+    if (isSerialized && condition !== "new" && deviceDetails) {
+      payload.device_details = Array.from(
+        { length: Number(formData.quantity) },
+        () => ({ ...deviceDetails }),
+      );
+    }
 
     updateItem(
       { data: payload },
@@ -254,7 +301,7 @@ const PurchaseItemEdit = () => {
             <Label className="text-sm font-semibold">حالة المنتج</Label>
 
             {isSerialized ? (
-              <div className="grid grid-cols-6 gap-2">
+              <div className="grid grid-cols-4 gap-2">
                 {conditionOptions.map((opt) => {
                   const selected = conditionValue === opt.value;
 
@@ -307,6 +354,180 @@ const PurchaseItemEdit = () => {
               </p>
             )}
           </div>
+
+          {/* Device Details Section — shown for used serialized products */}
+          {isSerialized && conditionValue && conditionValue !== "new" && (
+            <div className="space-y-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4">
+              <div className="flex items-center gap-2">
+                <Smartphone className="h-4 w-4 text-amber-600" />
+                <Label className="text-sm font-bold text-amber-800">
+                  تفاصيل الجهاز
+                </Label>
+                <span className="text-xs text-muted-foreground">
+                  (سيتم تطبيقها على جميع الوحدات)
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label className="text-xs font-semibold flex items-center gap-1">
+                    <Battery className="h-3 w-3" /> صحة البطارية (%)
+                  </Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    placeholder="0-100"
+                    value={deviceDetails?.battery_health ?? ""}
+                    onChange={(e) =>
+                      setDeviceDetails((prev) => ({
+                        ...prev,
+                        battery_health: e.target.value
+                          ? Number(e.target.value)
+                          : null,
+                      }))
+                    }
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-xs font-semibold flex items-center gap-1">
+                    <Monitor className="h-3 w-3" /> حالة الشاشة
+                  </Label>
+                  <Select
+                    value={deviceDetails?.screen_condition ?? ""}
+                    onValueChange={(val) =>
+                      setDeviceDetails((prev) => ({
+                        ...prev,
+                        screen_condition: val,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="perfect">سليمة</SelectItem>
+                      <SelectItem value="good">جيدة</SelectItem>
+                      <SelectItem value="scratched">مخدوشة</SelectItem>
+                      <SelectItem value="cracked">مشقوقة</SelectItem>
+                      <SelectItem value="broken">مكسورة</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-xs font-semibold flex items-center gap-1">
+                    <Smartphone className="h-3 w-3" /> حالة الهيكل
+                  </Label>
+                  <Select
+                    value={deviceDetails?.body_condition ?? ""}
+                    onValueChange={(val) =>
+                      setDeviceDetails((prev) => ({
+                        ...prev,
+                        body_condition: val,
+                      }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="perfect">سليم</SelectItem>
+                      <SelectItem value="good">جيد</SelectItem>
+                      <SelectItem value="scratched">مخدوش</SelectItem>
+                      <SelectItem value="dented">به انبعاج</SelectItem>
+                      <SelectItem value="worn">متآكل</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="text-xs font-semibold flex items-center gap-1">
+                    <PackageOpen className="h-3 w-3" /> الملحقات
+                  </Label>
+                  <Input
+                    type="text"
+                    placeholder="شاحن، سماعة، علبة..."
+                    value={deviceDetails?.accessories ?? ""}
+                    onChange={(e) =>
+                      setDeviceDetails((prev) => ({
+                        ...prev,
+                        accessories: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold">حالة القطع</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    {
+                      key: "face_id_working",
+                      icon: ScanFace,
+                      label: "Face ID",
+                    },
+                    {
+                      key: "fingerprint_working",
+                      icon: Fingerprint,
+                      label: "البصمة",
+                    },
+                    {
+                      key: "camera_working",
+                      icon: Camera,
+                      label: "الكاميرا",
+                    },
+                    {
+                      key: "speaker_working",
+                      icon: Volume2,
+                      label: "السماعة",
+                    },
+                  ].map(({ key, icon: Icon, label }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() =>
+                        setDeviceDetails((prev) => ({
+                          ...prev,
+                          [key]: prev?.[key] === false ? true : false,
+                        }))
+                      }
+                      className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
+                        deviceDetails?.[key] === false
+                          ? "border-red-200 bg-red-50 text-red-700"
+                          : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      }`}
+                    >
+                      <Icon className="h-3.5 w-3.5 shrink-0" />
+                      <span className="flex-1 text-right">{label}</span>
+                      <span className="text-[10px]">
+                        {deviceDetails?.[key] === false ? "معطل" : "يعمل"}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <Label className="text-xs font-semibold flex items-center gap-1">
+                  <StickyNote className="h-3 w-3" /> ملاحظات
+                </Label>
+                <Textarea
+                  placeholder="أي ملاحظات إضافية عن الجهاز..."
+                  value={deviceDetails?.notes ?? ""}
+                  onChange={(e) =>
+                    setDeviceDetails((prev) => ({
+                      ...prev,
+                      notes: e.target.value,
+                    }))
+                  }
+                  className="min-h-[60px]"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Expected total */}
           {watch("quantity") && watch("unit_cost") && (

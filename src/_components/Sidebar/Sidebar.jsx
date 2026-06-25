@@ -1,13 +1,17 @@
 import {
-  LayoutDashboard,
+  Warehouse,
   Tags,
   Smartphone,
-  Settings,
-  Menu,
-  LogOut,
+  Truck,
   Users,
+  ShoppingBag,
   ShoppingCart,
+  Menu ,
+  Settings ,
+  LogOut ,
+  MonitorSmartphone,
 } from "lucide-react";
+
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
@@ -17,16 +21,15 @@ const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
 
   const navItems = [
-    { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
+    { key: "المخزن", href: "/", icon: Warehouse },
     { key: "التصنيفات", href: "/categories", icon: Tags },
     { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
-    { key: "الموردين", href: "/suppliers", icon: Users },
+    { key: "الموردين", href: "/suppliers", icon: Truck },
     { key: "العملاء", href: "/customers", icon: Users },
-    { key: "المبيعات", href: "/sales", icon: ShoppingCart },
+    { key: "المبيعات", href: "/sales", icon: ShoppingBag },
     { key: "المشتريات", href: "/purchases", icon: ShoppingCart },
-    { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
+    { key: "نقطة البيع", href: "/pos", icon: MonitorSmartphone },
   ];
-
   return (
     <div
       className={`fixed top-0 h-screen dark:bg-[#1F1F23] flex flex-col transition-all duration-300 bg-sidebar 

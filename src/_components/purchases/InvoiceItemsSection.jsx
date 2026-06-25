@@ -47,7 +47,7 @@ const InvoiceItemsSection = ({
             أصناف الفاتورة
           </h2>
           <p className="text-xs text-muted-foreground">
-            {totalItems} صنف · الإجمالي:{" "}
+            {totalItems} صنف · الإجمالي:
             <span className="font-semibold text-foreground">
               {grandTotal.toLocaleString("ar-EG")}
             </span>

@@ -109,7 +109,7 @@ const purchasesPage = () => {
                         onClick={() => navigate(`/purchases/${header.id}`)}
                       >
                         <Eye className="h-4 w-4" />
-                        عرض التفاصيل واضافه والمشتريات{" "}
+                        عرض التفاصيل واضافه والمشتريات
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => navigate(`/purchases/edit/${header.id}`)}

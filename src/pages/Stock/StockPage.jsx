@@ -15,18 +15,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
-import {
-  MoreHorizontal,
-  Pencil,
-  Ban,
-  Eye,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const conditionBadge = (condition) => {
   const styles = {
@@ -101,23 +89,25 @@ const StockPage = () => {
               <TableHead className="text-right">الحالة</TableHead>
               <TableHead className="text-right">الوضع</TableHead>
               <TableHead className="text-right">تاريخ الإنشاء</TableHead>
-          
             </TableRow>
           </TableHeader>
           <TableBody>
             {stockItems?.map((item) => (
-  <TableRow
+              <TableRow
                 key={item.id}
                 onClick={() => navigate(`/stock/${item.id}`)}
                 className="cursor-pointer hover:bg-muted/50 transition-colors"
-              >                <TableCell>{item.id}</TableCell>
+              >
+             
+                <TableCell>{item.id}</TableCell>
                 <TableCell>{item.product?.name}</TableCell>
-                <TableCell dir="ltr" className="text-right">{item.serial_number}</TableCell>
+                <TableCell dir="ltr" className="text-right">
+                  {item.serial_number}
+                </TableCell>
                 <TableCell>{item.cost_price}</TableCell>
                 <TableCell>{conditionBadge(item.condition)}</TableCell>
                 <TableCell>{statusBadge(item.status)}</TableCell>
                 <TableCell>{formatDate(item.created_at)}</TableCell>
-               
               </TableRow>
             ))}
           </TableBody>
