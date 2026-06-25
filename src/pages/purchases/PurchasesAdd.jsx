@@ -44,9 +44,12 @@ const PurchasesAdd = () => {
       supplier_id: "",
       date: null,
       reference: "",
-      type: "purchase", // Default value as requested
+      type: "purchase",
     },
   });
+
+  const watchedType = form.watch("type");
+  const isOpeningStock = watchedType === "opening_stock";
 
   const formatDateToYYYYMMDD = (date) => {
     if (!date) return "";
@@ -60,7 +63,7 @@ const PurchasesAdd = () => {
   const onSubmit = (formData) => {
     const formattedDate = formatDateToYYYYMMDD(formData.date);
     const payload = {
-      supplier_id: formData.supplier_id,
+      supplier_id: formData.supplier_id || null,
       date: formattedDate,
       reference: formData.reference,
       type: formData.type,
@@ -96,20 +99,31 @@ const PurchasesAdd = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Supplier Selector */}
             <div className="space-y-2">
-              <Label htmlFor="supplier_id" className="text-sm font-semibold">
+              <Label
+                htmlFor="supplier_id"
+                className={`text-sm font-semibold ${isOpeningStock ? "text-muted-foreground" : ""}`}
+              >
                 المورد
               </Label>
               <Controller
                 name="supplier_id"
                 control={form.control}
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    disabled={isOpeningStock}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    value={field.value}
+                  >
                     <SelectTrigger className="w-full">
                       <SelectValue
                         placeholder={
                           suppliersPending
                             ? "جاري تحميل الموردين..."
-                            : "اختر المورد"
+                            : isOpeningStock
+                              ? "بضاعة من المخزون - غير مطلوب"
+                              : "اختر المورد"
                         }
                       />
                     </SelectTrigger>
@@ -209,7 +223,9 @@ const PurchasesAdd = () => {
                 <div className="flex flex-wrap gap-4">
                   {/* Purchase Card */}
                   <div
-                    onClick={() => field.onChange("purchase")}
+                    onClick={() => {
+                      field.onChange("purchase");
+                    }}
                     className={`flex flex-col items-center justify-center gap-2 rounded-xl px-4 py-3 border cursor-pointer select-none transition-all duration-300 w-auto ${
                       field.value === "purchase"
                         ? "bg-primary/4 border-primary ring-2 ring-primary/20 shadow-xs"
@@ -239,7 +255,10 @@ const PurchasesAdd = () => {
 
                   {/* Opening Stock Card */}
                   <div
-                    onClick={() => field.onChange("opening_stock")}
+                    onClick={() => {
+                      field.onChange("opening_stock");
+                      form.setValue("supplier_id", "");
+                    }}
                     className={`flex flex-col items-center justify-center gap-2 rounded-xl px-4 py-3 border cursor-pointer select-none transition-all duration-300 w-auto ${
                       field.value === "opening_stock"
                         ? "bg-primary/4 border-primary ring-2 ring-primary/20 shadow-xs"

@@ -22,6 +22,9 @@ Reference document for the purchase module implementation. Covers both the backe
 | Toasts             | sonner                                                       |
 | i18n               | i18next + react-i18next + i18next-http-backend               |
 | Cookies            | js-cookie (`POS_TOKEN`)                                      |
+| Animation          | framer-motion                                                |
+| Charts             | recharts                                                     |
+| Styling            | styled-components                                            |
 
 ---
 
@@ -35,13 +38,15 @@ All endpoints require `Authorization: Bearer <token>` (Sanctum).
 | Categories       | `/categories`            | Product groupings (Smartphones, etc) |
 | Products         | `/products`              | Catalog items — what you sell        |
 | Suppliers        | `/suppliers`             | Who you buy from                     |
+| Customers        | `/customers`             | Who you sell to                      |
 | Purchase Headers | `/purchase-headers`      | A purchase transaction               |
 | Purchase Items   | `/purchase-items`        | Line items within a purchase         |
 | Stock Items      | `/stock-items`           | Individual units in inventory        |
+| Sales            | `/sales`                 | A sale transaction                   |
 
 Base URL: `http://127.0.0.1:8000/api`
 
-All resources are standard CRUD: `index`, `store`, `show`, `update`, `destroy`.
+All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy` (except Sales which are read-only after creation, and Stock Items which are read-only).
 
 ---
 
@@ -87,7 +92,19 @@ All resources are standard CRUD: `index`, `store`, `show`, `update`, `destroy`.
 }
 ```
 
-### 3.4 Purchase Header
+### 3.4 Customer
+
+```json
+{
+  "id": 1,
+  "name": "Ahmed",
+  "phone": "01000000000",
+  "created_at": "2026-06-24T...",
+  "updated_at": "2026-06-24T..."
+}
+```
+
+### 3.5 Purchase Header
 
 ```json
 {
@@ -109,7 +126,7 @@ All resources are standard CRUD: `index`, `store`, `show`, `update`, `destroy`.
 
 > **Note:** The frontend schema also includes `reference` (required text field) on purchase headers.
 
-### 3.5 Purchase Item
+### 3.6 Purchase Item
 
 ```json
 {
@@ -133,8 +150,9 @@ All resources are standard CRUD: `index`, `store`, `show`, `update`, `destroy`.
 **Important:** When a purchase item is created, the backend automatically generates one `stock_item` per unit via `StockItemService`:
 - **Serialized products** (`is_serialized = true`): each stock item gets a unique serial number (e.g. `SN-0001-20260621-A7X2`).
 - **Non-serialized products** (`is_serialized = false`): `serial_number` is `null`.
+- **Used serialized products** (condition ≠ `new`): you can optionally send `device_details` — an array of per-unit objects with `battery_health`, `screen_condition`, `body_condition`, `accessories`, and `notes`.
 
-### 3.6 Stock Item
+### 3.7 Stock Item
 
 ```json
 {
@@ -145,15 +163,46 @@ All resources are standard CRUD: `index`, `store`, `show`, `update`, `destroy`.
   "cost_price": 4500.00,
   "condition": "new",
   "status": "available",
+  "battery_health": 85,
+  "screen_condition": "scratched",
+  "body_condition": "good",
+  "accessories": "charger, box",
+  "notes": "scratches on back",
   "created_at": "2026-06-21T...",
   "updated_at": "2026-06-21T..."
 }
 ```
 
-| Field           | Type   | Values                                           |
-| --------------- | ------ | ------------------------------------------------ |
-| `condition`     | string | `new`, `excellent`, `good`, `fair`               |
-| `status`        | string | `available`, `sold`, `reserved`, `damaged`, `returned` |
+| Field             | Type         | Values                                           |
+| ----------------- | ------------ | ------------------------------------------------ |
+| `condition`       | string       | `new`, `excellent`, `good`, `fair`               |
+| `status`          | string       | `available`, `sold`, `reserved`, `damaged`, `returned`, `voided` |
+| `battery_health`  | int/null     | 0–100                                            |
+| `screen_condition`| string/null  | e.g. perfect, scratched, cracked, broken         |
+| `body_condition`  | string/null  | e.g. perfect, scratched, dented, worn            |
+| `accessories`     | string/null  | e.g. "charger, box, cable"                       |
+| `notes`           | string/null  | Additional device-specific notes                 |
+
+### 3.8 Sale
+
+```json
+{
+  "id": 1,
+  "customer_id": 1,
+  "date": "2026-06-24",
+  "total": 7500.00,
+  "payment_method": "cash",
+  "reference_code": "SALE-20260624-0001",
+  "created_at": "2026-06-24T...",
+  "updated_at": "2026-06-24T..."
+}
+```
+
+| Field            | Type         | Notes                                |
+| ---------------- | ------------ | ------------------------------------ |
+| `customer_id`    | int/null     | Optional customer reference          |
+| `payment_method` | string       | cash / card / transfer / installment |
+| `reference_code` | string       | Auto-generated by backend            |
 
 ---
 
@@ -173,17 +222,24 @@ All resources are standard CRUD: `index`, `store`, `show`, `update`, `destroy`.
 | Path | Component | Guard | Layout |
 |---|---|---|---|
 | `/auth/login` | `LoginForm` | `PublicRoute` | `AuthLayout` |
-| `/` | `Dashboard` | `ProtectedRoute` | `MainLayout` |
+| `/` | `StockPage` | `ProtectedRoute` | `MainLayout` |
 | `/categories` | `CategoryPage` | `ProtectedRoute` | `MainLayout` |
 | `/products` | `ProductPage` | `ProtectedRoute` | `MainLayout` |
 | `/suppliers` | `SuppliersPage` | `ProtectedRoute` | `MainLayout` |
+| `/customers` | `CustomersPage` | `ProtectedRoute` | `MainLayout` |
 | `/purchases` | `PurchasesPage` | `ProtectedRoute` | `MainLayout` |
 | `/purchases/add` | `PurchasesAdd` | `ProtectedRoute` | `MainLayout` |
 | `/purchases/edit/:id` | `PurchasesEdit` | `ProtectedRoute` | `MainLayout` |
 | `/purchases/:id` | `PurchasesDetails` | `ProtectedRoute` | `MainLayout` |
 | `/purchases/:purchaseId/items/:itemId` | `PurchaseItemDetails` | `ProtectedRoute` | `MainLayout` |
 | `/purchases/:purchaseId/items/:itemId/edit` | `PurchaseItemEdit` | `ProtectedRoute` | `MainLayout` |
+| `/sales` | `SalesPage` | `ProtectedRoute` | `MainLayout` |
+| `/sales/:id` | `SaleDetails` | `ProtectedRoute` | `MainLayout` |
+| `/pos` | `PosPage` | `ProtectedRoute` | `MainLayout` |
+| `/stock/:id` | `StockDetails` | `ProtectedRoute` | `MainLayout` |
 | `*` | `ErrorPage` (404) | `ProtectedRoute` | `MainLayout` |
+
+> **Note:** The default route `/` now renders `StockPage` instead of `Dashboard`. The Dashboard component is imported but unused in routes.
 
 ### 4.3 React Query CRUD Pattern
 
@@ -199,6 +255,14 @@ Each entity follows a consistent set of custom hooks in `hooks/Actions/`:
 
 Implemented entities: `Categories`, `Product`, `Suppliers`, `PurchaseHeaders`, `PurchaseItems`.
 
+**Additional hooks:**
+| Hook | Purpose |
+|---|---|
+| `useGetAllCustomers`, `useGetCustomersById`, `useAddCustomers`, `useDeleteCustomers` | Customer CRUD (no update hook) |
+| `useGetAllSales`, `useGetSaleById`, `useAddSale` | Sales (read-only + create, no update/delete) |
+| `useGetAllStock`, `useGetStockById` | Stock items (read-only) |
+| `useGetAvailableStock(params)` | Queries `GET /stock-items/available` with search/category filters |
+
 ### 4.4 API Endpoint Constants
 
 Defined in `hooks/EndPoints/endPoints.js`:
@@ -209,12 +273,19 @@ const endPoints = {
   categories: "/categories",
   products: "/products",
   suppliers: "/suppliers",
+  customers: "/customers",
+  sales: "/sales",
   purchaseHeaders: "/purchase-headers",
   purchaseItems: "/purchase-items",
+  stockItems: "/stock-items",
 };
 ```
 
-### 4.5 Form & Validation Patterns
+### 4.5 Query Keys
+
+Defined in `hooks/EndPoints/queryKeys.js` with individual keys per operation for cache invalidation.
+
+### 4.6 Form & Validation Patterns
 
 All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/zod`.
 
@@ -224,13 +295,14 @@ All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/
 | `productsSchema` | `validation/products/products.js` | `name`, `category_id`, `is_serialized` | name 1-100 chars, category required, `is_serialized` boolean |
 | `suppliersSchema` | `validation/suppliers/suppliers.js` | `name`, `phone` | name min 2, no digits; phone: Egyptian mobile regex `^01[0-2,5]{1}[0-9]{8}$` |
 | `purchasesSchema` | `validation/Purchases/Purchases.js` | `supplier_id`, `date`, `reference`, `type` | `supplier_id` required when `type="purchase"`; date required; reference required; type enum |
+| `customersSchema` | `validation/customers/customers.js` | `name`, `phone`, `email` | name min 2, no digits; phone optional Egyptian mobile; email optional |
 
 **Inline validation** (used in `AddItemModal`, `PurchaseItemEdit`):
 - `quantity`: required, min 1
 - `unit_cost`: required, min 0
 - `condition`: required only for serialized products
 
-### 4.6 Reusable Components
+### 4.7 Reusable Components
 
 #### Custom (`customs/`)
 | Component | Purpose |
@@ -242,6 +314,7 @@ All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/
 | `AddEditHeader` | Page header for add/edit pages with back navigation |
 | `InfoCard` | Label-value display card with icon and accent styling |
 | `CustomTable` | Stub (placeholder) |
+| `CustomPagination` | Pagination controls component |
 | `Loading` | Animated loading indicator |
 | `LoadingSkeleton` | Skeleton loader (unused) |
 
@@ -256,8 +329,16 @@ All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/
 | `QuickActions` | `Dashboard` | Quick action buttons |
 | `StatsCards` | `Dashboard` | Stats overview cards |
 | `LanguageSwitcher` | `MainLayout` | i18n language toggle (commented out in sidebar) |
+| `CartPanel` | `PosPage` | POS cart sidebar |
+| `CustomerDialog` | `PosPage` | Customer selection dialog |
+| `NonSerializedProductCard` | `PosPage` | Accessory selection card |
+| `PaymentDialog` | `PosPage` | Payment processing dialog |
+| `PrintDialog` | `PosPage` | Receipt print preview |
+| `ProductPanel` | `PosPage` | Product grid panel |
+| `Receipt` | `PosPage` | Receipt template |
+| `SerializedItemRow` | `PosPage` | Individual serialized item in cart |
 
-### 4.7 State Management
+### 4.8 State Management
 
 - **Server state:** entirely via **@tanstack/react-query** (no Pinia, no Redux)
 - **Local UI state:** React `useState` (modal toggles, form state, search)
@@ -290,14 +371,24 @@ Same flow, but:
 
 ## 6. UI Screen Details
 
-### 6.1 Purchases List (`/purchases`)
+### 6.1 Stock / Inventory (`/`)
+- **Component:** `StockPage`
+- Default landing page after login
+- Lists all stock items with product, serial number, condition, status, cost price
+
+### 6.2 Stock Details (`/stock/:id`)
+- **Component:** `StockDetails`
+- Detailed view of a single stock item
+- Shows **Device Details** section when `battery_health`, `screen_condition`, `body_condition`, `accessories`, or `notes` are present
+
+### 6.3 Purchases List (`/purchases`)
 - **Component:** `PurchasesPage`
 - Table with columns: ID, supplier name, supplier phone, reference, reference_code, date, total, type badge, created_at, actions dropdown
 - Actions: View Details, Edit, Deactivate (unwired)
 - "Add Purchase" button → `/purchases/add`
-- Pagination state ready but no UI controls rendered yet
+- Pagination state ready with `CustomPagination` component
 
-### 6.2 Add Purchase (`/purchases/add`)
+### 6.4 Add Purchase (`/purchases/add`)
 - **Component:** `PurchasesAdd`
 - Form fields: `supplier_id` (Select), `date` (Calendar Popover), `reference` (text), `type` (card toggle)
 - Zod schema: `purchasesSchema`
@@ -305,50 +396,73 @@ Same flow, but:
 - Type toggle: two clickable cards — "Purchase" (red) / "Opening Stock" (green)
 - Date formatted to `YYYY-MM-DD` before submit
 
-### 6.3 Edit Purchase (`/purchases/edit/:id`)
+### 6.5 Edit Purchase (`/purchases/edit/:id`)
 - **Component:** `PurchasesEdit`
 - Pre-populated via `useGetPurchaseHeadersById(id)`
 - Same form layout as `PurchasesAdd`
 - Uses `initialized` state flag to delay render until `reset()` is called
 - Submits via `useUpdatePurchaseHeaders(id)`
 
-### 6.4 Purchase Details (`/purchases/:id`)
+### 6.6 Purchase Details (`/purchases/:id`)
 - **Component:** `PurchasesDetails`
 - Top: `InvoiceInfoCards` — supplier, date, reference, type badge
 - Bottom: `InvoiceItemsSection` — item table with product, condition, qty, cost, total, actions
 - "Add Item" button → opens `AddItemModal` dialog
+- `AddItemModal` shows **Device Details** section (battery health, screen condition, body condition, accessories, notes) when a serialized product is selected with a used condition
+- Device details are sent as `device_details` array (one element per unit) in the API payload
 - Live `grandTotal` calculation from line totals
 - Item actions: View (`/purchases/:purchaseId/items/:itemId`), Edit (`/.../edit`), Delete (AlertDialog confirm)
 
-### 6.5 Purchase Item Details (`/purchases/:purchaseId/items/:itemId`)
+### 6.7 Purchase Item Details (`/purchases/:purchaseId/items/:itemId`)
 - **Component:** `PurchaseItemDetails`
 - Two `InfoCard` sections: Item Information + Invoice Information
 - Shows product name, item ID, condition, serialized status, unit cost, quantity, line total, header reference, date, type
+- **Device Details** section: appears when stock items have battery health, screen condition, body condition, accessories, or notes filled in
 
-### 6.6 Edit Purchase Item (`/purchases/:purchaseId/items/:itemId/edit`)
+### 6.8 Edit Purchase Item (`/purchases/:purchaseId/items/:itemId/edit`)
 - **Component:** `PurchaseItemEdit`
 - Read-only product display with serialized/non-serialized badge
 - Editable: `quantity`, `unit_cost`, `condition` (only if serialized)
 - Live expected total preview (qty × unit_cost)
 - Submits via `useUpdatePurchaseItem(itemId)`
+- Device details are not editable through this screen (they are per-stock-item)
 
-### 6.7 Categories (`/categories`)
+### 6.9 Categories (`/categories`)
 - **Component:** `CategoryPage`
 - Card grid layout (2 cols desktop, 4 cols wide)
 - CRUD via modals (AppModalAdd / AppModalEdite)
 - Delete via toast confirmation
 
-### 6.8 Products (`/products`)
+### 6.10 Products (`/products`)
 - **Component:** `ProductPage`
 - Card grid layout
 - Fields: name, category_id (Select), is_serialized (toggle: "موبايل" / "اكسسوار")
 - CRUD via modals
 
-### 6.9 Suppliers (`/suppliers`)
+### 6.11 Suppliers (`/suppliers`)
 - **Component:** `SuppliersPage`
 - Card grid layout
 - Fields: name, phone (Egyptian mobile validation)
 - CRUD via modals
+
+### 6.12 Customers (`/customers`)
+- **Component:** `CustomersPage`
+- Card grid layout
+- Fields: name, phone (Egyptian mobile validation), email (optional)
+
+### 6.13 Sales List (`/sales`)
+- **Component:** `SalesPage`
+- Lists all sale transactions
+
+### 6.14 Sale Details (`/sales/:id`)
+- **Component:** `SaleDetails`
+- Detailed view of a sale with items and stock references
+
+### 6.15 POS (`/pos`)
+- **Component:** `PosPage`
+- Point-of-Sale interface
+- Composed of `ProductPanel` (product grid with search/filter), `CartPanel` (selected items with quantities), `CustomerDialog` (select/create customer), `PaymentDialog` (payment method + processing), `PrintDialog` (receipt printing)
+- Supports serialized (IMEI scan) and non-serialized product entry
 
 ---
 
@@ -373,15 +487,29 @@ Same flow, but:
 | `category_id`       | `required|exists:categories,id`                         |
 | `is_serialized`     | `boolean`                                               |
 | `phone` (supplier)  | `required|unique:suppliers,phone`                       |
+| `name` (customer)   | `required|string`                                       |
+| `phone` (customer)  | `nullable|string|unique:customers,phone`                |
 | `supplier_id`       | `nullable|exists:suppliers,id`                          |
 | `date`              | `required|date`                                         |
 | `type`              | `required|in:purchase,opening_stock`                    |
 | `quantity`          | `required|integer|min:1`                                |
 | `unit_cost`         | `required|numeric|min:0`                                |
 | `condition`         | `nullable|in:new,excellent,good,fair`                   |
-| `status`            | `nullable|in:available,sold,reserved,damaged,returned`  |
+| `status`            | `nullable|in:available,sold,reserved,damaged,returned,voided` |
 | `serial_number`     | `nullable|string|unique:stock_items,serial_number`      |
 | `cost_price`        | `required|numeric|min:0`                                |
+| `payment_method`    | `in:cash,card,transfer,installment`                     |
+| `device_details`    | `nullable|array`                                        |
+| `device_details.*.battery_health` | `nullable|integer|0-100`                   |
+| `device_details.*.screen_condition` | `nullable|string`                        |
+| `device_details.*.body_condition` | `nullable|string`                          |
+| `device_details.*.accessories` | `nullable|string`                             |
+| `device_details.*.notes` | `nullable|string`                                 |
+| `battery_health`    | `nullable|integer|0-100`                               |
+| `screen_condition`  | `nullable|string`                                       |
+| `body_condition`    | `nullable|string`                                       |
+| `accessories`       | `nullable|string`                                       |
+| `notes`             | `nullable|string`                                       |
 
 ### 8.2 Frontend (Zod)
 
@@ -397,21 +525,28 @@ Same flow, but:
 | `purchasesSchema` | `date` | required (not null) |
 | `purchasesSchema` | `reference` | required min 1 |
 | `purchasesSchema` | `type` | enum `purchase` / `opening_stock` |
+| `customersSchema` | `name` | min 2, no digits (`/^[^\d]+$/`) |
+| `customersSchema` | `phone` | optional, Egyptian mobile regex |
+| `customersSchema` | `email` | optional, valid email format |
 
 ---
 
 ## 9. Known Issues & Leftovers
 
-- **Stock Items page:** Backend has `/api/stock-items` but no frontend page exists for browsing stock items.
-- **Dashboard data:** `QuickActions` and `StatsCards` contain real-estate themed placeholder content (leftover from a different project).
+- **Stock Items page:** Only details view exists (`/stock/:id`); no standalone stock item management page.
+- **Dashboard data:** `QuickActions` and `StatsCards` contain real-estate themed placeholder content (leftover from a different project). Dashboard is imported but unused in routes.
 - **PatchRequest bug:** `hooks/handleRequest/PatchRequest.js` uses `method: "POST"` instead of `"PATCH"`.
 - **usePatchData bug:** Imports `useAuthContext` from `@/context/AuthContext` which does not exist.
 - **useCurdsUsers bug:** References non-existent `@/config/endPoints` and `@/config/queryKes`.
 - **Users page:** Not implemented (no route, broken hooks).
 - **AppDeleteModal:** Stub component — returns `<div>AppDeleteModal</div>` only, never used.
 - **i18n inconsistency:** Desktop sidebar uses hardcoded Arabic; mobile sidebar uses `t("sidebar.*")` translation keys.
-- **Pagination:** Purchase list has state for `page`/`limit` but no pagination controls rendered.
+- **Pagination:** `CustomPagination` component exists but integration with entity hooks needs verification.
 - **Deactivate action:** Dropdown item exists in purchase list with no logic wired up.
+- **Customer update hook:** Missing `useUpdateCustomers` — only `add` and `delete` hooks exist.
+- **Sales immutability:** No update/delete routes or hooks for sales (by design).
+- **POS flow:** `PosPage` and supporting components exist but integration with sale hooks may be incomplete.
+- **i18n extras:** Translation files contain login, forgot-password, OTP, and reset-password keys not backed by any UI component.
 
 ---
 
@@ -450,6 +585,14 @@ src/
 │   ├── categories/CategoryPage.jsx
 │   ├── Product/ProductPage.jsx
 │   ├── suppliers/SuppliersPage.jsx
+│   ├── customers/CustomersPage.jsx            (new)
+│   ├── sales/
+│   │   ├── SalesPage.jsx                      (new)
+│   │   └── SaleDetails.jsx                    (new)
+│   ├── pos/PosPage.jsx                        (new)
+│   ├── Stock/
+│   │   ├── StockPage.jsx                      (new)
+│   │   └── StockDetails.jsx                   (new)
 │   └── purchases/
 │       ├── purchasesPage.jsx
 │       ├── PurchasesAdd.jsx
@@ -463,14 +606,24 @@ src/
 │   ├── LanguageSwitcher.jsx
 │   ├── Sidebar/Sidebar.jsx, SidebarMobil.jsx
 │   ├── dashboard/Header.jsx, QuickActions.jsx, StatsCards.jsx
-│   └── purchases/
-│       ├── InvoiceInfoCards.jsx
-│       ├── InvoiceItemsSection.jsx
-│       └── AddItemModal.jsx
+│   ├── purchases/
+│   │   ├── InvoiceInfoCards.jsx
+│   │   ├── InvoiceItemsSection.jsx
+│   │   └── AddItemModal.jsx
+│   └── pos/                                    (new directory)
+│       ├── CartPanel.jsx
+│       ├── CustomerDialog.jsx
+│       ├── NonSerializedProductCard.jsx
+│       ├── PaymentDialog.jsx
+│       ├── PrintDialog.jsx
+│       ├── ProductPanel.jsx
+│       ├── Receipt.jsx
+│       └── SerializedItemRow.jsx
 │
 ├── customs/
 │   ├── CustomHeader.jsx
 │   ├── CustomTable.jsx
+│   ├── CustomPagination.jsx                    (new)
 │   ├── AppModalAdd.jsx
 │   ├── AppModalEdite.jsx
 │   ├── AppDeleteModal.jsx
@@ -494,6 +647,9 @@ src/
 │   │   ├── Categories/useCurdsCategories.jsx
 │   │   ├── Product/useCurdsProduct.jsx
 │   │   ├── suppliers/useCurdsSuppliers.jsx
+│   │   ├── customers/useCurdsCustomers.jsx          (new)
+│   │   ├── sales/useCurdsSales.jsx                  (new)
+│   │   ├── stock/useCurdsStock.jsx                  (new)
 │   │   ├── PurchaseHeaders/useCurdsPurchaseHeaders.jsx
 │   │   ├── PurchaseItems/useCurdsPurchaseItems.jsx
 │   │   └── users/useCurdsUsers.jsx   (broken)
@@ -503,6 +659,7 @@ src/
     ├── category/category.js
     ├── products/products.js
     ├── suppliers/suppliers.js
+    ├── customers/customers.js                      (new)
     └── Purchases/Purchases.js
 ```
 
@@ -518,6 +675,7 @@ src/
 - **Translation files:**
   - `public/locales/en/translation.json`
   - `public/locales/ar/translation.json`
+- **Note:** Translation files contain keys for login, forgot-password, OTP, and reset-password flows that are not backed by UI components. Sidebar keys include real-estate themed entries (`agencies`, `subscriptions`, `leads`, `pro`) not reflected in actual sidebar code.
 
 ---
 

@@ -60,6 +60,9 @@ const PurchasesEdit = () => {
     },
   });
 
+  const watchedType = form.watch("type");
+  const isOpeningStock = watchedType === "opening_stock";
+
   // Controls whether form renders — mirrors Products pattern where form only
   // mounts after reset() is called synchronously with real data
   const [initialized, setInitialized] = React.useState(false);
@@ -97,7 +100,7 @@ const PurchasesEdit = () => {
   const onSubmit = (formData) => {
     const formattedDate = formatDateToYYYYMMDD(formData.date);
     const payload = {
-      supplier_id: formData.supplier_id,
+      supplier_id: formData.supplier_id || null,
       date: formattedDate,
       reference: formData.reference,
       type: formData.type,
@@ -133,16 +136,31 @@ const PurchasesEdit = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Supplier Selector */}
             <div className="space-y-2">
-              <Label htmlFor="supplier_id" className="text-sm font-semibold">
+              <Label
+                htmlFor="supplier_id"
+                className={`text-sm font-semibold ${isOpeningStock ? "text-muted-foreground" : ""}`}
+              >
                 المورد
               </Label>
               <Controller
                 name="supplier_id"
                 control={form.control}
                 render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select
+                    disabled={isOpeningStock}
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    value={field.value}
+                  >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="اختر المورد" />
+                      <SelectValue
+                        placeholder={
+                          isOpeningStock
+                            ? "بضاعة من المخزون - غير مطلوب"
+                            : "اختر المورد"
+                        }
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {suppliers.map((sup) => (
@@ -270,7 +288,10 @@ const PurchasesEdit = () => {
 
                   {/* Opening Stock Card */}
                   <div
-                    onClick={() => field.onChange("opening_stock")}
+                    onClick={() => {
+                      field.onChange("opening_stock");
+                      form.setValue("supplier_id", "");
+                    }}
                     className={`flex flex-col items-center justify-center gap-2 rounded-xl px-4 py-3 border cursor-pointer select-none transition-all duration-300 w-auto ${
                       field.value === "opening_stock"
                         ? "bg-primary/4 border-primary ring-2 ring-primary/20 shadow-xs"

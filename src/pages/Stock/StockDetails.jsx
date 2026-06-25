@@ -12,6 +12,11 @@ import {
   FileText,
   Ruler,
   Boxes,
+  Battery,
+  Monitor,
+  Smartphone,
+  PackageOpen,
+  StickyNote,
 } from "lucide-react";
 
 import { useGetStockById } from "@/hooks/Actions/stock/useCurdsStock";
@@ -210,6 +215,57 @@ const StockDetails = () => {
           />
         </div>
       </div>
+
+      {/* Device Details Section — battery, screen, body, accessories, notes */}
+      {(item.battery_health != null || item.screen_condition || item.body_condition || item.accessories || item.notes) && (
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600">
+              <Smartphone className="h-4 w-4" />
+            </div>
+            <h2 className="text-base font-bold text-foreground">تفاصيل الجهاز</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3" dir="rtl">
+            {item.battery_health != null && (
+              <InfoCard
+                icon={Battery}
+                label="صحة البطارية"
+                value={`${item.battery_health}%`}
+              />
+            )}
+            {item.screen_condition && (
+              <InfoCard
+                icon={Monitor}
+                label="حالة الشاشة"
+                value={item.screen_condition}
+              />
+            )}
+            {item.body_condition && (
+              <InfoCard
+                icon={Smartphone}
+                label="حالة الهيكل"
+                value={item.body_condition}
+              />
+            )}
+            {item.accessories && (
+              <InfoCard
+                icon={PackageOpen}
+                label="الملحقات"
+                value={item.accessories}
+              />
+            )}
+            {item.notes && (
+              <div className="col-span-full">
+                <InfoCard
+                  icon={StickyNote}
+                  label="ملاحظات"
+                  value={item.notes}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {purchaseItem && (
         <div>

@@ -12,6 +12,11 @@ import {
   DollarSign,
   Layers,
   Receipt,
+  Battery,
+  Monitor,
+  Smartphone,
+  PackageOpen,
+  StickyNote,
 } from "lucide-react";
 
 import { useGetPurchaseItemById } from "@/hooks/Actions/PurchaseItems/useCurdsPurchaseItems";
@@ -167,6 +172,46 @@ const PurchaseItemDetails = () => {
           />
         </div>
       </div>
+
+      {/* ── Device Details (from stock items) ── */}
+      {item.stock_items && item.stock_items.some(si => si.battery_health != null || si.screen_condition || si.body_condition || si.accessories || si.notes) && (
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600">
+              <Smartphone className="h-4 w-4" />
+            </div>
+            <h2 className="text-base font-bold text-foreground">تفاصيل الأجهزة</h2>
+          </div>
+          <div className="grid grid-cols-1 gap-3">
+            {item.stock_items.map((si) => (
+              <div key={si.id} className="rounded-xl border border-amber-200 bg-amber-50/30 p-4">
+                <p className="text-xs font-bold text-amber-700 mb-2" dir="ltr">
+                  {si.serial_number || `#${si.id}`}
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {si.battery_health != null && (
+                    <InfoCard icon={Battery} label="صحة البطارية" value={`${si.battery_health}%`} />
+                  )}
+                  {si.screen_condition && (
+                    <InfoCard icon={Monitor} label="الشاشة" value={si.screen_condition} />
+                  )}
+                  {si.body_condition && (
+                    <InfoCard icon={Smartphone} label="الهيكل" value={si.body_condition} />
+                  )}
+                  {si.accessories && (
+                    <InfoCard icon={PackageOpen} label="الملحقات" value={si.accessories} />
+                  )}
+                  {si.notes && (
+                    <div className="col-span-full">
+                      <InfoCard icon={StickyNote} label="ملاحظات" value={si.notes} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── Purchase Header Info ── */}
       <div>

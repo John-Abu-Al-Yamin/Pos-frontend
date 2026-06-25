@@ -42,6 +42,7 @@ const PurchasesDetails = () => {
 
   /* ── add-item modal state ── */
   const [modalOpen, setModalOpen] = React.useState(false);
+  const [deviceDetails, setDeviceDetails] = React.useState(null);
 
   const {
     register,
@@ -79,6 +80,12 @@ const PurchasesDetails = () => {
 
   const handleOpenModal = () => {
     reset({ product_id: "", quantity: "", unit_cost: "", condition: "" });
+    setDeviceDetails({
+      face_id_working: true,
+      fingerprint_working: true,
+      camera_working: true,
+      speaker_working: true,
+    });
     setModalOpen(true);
   };
 
@@ -92,13 +99,20 @@ const PurchasesDetails = () => {
       (p) => String(p.id) === String(formData.product_id),
     );
 
+    const quantity = Number(formData.quantity);
+    const condition = product?.is_serialized ? formData.condition : "new";
+
     const payload = {
       purchase_header_id: Number(id),
       product_id: Number(formData.product_id),
-      quantity: Number(formData.quantity),
+      quantity,
       unit_cost: Number(formData.unit_cost),
-      condition: product?.is_serialized ? formData.condition : "new",
+      condition,
     };
+
+    if (product?.is_serialized && condition !== "new" && deviceDetails) {
+      payload.device_details = Array.from({ length: quantity }, () => ({ ...deviceDetails }));
+    }
 
     addItem(
       { data: payload },
@@ -202,7 +216,7 @@ const PurchasesDetails = () => {
         onViewItem={handleViewItem}
       />
 
-      {/* ── Add Invoice Items Modal ── */}
+      {/* ── إضافة أصناف الفاتورة Modal ── */}
       <AddItemModal
         open={modalOpen}
         onOpenChange={setModalOpen}
@@ -218,6 +232,8 @@ const PurchasesDetails = () => {
         control={control}
         errors={errors}
         onSubmit={handleSubmit(onAddItem)}
+        deviceDetails={deviceDetails}
+        setDeviceDetails={setDeviceDetails}
       />
       
     </div>
