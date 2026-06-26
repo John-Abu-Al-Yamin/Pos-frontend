@@ -2,11 +2,11 @@ import endPoints from "@/hooks/EndPoints/endPoints";
 import queryKeys from "@/hooks/EndPoints/queryKeys";
 import useGetData from "@/hooks/curdsHook/useGetData";
 
-export const useGetAllStock = (page = 1, per_page = 10) => {
+export const useGetAllStock = (params = {}) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.stockItems,
-    params: { page, per_page },
-    queryKeys: [queryKeys.stockItems],
+    params,
+    queryKeys: [queryKeys.stockItems, params],
   });
 
   return {

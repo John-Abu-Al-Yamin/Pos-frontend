@@ -13,7 +13,7 @@ const useGetData = ({
   };
 
   const responses = useQuery({
-    queryKey: [...queryKeys, params.page, params.per_page],
+    queryKey: [...queryKeys, JSON.stringify(params)],
     queryFn: GetDataRequest,
     enabled: typeof enabled === "function" ? enabled : !!enabled,
     staleTime: 0,

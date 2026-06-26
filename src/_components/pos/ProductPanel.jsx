@@ -9,6 +9,12 @@ import NonSerializedProductCard from "./NonSerializedProductCard";
 const ProductPanel = ({
   search,
   onSearchChange,
+  categories,
+  categoryId,
+  onCategoryChange,
+  products,
+  productId,
+  onProductChange,
   stockPending,
   groupedStock,
   addForm,
@@ -19,9 +25,13 @@ const ProductPanel = ({
   isSerializedInCart,
   isNonSerializedInCart,
 }) => {
+  const filteredStock = productId
+    ? groupedStock.filter((g) => String(g.product.id) === String(productId))
+    : groupedStock;
+
   return (
     <div className="flex-1 flex flex-col bg-white rounded-xl border shadow-sm overflow-hidden">
-      <div className="p-4 border-b">
+      <div className="p-4 border-b space-y-2">
         <div className="relative">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -31,17 +41,73 @@ const ProductPanel = ({
             onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
+
+        {categories.length > 0 && (
+          <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
+            <button
+              className={`shrink-0 text-xs px-3 py-1 rounded-full border transition-colors ${
+                !categoryId
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-white text-muted-foreground border-border hover:bg-neutral-50"
+              }`}
+              onClick={() => onCategoryChange("")}
+            >
+              الكل
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                className={`shrink-0 text-xs px-3 py-1 rounded-full border transition-colors ${
+                  String(categoryId) === String(cat.id)
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-white text-muted-foreground border-border hover:bg-neutral-50"
+                }`}
+                onClick={() => onCategoryChange(String(cat.id))}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {products.length > 0 && (
+          <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-none">
+            <button
+              className={`shrink-0 text-xs px-3 py-1 rounded-full border transition-colors ${
+                !productId
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-white text-muted-foreground border-border hover:bg-neutral-50"
+              }`}
+              onClick={() => onProductChange("")}
+            >
+              الكل
+            </button>
+            {products.map((p) => (
+              <button
+                key={p.id}
+                className={`shrink-0 text-xs px-3 py-1 rounded-full border transition-colors ${
+                  String(productId) === String(p.id)
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-white text-muted-foreground border-border hover:bg-neutral-50"
+                }`}
+                onClick={() => onProductChange(String(p.id))}
+              >
+                {p.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {stockPending ? (
           <Loading />
-        ) : groupedStock.length === 0 ? (
+        ) : filteredStock.length === 0 ? (
           <p className="text-center text-muted-foreground py-10">
             لا توجد منتجات متاحة
           </p>
         ) : (
-          groupedStock.map((group) => {
+          filteredStock.map((group) => {
             const defaultPrice =
               group.items.length > 0
                 ? Number(group.items[0].cost_price) || 0

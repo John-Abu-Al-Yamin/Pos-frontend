@@ -42,20 +42,6 @@ const ProductPage = () => {
 
   const [page, setPage] = React.useState(1);
   const per_page = 12;
-
-  const { data: productsData, isPending: getIsPending } = useGetAllProducts(page, per_page);
-  const { mutate: deleteMutate } = useDeleteProducts();
-  const {
-    mutate: updateMutate,
-    isPending: updateIsPending,
-    error: updateError,
-  } = usePutData(
-    endPoints.products,
-    [queryKeys.updateproducts],
-    [queryKeys.products, queryKeys.updateproducts],
-  );
-
-  const [editingProduct, setEditingProduct] = React.useState(null);
   const [search, setSearch] = React.useState("");
   const [debouncedSearch, setDebouncedSearch] = React.useState("");
   const [filters, setFilters] = React.useState({
@@ -69,6 +55,30 @@ const ProductPage = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, [search]);
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filters]);
+
+  const { data: productsData, isPending: getIsPending } = useGetAllProducts({
+    page,
+    per_page,
+    search: debouncedSearch || undefined,
+    category_id: filters.category_id || undefined,
+    is_serialized: filters.is_serialized !== "" ? filters.is_serialized : undefined,
+  });
+  const { mutate: deleteMutate } = useDeleteProducts();
+  const {
+    mutate: updateMutate,
+    isPending: updateIsPending,
+    error: updateError,
+  } = usePutData(
+    endPoints.products,
+    [queryKeys.updateproducts],
+    [queryKeys.products, queryKeys.updateproducts],
+  );
+
+  const [editingProduct, setEditingProduct] = React.useState(null);
 
   const form = useForm({
     resolver: zodResolver(productsSchema),
@@ -342,8 +352,56 @@ const ProductPage = () => {
         </div>
       </AppModalEdite>
 
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="ابحث عن منتج..."
+            className="pr-10 text-right"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        <Select
+          value={filters.category_id}
+          onValueChange={(v) => setFilters((f) => ({ ...f, category_id: v }))}
+        >
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="كل التصنيفات" />
+          </SelectTrigger>
+          <SelectContent align="end">
+            <SelectItem value=" ">كل التصنيفات</SelectItem>
+            {categories.map((cat) => (
+              <SelectItem key={cat.id} value={String(cat.id)}>
+                {cat.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={filters.is_serialized}
+          onValueChange={(v) => setFilters((f) => ({ ...f, is_serialized: v }))}
+        >
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="كل الأنواع" />
+          </SelectTrigger>
+          <SelectContent align="end">
+            <SelectItem value=" ">كل الأنواع</SelectItem>
+            <SelectItem value="1">موبايل</SelectItem>
+            <SelectItem value="0">اكسسوار</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {products?.map((product) => (
+        {products.length === 0 ? (
+          <div className="col-span-full text-center text-muted-foreground py-16">
+            لا توجد منتجات مطابقة للبحث
+          </div>
+        ) : (
+          products?.map((product) => (
           <div
             key={product.id}
             className="bg-white rounded-xl border shadow-sm p-4 cursor-pointer hover:shadow-lg transition-all duration-300"
@@ -382,7 +440,7 @@ const ProductPage = () => {
               </div>
             </div>
           </div>
-        ))}
+        )))}
       </div>
 
       <CustomPagination

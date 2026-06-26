@@ -7,6 +7,7 @@ import {
   useAddSale,
 } from "@/hooks/Actions/sales/useCurdsSales";
 import { useGetAllCustomers } from "@/hooks/Actions/customers/useCurdsCustomers";
+import { useGetAllCategories } from "@/hooks/Actions/Categories/useCurdsCategories";
 import ProductPanel from "@/_components/pos/ProductPanel";
 import CartPanel from "@/_components/pos/CartPanel";
 import CustomerDialog from "@/_components/pos/CustomerDialog";
@@ -16,6 +17,8 @@ import PrintDialog from "@/_components/pos/PrintDialog";
 const PosPage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = React.useState("");
+  const [categoryId, setCategoryId] = React.useState("");
+  const [productId, setProductId] = React.useState("");
   const [cart, setCart] = React.useState([]);
   const [customerId, setCustomerId] = React.useState("");
   const [paymentMethod, setPaymentMethod] = React.useState("cash");
@@ -25,6 +28,7 @@ const PosPage = () => {
 
   const { data: stockRes, isPending: stockPending } = useGetAvailableStock({
     search,
+    category_id: categoryId || undefined,
     per_page: 200,
   });
   const stockItems = stockRes?.data?.data ?? [];
@@ -32,9 +36,22 @@ const PosPage = () => {
   const { data: customersRes } = useGetAllCustomers(1, 1000);
   const customers = customersRes?.data?.data ?? [];
 
+  const { data: categoriesRes } = useGetAllCategories(1, 100);
+  const categories = categoriesRes?.data?.data ?? [];
+
   const { mutate: addSale, isPending: salePending } = useAddSale();
 
   const [addForm, setAddForm] = React.useState({});
+
+  const products = React.useMemo(() => {
+    const map = {};
+    stockItems.forEach((item) => {
+      if (item.product && !map[item.product.id]) {
+        map[item.product.id] = { id: item.product.id, name: item.product.name };
+      }
+    });
+    return Object.values(map).sort((a, b) => a.name.localeCompare(b.name));
+  }, [stockItems]);
 
   const groupedStock = React.useMemo(() => {
     const map = {};
@@ -245,6 +262,15 @@ const PosPage = () => {
       <ProductPanel
         search={search}
         onSearchChange={setSearch}
+        categories={categories}
+        categoryId={categoryId}
+        onCategoryChange={(id) => {
+          setCategoryId(id);
+          setProductId("");
+        }}
+        products={products}
+        productId={productId}
+        onProductChange={setProductId}
         stockPending={stockPending}
         groupedStock={groupedStock}
         addForm={addForm}
