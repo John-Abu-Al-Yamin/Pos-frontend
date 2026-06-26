@@ -16,3 +16,18 @@ export const useGetDashboardData = (params = {}) => {
     refetch,
   };
 };
+
+export const useGetProductsPerformance = (params = {}) => {
+  const { data, isPending, refetch, ...rest } = useGetData({
+    url: endPoints.productsPerformance,
+    params: { ...params, page: 1, per_page: 1 },
+    queryKeys: [queryKeys.productsPerformance, params],
+  });
+
+  return {
+    data,
+    isPending,
+    isError: rest.error,
+    refetch,
+  };
+};

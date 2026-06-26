@@ -9,8 +9,10 @@ import {
   BarChart3,
   AlertCircle,
   RefreshCw,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
-import { useGetDashboardData } from "@/hooks/Actions/dashboard/useCurdsDashboard";
+import { useGetDashboardData, useGetProductsPerformance } from "@/hooks/Actions/dashboard/useCurdsDashboard";
 import { formatCurrency } from "@/lib/utils";
 import DateFilter from "@/_components/dashboard/DateFilter";
 import Header from "@/_components/dashboard/Header";
@@ -83,8 +85,12 @@ export default function Dashboard() {
 
   const { data, isPending, isError, refetch } =
     useGetDashboardData(queryParams);
+  const { data: perfData, isPending: perfLoading } =
+    useGetProductsPerformance(queryParams);
 
   const metrics = data?.data?.data;
+  const bestSellers = perfData?.data?.data?.bestSelling ?? [];
+  const worstSellers = perfData?.data?.data?.worstSelling ?? [];
 
   function cashFlowIcon(value) {
     if (value >= 0) return <TrendingUp className="h-3 w-3 text-emerald-500" />;
@@ -184,6 +190,96 @@ export default function Dashboard() {
             })}
           </div>
         )}
+      </div>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+            <ArrowUp className="h-4 w-4 text-emerald-500" />
+            الأكثر مبيعاً
+          </h3>
+          {perfLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              ))}
+            </div>
+          ) : bestSellers.length === 0 ? (
+            <p className="text-sm text-gray-400">لا توجد مبيعات في هذه الفترة.</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-gray-400 border-b dark:border-gray-700">
+                  <th className="text-start pb-2 font-medium">المنتج</th>
+                  <th className="text-start pb-2 font-medium">التصنيف</th>
+                  <th className="text-end pb-2 font-medium">الكمية</th>
+                </tr>
+              </thead>
+              <tbody>
+                {bestSellers.map((p) => (
+                  <tr key={p.id} className="border-b dark:border-gray-800 last:border-0">
+                    <td className="py-2 text-gray-900 dark:text-gray-100">
+                      <span className={`${p.is_serialized ? "" : "text-xs text-gray-400"}`}>
+                        {p.name}
+                      </span>
+                      {p.is_serialized ? (
+                        <span className="text-[10px] text-blue-500 mr-1">(جهاز)</span>
+                      ) : (
+                        <span className="text-[10px] text-orange-500 mr-1">(اكسسوار)</span>
+                      )}
+                    </td>
+                    <td className="py-2 text-gray-500">{p.category_name}</td>
+                    <td className="py-2 text-end font-medium">{p.total_sold}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+            <ArrowDown className="h-4 w-4 text-red-500" />
+            الأقل مبيعاً
+          </h3>
+          {perfLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              ))}
+            </div>
+          ) : worstSellers.length === 0 ? (
+            <p className="text-sm text-gray-400">لا توجد منتجات.</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-gray-400 border-b dark:border-gray-700">
+                  <th className="text-start pb-2 font-medium">المنتج</th>
+                  <th className="text-start pb-2 font-medium">التصنيف</th>
+                  <th className="text-end pb-2 font-medium">الكمية</th>
+                </tr>
+              </thead>
+              <tbody>
+                {worstSellers.map((p) => (
+                  <tr key={p.id} className="border-b dark:border-gray-800 last:border-0">
+                    <td className="py-2 text-gray-900 dark:text-gray-100">
+                      <span className={`${p.is_serialized ? "" : "text-xs text-gray-400"}`}>
+                        {p.name}
+                      </span>
+                      {p.is_serialized ? (
+                        <span className="text-[10px] text-blue-500 mr-1">(جهاز)</span>
+                      ) : (
+                        <span className="text-[10px] text-orange-500 mr-1">(اكسسوار)</span>
+                      )}
+                    </td>
+                    <td className="py-2 text-gray-500">{p.category_name}</td>
+                    <td className="py-2 text-end font-medium">{p.total_sold}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </>
   );

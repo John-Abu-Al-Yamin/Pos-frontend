@@ -13,11 +13,11 @@ const Header = () => {
       <div className="flex justify-between items-center mb-4">
         {/* العنوان */}
         <h1 className="text-xl font-bold text-gray-900">
-          {t("dashboard.welcomeBack")} Anas
+          {t("dashboard.welcomeBack")} 
         </h1>
 
         {/* اليمين Buttons */}
-        <div className="flex gap-x-4">
+        {/* <div className="flex gap-x-4">
           <Button
             size="icon"
             variant="ghost"
@@ -32,7 +32,7 @@ const Header = () => {
               A
             </AvatarFallback>
           </Avatar>
-        </div>
+        </div> */}
       </div>
     </div>
   );
