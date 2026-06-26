@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Tags, Smartphone, Users, X, ChevronUp, LogOut } from "lucide-react";
+import { LayoutDashboard, Tags, Smartphone, Users, ShoppingBag, ShoppingCart, MonitorSmartphone, Undo2, X, ChevronUp, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
 import { removeAuthToken } from "@/services/cookies";
@@ -17,6 +17,10 @@ const SidebarMobile = () => {
     { key: "categories", href: "/categories", icon: Tags },
     { key: "products", href: "/products", icon: Smartphone },
     { key: "suppliers", href: "/suppliers", icon: Users },
+    { key: "sales", href: "/sales", icon: ShoppingBag },
+    { key: "returns", href: "/returns", icon: Undo2 },
+    { key: "purchases", href: "/purchases", icon: ShoppingCart },
+    { key: "pos", href: "/pos", icon: MonitorSmartphone },
   ];
 
   const handleExpand = () => setIsExpanded((prev) => !prev);

@@ -12,6 +12,11 @@
     "categories": "Categories",
     "products": "Products",
     "suppliers": "Suppliers",
+    "customers": "Customers",
+    "sales": "Sales",
+    "returns": "Returns",
+    "purchases": "Purchases",
+    "pos": "POS",
     "menu": "Menu",
     "logout": "Logout"
   },

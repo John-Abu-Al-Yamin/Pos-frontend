@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Printer, Package, Hash, DollarSign, CalendarDays, User, CreditCard, FileText } from "lucide-react";
+import { Printer, Package, Hash, DollarSign, CalendarDays, User, CreditCard, FileText, Undo2 } from "lucide-react";
 
 import { useGetSaleById } from "@/hooks/Actions/sales/useCurdsSales";
 import { Button } from "@/components/ui/button";
@@ -82,10 +82,16 @@ const SaleDetails = () => {
           backPath="/sales"
           backText="العودة للمبيعات"
         />
-        <Button onClick={handlePrint} variant="outline" className="gap-2 shrink-0">
-          <Printer className="h-4 w-4" />
-          طباعة
-        </Button>
+        <div className="flex gap-2 shrink-0">
+          <Button onClick={() => navigate(`/sales/${id}/return`)} variant="outline" className="gap-2">
+            <Undo2 className="h-4 w-4" />
+            إرجاع
+          </Button>
+          <Button onClick={handlePrint} variant="outline" className="gap-2">
+            <Printer className="h-4 w-4" />
+            طباعة
+          </Button>
+        </div>
       </div>
 
       {/* Info Cards */}

@@ -8,6 +8,7 @@ const endPoints = {
   purchaseHeaders: "/purchase-headers",
   purchaseItems: "/purchase-items",
   stockItems: "/stock-items",
+  returns: "/returns",
 };
 
 

@@ -44,7 +44,9 @@ const queryKeys = {
   // stock-items
   stockItems: "/stock-items",
 
-  
+  // returns
+  returns: "/returns",
+  addreturns: "/addreturns",
 
 };
 export default queryKeys;

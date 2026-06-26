@@ -22,6 +22,9 @@ import StockPage from "@/pages/Stock/StockPage";
 import StockDetails from "@/pages/Stock/StockDetails";
 import SalesPage from "@/pages/sales/SalesPage";
 import SaleDetails from "@/pages/sales/SaleDetails";
+import CreateReturn from "@/pages/sales/CreateReturn";
+import ReturnsPage from "@/pages/returns/ReturnsPage";
+import ReturnDetails from "@/pages/returns/ReturnDetails";
 import PosPage from "@/pages/pos/PosPage";
 
 const router = createBrowserRouter([
@@ -85,6 +88,20 @@ const router = createBrowserRouter([
       {
         path: "/sales/:id",
         element: <SaleDetails />,
+      },
+      {
+        path: "/sales/:id/return",
+        element: <CreateReturn />,
+      },
+
+      // returns Routes
+      {
+        path: "/returns",
+        element: <ReturnsPage />,
+      },
+      {
+        path: "/returns/:id",
+        element: <ReturnDetails />,
       },
 
       // pos Routes
