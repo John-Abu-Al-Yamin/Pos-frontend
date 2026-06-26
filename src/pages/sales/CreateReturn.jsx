@@ -74,7 +74,7 @@ const CreateReturn = () => {
             refund_amount: Number(item.unit_price) * Math.min(1, item.returnable_quantity),
             condition_after_inspection: "",
             restock: true,
-            stock_item_id: item.stock_items?.[0]?.id ?? null,
+            stock_item_id: item.returnable_stock_items?.[0]?.id ?? null,
             reason: "",
           }))
       );
@@ -165,13 +165,15 @@ const CreateReturn = () => {
         condition_after_inspection: item.condition_after_inspection || null,
         restock: item.restock,
         reason: item.reason || null,
+        notes: null,
       })),
     };
 
-    createReturn(payload, {
+    createReturn({
+      data: payload,
       onSuccess: (response) => {
         const returnId = response?.data?.data?.id;
-        toast.success("تم إنشاء المرتجع بنجاح");
+        // toast.success("تم إنشاء المرتجع بنجاح");
         if (returnId) {
           navigate(`/returns/${returnId}`);
         } else {

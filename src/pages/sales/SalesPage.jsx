@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, ShoppingCart } from "lucide-react";
+import { Eye, ShoppingCart, Smartphone, Hash } from "lucide-react";
 
 import { useGetAllSales } from "@/hooks/Actions/sales/useCurdsSales";
 import CustomHeader from "@/customs/CustomHeader";
@@ -51,6 +51,7 @@ const SalesPage = () => {
             <TableRow>
               <TableHead className="text-right">#</TableHead>
               <TableHead className="text-right">كود المرجع</TableHead>
+              <TableHead className="text-right">المنتجات</TableHead>
               <TableHead className="text-right">العميل</TableHead>
               <TableHead className="text-right">التاريخ</TableHead>
               <TableHead className="text-right">الإجمالي</TableHead>
@@ -62,14 +63,30 @@ const SalesPage = () => {
             {sales.map((sale) => (
               <TableRow key={sale.id}>
                 <TableCell className="font-medium">{sale.id}</TableCell>
-                <TableCell>{sale.reference_code}</TableCell>
+                <TableCell className="text-xs">{sale.reference_code}</TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-1">
+                    {(sale.sale_items ?? []).map((item) => (
+                      <div key={item.id} className="flex items-center gap-1.5 text-xs">
+                        <Smartphone className="h-3 w-3 shrink-0 text-primary" />
+                        <span className="font-medium">{item.product?.name}</span>
+                        {item.stock_items?.map((si) => (
+                          <span key={si.id} className="text-muted-foreground" dir="ltr">
+                            <Hash className="h-2.5 w-2.5 inline" />
+                            {si.serial_number}
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </TableCell>
                 <TableCell>{sale.customer?.name ?? "—"}</TableCell>
-                <TableCell>{sale.date}</TableCell>
-                <TableCell className="font-semibold">
+                <TableCell className="text-xs">{sale.date}</TableCell>
+                <TableCell className="font-semibold text-sm">
                   {Number(sale.total).toLocaleString("ar-EG")}
                 </TableCell>
                 <TableCell>
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="text-xs">
                     {paymentLabels[sale.payment_method] ?? sale.payment_method}
                   </Badge>
                 </TableCell>
