@@ -12,3 +12,11 @@ export function formatDate(dateString) {
     day: "numeric",
   });
 }
+
+export function formatCurrency(amount) {
+  return new Intl.NumberFormat("ar-EG", {
+    style: "currency",
+    currency: "EGP",
+    minimumFractionDigits: 2,
+  }).format(amount);
+}

@@ -47,8 +47,14 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "",
+        path: "dashboard",
         element: <StockPage />,
+      },
+
+      // dashboard Routes
+      {
+        path: "/",
+        element: <Dashboard />,
       },
 
       // categories Routes

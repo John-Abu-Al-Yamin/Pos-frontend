@@ -48,5 +48,8 @@ const queryKeys = {
   returns: "/returns",
   addreturns: "/addreturns",
 
+  // dashboard
+  dashboard: "/dashboard",
+
 };
 export default queryKeys;

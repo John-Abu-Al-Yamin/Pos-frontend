@@ -11,20 +11,20 @@ Reference document for the purchase module implementation. Covers both the backe
 | Framework          | React 19 (JSX)                                               |
 | Build Tool         | Vite 7 (via rolldown)                                        |
 | Routing            | react-router-dom v7                                          |
-| Data Fetching      | @tanstack/react-query v5                                     |
+| Data Fetching      | @tanstack/react-query v5 + Devtools                          |
 | HTTP Client        | Axios                                                        |
 | Forms              | react-hook-form v7 + @hookform/resolvers (Zod)               |
 | Validation         | Zod v4                                                       |
 | UI Library         | shadcn/ui (Radix primitives)                                 |
 | CSS                | Tailwind CSS v4 + `tw-animate-css`                           |
 | Icons              | lucide-react                                                 |
-| Calendar           | react-day-picker v9                                          |
+| Calendar           | react-day-picker v9 + date-fns                               |
 | Toasts             | sonner                                                       |
-| i18n               | i18next + react-i18next + i18next-http-backend               |
+| i18n               | next-i18next (i18next + react-i18next + i18next-http-backend) |
 | Cookies            | js-cookie (`POS_TOKEN`)                                      |
 | Animation          | framer-motion                                                |
 | Charts             | recharts                                                     |
-| Styling            | styled-components                                            |
+| Styling            | styled-components, class-variance-authority, tailwind-merge, clsx |
 
 ---
 
@@ -43,10 +43,11 @@ All endpoints require `Authorization: Bearer <token>` (Sanctum).
 | Purchase Items   | `/purchase-items`        | Line items within a purchase         |
 | Stock Items      | `/stock-items`           | Individual units in inventory        |
 | Sales            | `/sales`                 | A sale transaction                   |
+| Returns          | `/returns`               | Return/refund transactions           |
 
 Base URL: `http://127.0.0.1:8000/api`
 
-All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy` (except Sales which are read-only after creation, and Stock Items which are read-only).
+All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy` (except Stock Items which are read-only, Sales which are read-only after creation with a delete endpoint, and Returns which have no update/delete).
 
 ---
 
@@ -104,6 +105,8 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 }
 ```
 
+> **Note:** The backend `customers` table has only `name` and `phone` columns. The frontend validation schema also includes an `email` field (optional) that is not stored on the backend.
+
 ### 3.5 Purchase Header
 
 ```json
@@ -124,7 +127,7 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 | ------- | ------ | -------------------------- |
 | `type`  | string | `purchase` or `opening_stock` |
 
-> **Note:** The frontend schema also includes `reference` (required text field) on purchase headers.
+> **Note:** Purchase headers support soft deletes. The frontend schema also includes `reference` (required text field).
 
 ### 3.6 Purchase Item
 
@@ -150,7 +153,7 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 **Important:** When a purchase item is created, the backend automatically generates one `stock_item` per unit via `StockItemService`:
 - **Serialized products** (`is_serialized = true`): each stock item gets a unique serial number (e.g. `SN-0001-20260621-A7X2`).
 - **Non-serialized products** (`is_serialized = false`): `serial_number` is `null`.
-- **Used serialized products** (condition ≠ `new`): you can optionally send `device_details` — an array of per-unit objects with `battery_health`, `screen_condition`, `body_condition`, `accessories`, and `notes`.
+- **Used serialized products** (condition ≠ `new`): you can optionally send `device_details` — an array of per-unit objects with `battery_health`, `screen_condition`, `body_condition`, `face_id_working`, `fingerprint_working`, `camera_working`, `speaker_working`, `accessories`, and `notes`.
 
 ### 3.7 Stock Item
 
@@ -166,6 +169,10 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
   "battery_health": 85,
   "screen_condition": "scratched",
   "body_condition": "good",
+  "face_id_working": true,
+  "fingerprint_working": null,
+  "camera_working": null,
+  "speaker_working": null,
   "accessories": "charger, box",
   "notes": "scratches on back",
   "created_at": "2026-06-21T...",
@@ -173,15 +180,19 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 }
 ```
 
-| Field             | Type         | Values                                           |
-| ----------------- | ------------ | ------------------------------------------------ |
-| `condition`       | string       | `new`, `excellent`, `good`, `fair`               |
-| `status`          | string       | `available`, `sold`, `reserved`, `damaged`, `returned`, `voided` |
-| `battery_health`  | int/null     | 0–100                                            |
-| `screen_condition`| string/null  | e.g. perfect, scratched, cracked, broken         |
-| `body_condition`  | string/null  | e.g. perfect, scratched, dented, worn            |
-| `accessories`     | string/null  | e.g. "charger, box, cable"                       |
-| `notes`           | string/null  | Additional device-specific notes                 |
+| Field                | Type         | Values                                                  |
+| -------------------- | ------------ | ------------------------------------------------------- |
+| `condition`          | string       | `new`, `excellent`, `good`, `fair`                      |
+| `status`             | string       | `available`, `sold`, `reserved`, `damaged`, `returned`, `voided` |
+| `battery_health`     | int/null     | 0–100                                                   |
+| `screen_condition`   | string/null  | `perfect`, `good`, `scratched`, `cracked`, `broken`     |
+| `body_condition`     | string/null  | `perfect`, `good`, `scratched`, `dented`, `worn`       |
+| `face_id_working`    | bool/null    | Face ID functionality status                            |
+| `fingerprint_working`| bool/null    | Fingerprint sensor status                               |
+| `camera_working`     | bool/null    | Camera functionality status                             |
+| `speaker_working`    | bool/null    | Speaker functionality status                            |
+| `accessories`        | string/null  | e.g. "charger, box, cable"                              |
+| `notes`              | string/null  | Additional device-specific notes                        |
 
 ### 3.8 Sale
 
@@ -189,6 +200,7 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 {
   "id": 1,
   "customer_id": 1,
+  "user_id": 1,
   "date": "2026-06-24",
   "total": 7500.00,
   "payment_method": "cash",
@@ -201,8 +213,68 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 | Field            | Type         | Notes                                |
 | ---------------- | ------------ | ------------------------------------ |
 | `customer_id`    | int/null     | Optional customer reference          |
+| `user_id`        | int/null     | The employee who processed the sale  |
 | `payment_method` | string       | cash / card / transfer / installment |
 | `reference_code` | string       | Auto-generated by backend            |
+
+### 3.9 Return
+
+```json
+{
+  "id": 1,
+  "sale_id": 1,
+  "customer_id": 1,
+  "user_id": 1,
+  "return_date": "2026-06-26",
+  "refund_method": "cash",
+  "refund_total": 7500.00,
+  "restocking_fee": 0.00,
+  "reason": "Defective unit",
+  "notes": null,
+  "reference_code": "RET-20260626-0001",
+  "created_at": "2026-06-26T...",
+  "updated_at": "2026-06-26T..."
+}
+```
+
+| Field            | Type         | Notes                                     |
+| ---------------- | ------------ | ----------------------------------------- |
+| `sale_id`        | int          | The original sale being returned          |
+| `customer_id`    | int/null     | Customer reference                        |
+| `user_id`        | int/null     | Employee who processed the return         |
+| `return_date`    | date         | Date of return                            |
+| `refund_method`  | string       | cash / card / bank_transfer               |
+| `refund_total`   | decimal      | Total refunded amount (minus restocking)  |
+| `restocking_fee` | decimal      | Optional restocking fee deducted          |
+| `reference_code` | string       | Auto-generated (RET-{YYYYMMDD}-{NNNN})    |
+
+### 3.10 Return Item
+
+```json
+{
+  "id": 1,
+  "return_id": 1,
+  "sale_item_id": 1,
+  "stock_item_id": 1,
+  "product_id": 1,
+  "quantity": 1,
+  "refund_amount": 7500.00,
+  "condition_after_inspection": "good",
+  "restock": true,
+  "reason": "Defective on arrival",
+  "notes": null
+}
+```
+
+| Field                     | Type         | Notes                                                    |
+| ------------------------- | ------------ | -------------------------------------------------------- |
+| `sale_item_id`            | int          | The original sale line item                              |
+| `stock_item_id`           | int/null     | The specific stock item being returned (null for non-serialized) |
+| `product_id`              | int          | The product being returned                               |
+| `quantity`                | int          | Number of units being returned                           |
+| `refund_amount`           | decimal      | Amount refunded for this line item                       |
+| `condition_after_inspection` | string/null | `new`, `excellent`, `good`, `fair`, `damaged`          |
+| `restock`                 | boolean      | Whether to return to inventory (`available`) or mark `damaged` |
 
 ---
 
@@ -211,7 +283,7 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 ### 4.1 Authentication Flow
 
 1. User submits email + password → `POST /login`
-2. On success: JWT token stored in cookie `POS_TOKEN` (via `js-cookie`), user object in `localStorage`
+2. On success: Sanctum token stored in cookie `POS_TOKEN` (via `js-cookie`), user object in `localStorage`
 3. `ProtectedRoute` checks `checkAuthToken()` → redirects to `/auth/login` if missing
 4. `PublicRoute` redirects to `/` if token exists
 5. Logout: removes cookie → redirects to `/auth/login`
@@ -235,11 +307,14 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 | `/purchases/:purchaseId/items/:itemId/edit` | `PurchaseItemEdit` | `ProtectedRoute` | `MainLayout` |
 | `/sales` | `SalesPage` | `ProtectedRoute` | `MainLayout` |
 | `/sales/:id` | `SaleDetails` | `ProtectedRoute` | `MainLayout` |
+| `/sales/:id/return` | `CreateReturn` | `ProtectedRoute` | `MainLayout` |
+| `/returns` | `ReturnsPage` | `ProtectedRoute` | `MainLayout` |
+| `/returns/:id` | `ReturnDetails` | `ProtectedRoute` | `MainLayout` |
 | `/pos` | `PosPage` | `ProtectedRoute` | `MainLayout` |
 | `/stock/:id` | `StockDetails` | `ProtectedRoute` | `MainLayout` |
 | `*` | `ErrorPage` (404) | `ProtectedRoute` | `MainLayout` |
 
-> **Note:** The default route `/` now renders `StockPage` instead of `Dashboard`. The Dashboard component is imported but unused in routes.
+> **Note:** The default route `/` renders `StockPage`. The Dashboard component is imported but unused in routes.
 
 ### 4.3 React Query CRUD Pattern
 
@@ -259,8 +334,9 @@ Implemented entities: `Categories`, `Product`, `Suppliers`, `PurchaseHeaders`, `
 | Hook | Purpose |
 |---|---|
 | `useGetAllCustomers`, `useGetCustomersById`, `useAddCustomers`, `useDeleteCustomers` | Customer CRUD (no update hook) |
-| `useGetAllSales`, `useGetSaleById`, `useAddSale` | Sales (read-only + create, no update/delete) |
+| `useGetAllSales`, `useGetSaleById`, `useAddSale`, `useGetAvailableStock` | Sales (read-only + create) |
 | `useGetAllStock`, `useGetStockById` | Stock items (read-only) |
+| `useGetAllReturns`, `useGetReturnById`, `useGetSaleReturnable`, `useAddReturn` | Returns CRUD |
 | `useGetAvailableStock(params)` | Queries `GET /stock-items/available` with search/category filters |
 
 ### 4.4 API Endpoint Constants
@@ -278,12 +354,13 @@ const endPoints = {
   purchaseHeaders: "/purchase-headers",
   purchaseItems: "/purchase-items",
   stockItems: "/stock-items",
+  returns: "/returns",
 };
 ```
 
 ### 4.5 Query Keys
 
-Defined in `hooks/EndPoints/queryKeys.js` with individual keys per operation for cache invalidation.
+Defined in `hooks/EndPoints/queryKeys.js` with individual keys per operation for cache invalidation. Includes keys for `returns` and `addreturns`.
 
 ### 4.6 Form & Validation Patterns
 
@@ -295,7 +372,7 @@ All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/
 | `productsSchema` | `validation/products/products.js` | `name`, `category_id`, `is_serialized` | name 1-100 chars, category required, `is_serialized` boolean |
 | `suppliersSchema` | `validation/suppliers/suppliers.js` | `name`, `phone` | name min 2, no digits; phone: Egyptian mobile regex `^01[0-2,5]{1}[0-9]{8}$` |
 | `purchasesSchema` | `validation/Purchases/Purchases.js` | `supplier_id`, `date`, `reference`, `type` | `supplier_id` required when `type="purchase"`; date required; reference required; type enum |
-| `customersSchema` | `validation/customers/customers.js` | `name`, `phone`, `email` | name min 2, no digits; phone optional Egyptian mobile; email optional |
+| `customersSchema` | `validation/customers/customers.js` | `name`, `phone`, `email` | name min 2, no digits; phone optional Egyptian mobile; email optional (not stored on backend) |
 
 **Inline validation** (used in `AddItemModal`, `PurchaseItemEdit`):
 - `quantity`: required, min 1
@@ -336,6 +413,7 @@ All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/
 | `PrintDialog` | `PosPage` | Receipt print preview |
 | `ProductPanel` | `PosPage` | Product grid panel |
 | `Receipt` | `PosPage` | Receipt template |
+| `ReturnReceipt` | `PosPage` | Return receipt template |
 | `SerializedItemRow` | `PosPage` | Individual serialized item in cart |
 
 ### 4.8 State Management
@@ -379,7 +457,7 @@ Same flow, but:
 ### 6.2 Stock Details (`/stock/:id`)
 - **Component:** `StockDetails`
 - Detailed view of a single stock item
-- Shows **Device Details** section when `battery_health`, `screen_condition`, `body_condition`, `accessories`, or `notes` are present
+- Shows **Device Details** section when device-specific fields are present (battery_health, screen_condition, body_condition, face_id_working, fingerprint_working, camera_working, speaker_working, accessories, notes)
 
 ### 6.3 Purchases List (`/purchases`)
 - **Component:** `PurchasesPage`
@@ -408,7 +486,7 @@ Same flow, but:
 - Top: `InvoiceInfoCards` — supplier, date, reference, type badge
 - Bottom: `InvoiceItemsSection` — item table with product, condition, qty, cost, total, actions
 - "Add Item" button → opens `AddItemModal` dialog
-- `AddItemModal` shows **Device Details** section (battery health, screen condition, body condition, accessories, notes) when a serialized product is selected with a used condition
+- `AddItemModal` shows **Device Details** section (battery health, screen condition, body condition, face_id_working, fingerprint_working, camera_working, speaker_working, accessories, notes) when a serialized product is selected with a used condition
 - Device details are sent as `device_details` array (one element per unit) in the API payload
 - Live `grandTotal` calculation from line totals
 - Item actions: View (`/purchases/:purchaseId/items/:itemId`), Edit (`/.../edit`), Delete (AlertDialog confirm)
@@ -417,7 +495,7 @@ Same flow, but:
 - **Component:** `PurchaseItemDetails`
 - Two `InfoCard` sections: Item Information + Invoice Information
 - Shows product name, item ID, condition, serialized status, unit cost, quantity, line total, header reference, date, type
-- **Device Details** section: appears when stock items have battery health, screen condition, body condition, accessories, or notes filled in
+- **Device Details** section: appears when stock items have battery health, screen, body, face_id, fingerprint, camera, speaker, accessories, or notes filled in
 
 ### 6.8 Edit Purchase Item (`/purchases/:purchaseId/items/:itemId/edit`)
 - **Component:** `PurchaseItemEdit`
@@ -448,7 +526,7 @@ Same flow, but:
 ### 6.12 Customers (`/customers`)
 - **Component:** `CustomersPage`
 - Card grid layout
-- Fields: name, phone (Egyptian mobile validation), email (optional)
+- Fields: name, phone (Egyptian mobile validation), email (optional, frontend-only)
 
 ### 6.13 Sales List (`/sales`)
 - **Component:** `SalesPage`
@@ -458,7 +536,21 @@ Same flow, but:
 - **Component:** `SaleDetails`
 - Detailed view of a sale with items and stock references
 
-### 6.15 POS (`/pos`)
+### 6.15 Create Return (`/sales/:id/return`)
+- **Component:** `CreateReturn`
+- Creates a return from an existing sale
+- Select items, quantities, refund method
+- Supports serialized (per-unit selection) and non-serialized product returns
+
+### 6.16 Returns List (`/returns`)
+- **Component:** `ReturnsPage`
+- Lists all return transactions
+
+### 6.17 Return Details (`/returns/:id`)
+- **Component:** `ReturnDetails`
+- Detailed view of a return with items, refund info, and print support
+
+### 6.18 POS (`/pos`)
 - **Component:** `PosPage`
 - Point-of-Sale interface
 - Composed of `ProductPanel` (product grid with search/filter), `CartPanel` (selected items with quantities), `CustomerDialog` (select/create customer), `PaymentDialog` (payment method + processing), `PrintDialog` (receipt printing)
@@ -469,8 +561,8 @@ Same flow, but:
 ## 7. Purchase Item Notes
 
 - `line_total` is **not sent** from the client — it is calculated on the backend.
-- **Updating** a purchase item does **not** retroactively modify already-created stock items.
-- **Deleting** a purchase item cascades to its stock items (they are deleted as well, per FK `cascadeOnDelete` on `purchase_item_id`).
+- **Updating** a purchase item propagates changes to `available` stock items only (cost, condition); already-sold units are not retroactively modified.
+- **Deleting** a purchase item is blocked if any associated stock items have a non-available status (sold, damaged, etc.). Only items with all `available` stock can be deleted, and only the `available` stock items are hard-deleted.
 - When adding an item via `AddItemModal`, `condition` field only shows if the selected product is serialized.
 - Non-serialized products automatically display "جديد" (New) in `PurchaseItemEdit`, with the condition field hidden.
 
@@ -484,7 +576,7 @@ Same flow, but:
 | ------------------- | ------------------------------------------------------- |
 | `name` (category)   | `required|string|unique:categories,name`                |
 | `name` (product)    | `required|string`                                       |
-| `category_id`       | `required|exists:categories,id`                         |
+| `category_id`       | `required`                                              |
 | `is_serialized`     | `boolean`                                               |
 | `phone` (supplier)  | `required|unique:suppliers,phone`                       |
 | `name` (customer)   | `required|string`                                       |
@@ -501,15 +593,24 @@ Same flow, but:
 | `payment_method`    | `in:cash,card,transfer,installment`                     |
 | `device_details`    | `nullable|array`                                        |
 | `device_details.*.battery_health` | `nullable|integer|0-100`                   |
-| `device_details.*.screen_condition` | `nullable|string`                        |
-| `device_details.*.body_condition` | `nullable|string`                          |
-| `device_details.*.accessories` | `nullable|string`                             |
-| `device_details.*.notes` | `nullable|string`                                 |
+| `device_details.*.screen_condition` | `nullable|in:perfect,good,scratched,cracked,broken` |
+| `device_details.*.body_condition` | `nullable|in:perfect,good,scratched,dented,worn` |
+| `device_details.*.face_id_working` | `nullable|boolean`                  |
+| `device_details.*.fingerprint_working` | `nullable|boolean`            |
+| `device_details.*.camera_working` | `nullable|boolean`                 |
+| `device_details.*.speaker_working` | `nullable|boolean`               |
+| `device_details.*.accessories` | `nullable|string|max:500`                   |
+| `device_details.*.notes` | `nullable|string|max:1000`                       |
 | `battery_health`    | `nullable|integer|0-100`                               |
-| `screen_condition`  | `nullable|string`                                       |
-| `body_condition`    | `nullable|string`                                       |
+| `screen_condition`  | `nullable|in:perfect,good,scratched,cracked,broken`    |
+| `body_condition`    | `nullable|in:perfect,good,scratched,dented,worn`       |
 | `accessories`       | `nullable|string`                                       |
 | `notes`             | `nullable|string`                                       |
+| `sale items`        | `required|array|min:1`                                  |
+| `items.*.product_id` | `required|exists:products,id`                         |
+| `items.*.quantity`  | `sometimes|integer|min:1`                               |
+| `items.*.unit_price` | `required|numeric|min:0`                              |
+| `items.*.stock_item_ids` | `sometimes|array` (for serialized products)       |
 
 ### 8.2 Frontend (Zod)
 
@@ -527,7 +628,7 @@ Same flow, but:
 | `purchasesSchema` | `type` | enum `purchase` / `opening_stock` |
 | `customersSchema` | `name` | min 2, no digits (`/^[^\d]+$/`) |
 | `customersSchema` | `phone` | optional, Egyptian mobile regex |
-| `customersSchema` | `email` | optional, valid email format |
+| `customersSchema` | `email` | optional, valid email (frontend-only, not stored) |
 
 ---
 
@@ -542,10 +643,10 @@ Same flow, but:
 - **AppDeleteModal:** Stub component — returns `<div>AppDeleteModal</div>` only, never used.
 - **i18n inconsistency:** Desktop sidebar uses hardcoded Arabic; mobile sidebar uses `t("sidebar.*")` translation keys.
 - **Pagination:** `CustomPagination` component exists but integration with entity hooks needs verification.
-- **Deactivate action:** Dropdown item exists in purchase list with no logic wired up.
+- **Customer email field:** Frontend Zod schema includes optional `email` field, but the backend `customers` table has no `email` column. The email value is silently dropped.
 - **Customer update hook:** Missing `useUpdateCustomers` — only `add` and `delete` hooks exist.
-- **Sales immutability:** No update/delete routes or hooks for sales (by design).
-- **POS flow:** `PosPage` and supporting components exist but integration with sale hooks may be incomplete.
+- **Sales immutability:** No update routes for sales; delete exists but requires no associated returns.
+- **POS flow:** `PosPage` and supporting components exist with sale and return creation support.
 - **i18n extras:** Translation files contain login, forgot-password, OTP, and reset-password keys not backed by any UI component.
 
 ---
@@ -565,7 +666,7 @@ src/
 ├── services/
 │   ├── clientService.js              # Axios instance + Bearer token
 │   ├── cookies.js                    # js-cookie: POS_TOKEN
-│   └── jwt.js                        # JWT decode helper
+│   └── jwt.js                        # Token decode helper
 │
 ├── providers/
 │   └── TanstackProvider.jsx          # QueryClientProvider wrapper
@@ -585,14 +686,18 @@ src/
 │   ├── categories/CategoryPage.jsx
 │   ├── Product/ProductPage.jsx
 │   ├── suppliers/SuppliersPage.jsx
-│   ├── customers/CustomersPage.jsx            (new)
+│   ├── customers/CustomersPage.jsx
 │   ├── sales/
-│   │   ├── SalesPage.jsx                      (new)
-│   │   └── SaleDetails.jsx                    (new)
-│   ├── pos/PosPage.jsx                        (new)
+│   │   ├── SalesPage.jsx
+│   │   ├── SaleDetails.jsx
+│   │   └── CreateReturn.jsx                    (new)
+│   ├── returns/
+│   │   ├── ReturnsPage.jsx                     (new)
+│   │   └── ReturnDetails.jsx                   (new)
+│   ├── pos/PosPage.jsx
 │   ├── Stock/
-│   │   ├── StockPage.jsx                      (new)
-│   │   └── StockDetails.jsx                   (new)
+│   │   ├── StockPage.jsx
+│   │   └── StockDetails.jsx
 │   └── purchases/
 │       ├── purchasesPage.jsx
 │       ├── PurchasesAdd.jsx
@@ -610,7 +715,7 @@ src/
 │   │   ├── InvoiceInfoCards.jsx
 │   │   ├── InvoiceItemsSection.jsx
 │   │   └── AddItemModal.jsx
-│   └── pos/                                    (new directory)
+│   └── pos/
 │       ├── CartPanel.jsx
 │       ├── CustomerDialog.jsx
 │       ├── NonSerializedProductCard.jsx
@@ -618,12 +723,13 @@ src/
 │       ├── PrintDialog.jsx
 │       ├── ProductPanel.jsx
 │       ├── Receipt.jsx
+│       ├── ReturnReceipt.jsx                    (new)
 │       └── SerializedItemRow.jsx
 │
 ├── customs/
 │   ├── CustomHeader.jsx
 │   ├── CustomTable.jsx
-│   ├── CustomPagination.jsx                    (new)
+│   ├── CustomPagination.jsx
 │   ├── AppModalAdd.jsx
 │   ├── AppModalEdite.jsx
 │   ├── AppDeleteModal.jsx
@@ -636,7 +742,7 @@ src/
 │   ├── alert-dialog.jsx, avatar.jsx, badge.jsx, button.jsx
 │   ├── calendar.jsx, card.jsx, dialog.jsx, dropdown-menu.jsx
 │   ├── input.jsx, label.jsx, popover.jsx, select.jsx
-│   ├── skeleton.jsx, table.jsx
+│   ├── skeleton.jsx, table.jsx, textarea.jsx
 │
 ├── hooks/
 │   ├── EndPoints/endPoints.js, queryKeys.js
@@ -647,9 +753,10 @@ src/
 │   │   ├── Categories/useCurdsCategories.jsx
 │   │   ├── Product/useCurdsProduct.jsx
 │   │   ├── suppliers/useCurdsSuppliers.jsx
-│   │   ├── customers/useCurdsCustomers.jsx          (new)
-│   │   ├── sales/useCurdsSales.jsx                  (new)
-│   │   ├── stock/useCurdsStock.jsx                  (new)
+│   │   ├── customers/useCurdsCustomers.jsx
+│   │   ├── returns/useCurdsReturns.jsx                 (new)
+│   │   ├── sales/useCurdsSales.jsx
+│   │   ├── stock/useCurdsStock.jsx
 │   │   ├── PurchaseHeaders/useCurdsPurchaseHeaders.jsx
 │   │   ├── PurchaseItems/useCurdsPurchaseItems.jsx
 │   │   └── users/useCurdsUsers.jsx   (broken)
@@ -659,7 +766,7 @@ src/
     ├── category/category.js
     ├── products/products.js
     ├── suppliers/suppliers.js
-    ├── customers/customers.js                      (new)
+    ├── customers/customers.js
     └── Purchases/Purchases.js
 ```
 
@@ -667,7 +774,7 @@ src/
 
 ## 11. Internationalization
 
-- **Library:** i18next + react-i18next
+- **Library:** next-i18next (i18next + react-i18next)
 - **Backend:** i18next-http-backend (loads `public/locales/{lang}/translation.json`)
 - **Detection:** i18next-browser-languagedetector
 - **Fallback:** English (`en`)

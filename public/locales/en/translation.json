@@ -1,6 +1,7 @@
 {
   "sidebar": {
     "dashboard": "Dashboard",
+    "stock": "Stock",
     "agencies": "Agencies",
     "subscriptions": "Subscriptions",
     "users": "Users",

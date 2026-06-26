@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Tags, Smartphone, Users, ShoppingBag, ShoppingCart, MonitorSmartphone, Undo2, X, ChevronUp, LogOut } from "lucide-react";
+import { LayoutDashboard, Tags, Smartphone, Users, ShoppingBag, ShoppingCart, MonitorSmartphone, Undo2, X, ChevronUp, LogOut, Warehouse } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
 import { removeAuthToken } from "@/services/cookies";
@@ -13,7 +13,8 @@ const SidebarMobile = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const navItems = [
-    { key: "dashboard", href: "/", icon: LayoutDashboard },
+    { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { key: "stock", href: "/", icon: Warehouse },
     { key: "categories", href: "/categories", icon: Tags },
     { key: "products", href: "/products", icon: Smartphone },
     { key: "suppliers", href: "/suppliers", icon: Users },

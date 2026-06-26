@@ -1,4 +1,5 @@
 import {
+  LayoutDashboard,
   Warehouse,
   Tags,
   Smartphone,
@@ -22,7 +23,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
 
   const navItems = [
-    { key: "المخزن", href: "/", icon: Warehouse },
+    { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
+    { key: "المخزن", href: "/dashboard", icon: Warehouse },
     { key: "التصنيفات", href: "/categories", icon: Tags },
     { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
     { key: "الموردين", href: "/suppliers", icon: Truck },

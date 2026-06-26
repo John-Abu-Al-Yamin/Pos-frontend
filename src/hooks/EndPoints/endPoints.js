@@ -9,6 +9,7 @@ const endPoints = {
   purchaseItems: "/purchase-items",
   stockItems: "/stock-items",
   returns: "/returns",
+  dashboard: "/dashboard/financial",
 };
 
 
