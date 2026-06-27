@@ -75,13 +75,13 @@ const SaleDetails = () => {
 
   return (
     <div className="mx-auto p-4 space-y-6">
-      <div className="flex items-center justify-between gap-4">
         <AddEditHeader
           title={`فاتورة بيع #${sale.id}`}
           description={`كود المرجع: ${sale.reference_code ?? "—"}`}
           backPath="/sales"
           backText="العودة للمبيعات"
         />
+      <div className="flex items-center justify-between gap-4">
         <div className="flex gap-2 shrink-0">
           <Button onClick={() => navigate(`/sales/${id}/return`)} variant="outline" className="gap-2">
             <Undo2 className="h-4 w-4" />

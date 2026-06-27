@@ -16,6 +16,18 @@ import { useGetDashboardData, useGetProductsPerformance, useGetLowStock } from "
 import { formatCurrency } from "@/lib/utils";
 import DateFilter from "@/_components/dashboard/DateFilter";
 import Header from "@/_components/dashboard/Header";
+import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const cardConfig = [
   {
@@ -55,14 +67,14 @@ const cardConfig = [
 
 function SkeletonCard() {
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5 animate-pulse">
+    <Card className="bg-white dark:bg-gray-900 p-5 gap-0">
       <div className="flex items-center justify-between mb-3">
-        <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded" />
-        <div className="h-8 w-8 bg-gray-200 dark:bg-gray-700 rounded-lg" />
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-8 w-8 rounded-lg" />
       </div>
-      <div className="h-7 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
-      <div className="h-3 w-20 bg-gray-200 dark:bg-gray-700 rounded" />
-    </div>
+      <Skeleton className="h-7 w-32 mb-2" />
+      <Skeleton className="h-3 w-20" />
+    </Card>
   );
 }
 
@@ -128,13 +140,14 @@ export default function Dashboard() {
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               حدث خطأ ما. يرجى المحاولة مرة أخرى.
             </p>
-            <button
+            <Button
               onClick={() => refetch()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-black text-white text-sm font-medium hover:bg-gray-800 transition"
+              variant="default"
+              className="rounded-lg"
             >
               <RefreshCw className="h-4 w-4" />
               إعادة المحاولة
-            </button>
+            </Button>
           </div>
         ) : !metrics ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -154,9 +167,9 @@ export default function Dashboard() {
               const isCashFlow = card.key === "cashFlow";
 
               return (
-                <div
+                <Card
                   key={card.key}
-                  className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5 hover:shadow-lg transition-all duration-300"
+                  className="bg-white dark:bg-gray-900 p-5 hover:shadow-lg transition-all duration-300 gap-0"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -187,7 +200,7 @@ export default function Dashboard() {
                         : "الفترة الحالية"}
                     </span>
                   </div>
-                </div>
+                </Card>
               );
             })}
           </div>
@@ -195,7 +208,7 @@ export default function Dashboard() {
       </div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2">
-        <div className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5">
+        <Card className="bg-white dark:bg-gray-900 p-5 gap-0">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
             <ArrowUp className="h-4 w-4 text-emerald-500" />
             الأكثر مبيعاً
@@ -203,24 +216,24 @@ export default function Dashboard() {
           {perfLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <Skeleton key={i} className="h-5 w-full" />
               ))}
             </div>
           ) : bestSellers.length === 0 ? (
             <p className="text-sm text-gray-400">لا توجد مبيعات في هذه الفترة.</p>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-gray-400 border-b dark:border-gray-700">
-                  <th className="text-start pb-2 font-medium">المنتج</th>
-                  <th className="text-start pb-2 font-medium">التصنيف</th>
-                  <th className="text-end pb-2 font-medium">الكمية</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent border-b dark:border-gray-700">
+                  <TableHead className="text-start font-medium text-gray-400 h-auto px-0 pb-2">المنتج</TableHead>
+                  <TableHead className="text-start font-medium text-gray-400 h-auto px-0 pb-2">التصنيف</TableHead>
+                  <TableHead className="text-end font-medium text-gray-400 h-auto px-0 pb-2">الكمية</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {bestSellers.map((p) => (
-                  <tr key={p.id} className="border-b dark:border-gray-800 last:border-0">
-                    <td className="py-2 text-gray-900 dark:text-gray-100">
+                  <TableRow key={p.id} className="hover:bg-transparent border-b dark:border-gray-800 last:border-0">
+                    <TableCell className="py-2 px-0 text-gray-900 dark:text-gray-100 whitespace-normal">
                       <span className={`${p.is_serialized ? "" : "text-xs text-gray-400"}`}>
                         {p.name}
                       </span>
@@ -229,17 +242,17 @@ export default function Dashboard() {
                       ) : (
                         <span className="text-[10px] text-orange-500 mr-1">(اكسسوار)</span>
                       )}
-                    </td>
-                    <td className="py-2 text-gray-500">{p.category_name}</td>
-                    <td className="py-2 text-end font-medium">{p.total_sold}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="py-2 px-0 text-gray-500 whitespace-normal">{p.category_name}</TableCell>
+                    <TableCell className="py-2 px-0 text-end font-medium whitespace-normal">{p.total_sold}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           )}
-        </div>
+        </Card>
 
-        <div className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5">
+        <Card className="bg-white dark:bg-gray-900 p-5 gap-0">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
             <ArrowDown className="h-4 w-4 text-red-500" />
             الأقل مبيعاً
@@ -247,24 +260,24 @@ export default function Dashboard() {
           {perfLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <Skeleton key={i} className="h-5 w-full" />
               ))}
             </div>
           ) : worstSellers.length === 0 ? (
             <p className="text-sm text-gray-400">لا توجد منتجات.</p>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-gray-400 border-b dark:border-gray-700">
-                  <th className="text-start pb-2 font-medium">المنتج</th>
-                  <th className="text-start pb-2 font-medium">التصنيف</th>
-                  <th className="text-end pb-2 font-medium">الكمية</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent border-b dark:border-gray-700">
+                  <TableHead className="text-start font-medium text-gray-400 h-auto px-0 pb-2">المنتج</TableHead>
+                  <TableHead className="text-start font-medium text-gray-400 h-auto px-0 pb-2">التصنيف</TableHead>
+                  <TableHead className="text-end font-medium text-gray-400 h-auto px-0 pb-2">الكمية</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {worstSellers.map((p) => (
-                  <tr key={p.id} className="border-b dark:border-gray-800 last:border-0">
-                    <td className="py-2 text-gray-900 dark:text-gray-100">
+                  <TableRow key={p.id} className="hover:bg-transparent border-b dark:border-gray-800 last:border-0">
+                    <TableCell className="py-2 px-0 text-gray-900 dark:text-gray-100 whitespace-normal">
                       <span className={`${p.is_serialized ? "" : "text-xs text-gray-400"}`}>
                         {p.name}
                       </span>
@@ -273,19 +286,19 @@ export default function Dashboard() {
                       ) : (
                         <span className="text-[10px] text-orange-500 mr-1">(اكسسوار)</span>
                       )}
-                    </td>
-                    <td className="py-2 text-gray-500">{p.category_name}</td>
-                    <td className="py-2 text-end font-medium">{p.total_sold}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell className="py-2 px-0 text-gray-500 whitespace-normal">{p.category_name}</TableCell>
+                    <TableCell className="py-2 px-0 text-end font-medium whitespace-normal">{p.total_sold}</TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           )}
-        </div>
+        </Card>
       </div>
 
       <div className="mt-8">
-        <div className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5">
+        <Card className="bg-white dark:bg-gray-900 p-5 gap-0">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-amber-500" />
             مخزون منخفض
@@ -293,52 +306,52 @@ export default function Dashboard() {
           {lowStockLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                <Skeleton key={i} className="h-5 w-full" />
               ))}
             </div>
           ) : lowStockItems.length === 0 ? (
             <p className="text-sm text-gray-400">جميع المنتجات متوفرة بكميات كافية.</p>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-gray-400 border-b dark:border-gray-700">
-                  <th className="text-start pb-2 font-medium">المنتج</th>
-                  <th className="text-start pb-2 font-medium">التصنيف</th>
-                  <th className="text-center pb-2 font-medium">المتوفر</th>
-                  <th className="text-center pb-2 font-medium">الحد الأدنى</th>
-                  <th className="text-center pb-2 font-medium">الحالة</th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent border-b dark:border-gray-700">
+                  <TableHead className="text-start font-medium text-gray-400 h-auto px-0 pb-2">المنتج</TableHead>
+                  <TableHead className="text-start font-medium text-gray-400 h-auto px-0 pb-2">التصنيف</TableHead>
+                  <TableHead className="text-center font-medium text-gray-400 h-auto px-0 pb-2">المتوفر</TableHead>
+                  <TableHead className="text-center font-medium text-gray-400 h-auto px-0 pb-2">الحد الأدنى</TableHead>
+                  <TableHead className="text-center font-medium text-gray-400 h-auto px-0 pb-2">الحالة</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {lowStockItems.map((p) => (
-                  <tr key={p.id} className="border-b dark:border-gray-800 last:border-0">
-                    <td className="py-2 text-gray-900 dark:text-gray-100">
+                  <TableRow key={p.id} className="hover:bg-transparent border-b dark:border-gray-800 last:border-0">
+                    <TableCell className="py-2 px-0 text-gray-900 dark:text-gray-100 whitespace-normal">
                       <span className="font-medium">{p.name}</span>
                       {p.is_serialized ? (
                         <span className="text-[10px] text-blue-500 mr-1">(جهاز)</span>
                       ) : (
                         <span className="text-[10px] text-orange-500 mr-1">(اكسسوار)</span>
                       )}
-                    </td>
-                    <td className="py-2 text-gray-500">{p.category_name}</td>
-                    <td className="py-2 text-center font-mono font-bold text-red-600">
+                    </TableCell>
+                    <TableCell className="py-2 px-0 text-gray-500 whitespace-normal">{p.category_name}</TableCell>
+                    <TableCell className="py-2 px-0 text-center font-mono font-bold text-red-600 whitespace-normal">
                       {p.available_count}
-                    </td>
-                    <td className="py-2 text-center text-gray-500">
+                    </TableCell>
+                    <TableCell className="py-2 px-0 text-center text-gray-500 whitespace-normal">
                       {p.min_stock}
-                    </td>
-                    <td className="py-2 text-center">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                    </TableCell>
+                    <TableCell className="py-2 px-0 text-center whitespace-normal">
+                      <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 rounded-full">
                         <AlertCircle className="h-3 w-3" />
                         منخفض
-                      </span>
-                    </td>
-                  </tr>
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           )}
-        </div>
+        </Card>
       </div>
     </>
   );

@@ -15,7 +15,14 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
-import { MoreHorizontal, Pencil, Ban, Eye } from "lucide-react";
+import { MoreHorizontal, Pencil, Ban, Eye, Search, X } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,19 +30,48 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const TYPES = [
+  { value: "purchase", label: "مشتريات" },
+  { value: "opening_stock", label: "بضاعة بالمحل" },
+];
+
+const FILTER_DEBOUNCE = 300;
+
 const purchasesPage = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(1);
   const per_page = 10;
+  const [search, setSearch] = React.useState("");
+  const [debouncedSearch, setDebouncedSearch] = React.useState("");
+  const [type, setType] = React.useState("");
 
-  const { data: purchaseHeaders, isPending } = useGetAllPurchaseHeaders(
+  React.useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), FILTER_DEBOUNCE);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, type]);
+
+  const { data: purchaseHeaders, isPending } = useGetAllPurchaseHeaders({
     page,
     per_page,
-  );
+    search: debouncedSearch || undefined,
+    type: type || undefined,
+  });
+
   const purchaseHeadersData = purchaseHeaders?.data?.data ?? [];
   const pagination = purchaseHeaders?.data?.pagination;
 
-  console.log(purchaseHeadersData, pagination);
+  const hasActiveFilters = debouncedSearch || type;
+
+  const clearFilters = () => {
+    setSearch("");
+    setDebouncedSearch("");
+    setType("");
+    setPage(1);
+  };
 
   if (isPending) {
     return <Loading />;
@@ -49,6 +85,52 @@ const purchasesPage = () => {
         buttonText=" فاتورة"
         onButtonClick={() => navigate("/purchases/add")}
       />
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px]">
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            dir="rtl"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="بحث بكود المرجع، المورد..."
+            className="w-full pr-9 pl-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        <Select
+          value={type || undefined}
+          onValueChange={(v) => setType(v ?? "")}
+        >
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder="النوع" />
+          </SelectTrigger>
+          <SelectContent>
+            {TYPES.map((t) => (
+              <SelectItem key={t.value} value={t.value}>
+                {t.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {hasActiveFilters && (
+          <button
+            onClick={clearFilters}
+            className="inline-flex items-center gap-1 px-3 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+          >
+            <X className="h-4 w-4" />
+            مسح الكل
+          </button>
+        )}
+      </div>
 
       <div className="rounded-md border bg-white shadow-sm mt-4" dir="rtl">
         <Table>
@@ -128,6 +210,12 @@ const purchasesPage = () => {
             ))}
           </TableBody>
         </Table>
+
+        {purchaseHeadersData.length === 0 && (
+          <div className="py-12 text-center text-sm text-muted-foreground">
+            لا توجد فواتير تطابق البحث.
+          </div>
+        )}
 
         <CustomPagination
           pagination={pagination}

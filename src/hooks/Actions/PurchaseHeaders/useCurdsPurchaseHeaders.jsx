@@ -7,21 +7,14 @@ import usePostData from "@/hooks/curdsHook/usePostData";
 
 /* Main Units*/
 
-export const useGetAllPurchaseHeaders = (page = 1, per_page = 20) => {
+export const useGetAllPurchaseHeaders = (params = {}) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.purchaseHeaders,
-    params: { page, per_page },
-    queryKeys: [queryKeys.purchaseHeaders],
+    params,
+    queryKeys: [queryKeys.purchaseHeaders, params],
   });
 
-  return {
-    data,
-    isPending,
-    isError: rest.error,
-    refetch,
-    page,
-    per_page,
-  };
+  return { data, isPending, isError: rest.error, refetch };
 };
 
 export const useGetPurchaseHeadersById = (id) => {

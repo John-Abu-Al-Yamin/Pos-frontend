@@ -3,21 +3,14 @@ import queryKeys from "@/hooks/EndPoints/queryKeys";
 import useGetData from "@/hooks/curdsHook/useGetData";
 import usePostData from "@/hooks/curdsHook/usePostData";
 
-export const useGetAllReturns = (page = 1, per_page = 10) => {
+export const useGetAllReturns = (params = {}) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.returns,
-    params: { page, per_page },
-    queryKeys: [queryKeys.returns, page, per_page],
+    params,
+    queryKeys: [queryKeys.returns, params],
   });
 
-  return {
-    data,
-    isPending,
-    isError: rest.error,
-    refetch,
-    page,
-    per_page,
-  };
+  return { data, isPending, isError: rest.error, refetch };
 };
 
 export const useGetReturnById = (id) => {
