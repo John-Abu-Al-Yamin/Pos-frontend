@@ -10,7 +10,8 @@ export const productsSchema = z.object({
     .string()
     .min(1, "يجب اختيار التصنيف"),
 
-  is_serialized: z.boolean({
-    required_error: "يجب تحديد هل المنتج مُسلسل أم لا",
+  product_category: z.enum(["mobile", "part", "accessory"], {
+    required_error: "يجب اختيار تصنيف المنتج",
+    invalid_type_error: "تصنيف المنتج غير صالح",
   }),
 });

@@ -26,6 +26,10 @@ import CreateReturn from "@/pages/sales/CreateReturn";
 import ReturnsPage from "@/pages/returns/ReturnsPage";
 import ReturnDetails from "@/pages/returns/ReturnDetails";
 import PosPage from "@/pages/pos/PosPage";
+import RepairsPage from "@/pages/repairs/RepairsPage";
+import RepairAdd from "@/pages/repairs/RepairAdd";
+import RepairDetails from "@/pages/repairs/RepairDetails";
+import RepairEdit from "@/pages/repairs/RepairEdit";
 
 const router = createBrowserRouter([
   {
@@ -114,6 +118,24 @@ const router = createBrowserRouter([
       {
         path: "/pos",
         element: <PosPage />,
+      },
+
+      // repairs Routes
+      {
+        path: "/repairs",
+        element: <RepairsPage />,
+      },
+      {
+        path: "/repairs/add",
+        element: <RepairAdd />,
+      },
+      {
+        path: "/repairs/:id",
+        element: <RepairDetails />,
+      },
+      {
+        path: "/repairs/edit/:id",
+        element: <RepairEdit />,
       },
 
       // stock Routes

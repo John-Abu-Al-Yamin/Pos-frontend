@@ -1,0 +1,367 @@
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  ArrowRight,
+  Smartphone,
+  User,
+  AlertCircle,
+  Wrench,
+  Coins,
+  CalendarDays,
+  CheckCircle,
+  XCircle,
+  Edit,
+  BadgeIcon as WrenchIcon,
+} from "lucide-react";
+
+import {
+  useGetRepairById,
+  useCompleteRepair,
+  useCancelRepair,
+  useDeleteRepair,
+} from "@/hooks/Actions/repairs/useCurdsRepairs";
+import Loading from "@/customs/Loading";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import InfoCard from "@/customs/InfoCard";
+
+const STATUS_OPTIONS = [
+  { value: "pending", label: "قيد الانتظار" },
+  { value: "in_progress", label: "قيد الإصلاح" },
+  { value: "completed", label: "مكتمل" },
+  { value: "cancelled", label: "ملغي" },
+];
+
+const STATUS_BADGE = {
+  pending: "bg-amber-50 text-amber-700 border-amber-200",
+  in_progress: "bg-blue-50 text-blue-700 border-blue-200",
+  completed: "bg-green-50 text-green-700 border-green-200",
+  cancelled: "bg-red-50 text-red-700 border-red-200",
+};
+
+const RepairDetails = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const { data, isPending } = useGetRepairById(id);
+  const { mutate: completeRepair, isPending: completing } =
+    useCompleteRepair(id);
+  const { mutate: cancelRepair, isPending: cancelling } = useCancelRepair(id);
+  const { mutate: deleteRepair } = useDeleteRepair();
+
+  const repair = data?.data?.data;
+
+  if (isPending) return <Loading />;
+  if (!repair)
+    return (
+      <div className="text-center py-12 text-muted-foreground">
+        أمر الإصلاح غير موجود
+      </div>
+    );
+
+  const canEdit = !["completed", "cancelled"].includes(repair.status);
+  const canComplete = ["pending", "in_progress"].includes(repair.status);
+  const canCancel = ["pending", "in_progress"].includes(repair.status);
+
+  const handleComplete = () => {
+    completeRepair(
+      {},
+      {
+        // onSuccess: () => toast.success("تم إكمال أمر الإصلاح"),
+        onError: () => toast.error("فشل في إكمال أمر الإصلاح"),
+      },
+    );
+  };
+
+  const handleCancel = () => {
+    cancelRepair(
+      {},
+      {
+        // onSuccess: () => toast.success("تم إلغاء أمر الإصلاح"),
+        onError: () => toast.error("فشل في إلغاء أمر الإصلاح"),
+      },
+    );
+  };
+
+  const handleDelete = () => {
+    deleteRepair(
+      { id: repair.id },
+      {
+        onSuccess: () => {
+          // toast.success("تم حذف أمر الإصلاح");
+          navigate("/repairs");
+        },
+        onError: () => toast.error("فشل في حذف أمر الإصلاح"),
+      },
+    );
+  };
+
+  const totalRemaining = Number(repair.estimated_cost) - Number(repair.deposit);
+
+  return (
+    <div className="p-4  mx-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">
+            تفاصيل أمر الإصلاح
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {repair.reference_code} — {repair.device_type}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => navigate("/repairs")}
+            variant="outline"
+            className="gap-2"
+          >
+            <ArrowRight className="h-4 w-4" />
+            العودة
+          </Button>
+          {canEdit && (
+            <Button
+              onClick={() => navigate(`/repairs/edit/${repair.id}`)}
+              variant="outline"
+              className="gap-2"
+            >
+              <Edit className="h-4 w-4" />
+              تعديل
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        {/* Status + Actions */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <Badge
+            variant="outline"
+            className={`text-sm px-3 py-1.5 ${STATUS_BADGE[repair.status] || ""}`}
+          >
+            {STATUS_OPTIONS.find((s) => s.value === repair.status)?.label ||
+              repair.status}
+          </Badge>
+
+          <div className="flex gap-2">
+            {canComplete && (
+              <Button
+                onClick={handleComplete}
+                disabled={completing}
+                className="gap-2"
+              >
+                <CheckCircle className="h-4 w-4" />
+                {completing ? "جاري..." : "إكمال"}
+              </Button>
+            )}
+            {canCancel && (
+              <Button
+                onClick={handleCancel}
+                disabled={cancelling}
+                variant="outline"
+                className="gap-2 text-destructive border-destructive/30 hover:bg-destructive/10"
+              >
+                <XCircle className="h-4 w-4" />
+                {cancelling ? "جاري..." : "إلغاء"}
+              </Button>
+            )}
+            {canCancel && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" className="text-destructive">
+                    حذف
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      سيتم حذف أمر الإصلاح وإعادة قطع الغيار إلى المخزون.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>
+                      حذف
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
+        </div>
+
+        {/* Customer + Device Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <InfoCard
+            icon={User  }
+            label="العميل"
+            value={repair.customer_name || repair.customer?.name || "غير محدد"}
+            accent
+          />
+          <InfoCard
+            icon={Smartphone  }
+            label="نوع الجهاز"
+            value={repair.device_type}
+            accent
+          />
+          {repair.customer_phone && (
+            <InfoCard
+              icon={User  }
+              label="رقم الهاتف"
+              value={repair.customer_phone}
+            />
+          )}
+          {repair.device_serial && (
+            <InfoCard
+              icon={Smartphone  }
+              label="الرقم التسلسلي"
+              value={repair.device_serial}
+            />
+          )}
+          {repair.expected_delivery_date && (
+            <InfoCard
+              icon={CalendarDays  }
+              label="تاريخ التسليم"
+              value={repair.expected_delivery_date}
+            />
+          )}
+          {repair.user?.name && (
+            <InfoCard
+              icon={User  }
+              label="المسؤول"
+              value={repair.user.name}
+            />
+          )}
+        </div>
+
+        {/* Issue + Work Description */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-destructive" />
+                وصف المشكلة
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                {repair.issue_description}
+              </p>
+            </CardContent>
+          </Card>
+
+          {repair.work_description && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Wrench className="h-4 w-4 text-primary" />
+                  العمل المطلوب
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                  {repair.work_description}
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
+        {/* Parts Used */}
+        {repair.repair_parts?.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <WrenchIcon className="h-4 w-4 text-primary" />
+                قطع الغيار المستخدمة
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="divide-y">
+                {repair.repair_parts.map((part) => (
+                  <div
+                    key={part.id}
+                    className="flex items-center justify-between py-2"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium text-sm">
+                        {part.product?.name}
+                      </span>
+                      {part.stock_item?.serial_number && (
+                        <span
+                          className="text-xs text-muted-foreground"
+                          dir="ltr"
+                        >
+                          {part.stock_item.serial_number}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-semibold text-sm">
+                      {Number(part.unit_cost).toLocaleString("ar-EG")}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Pricing Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-semibold flex items-center gap-2">
+              <Coins className="h-4 w-4 text-primary" />
+              التكاليف
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">التكلفة التقديرية</span>
+                <span className="font-semibold">
+                  {Number(repair.estimated_cost).toLocaleString("ar-EG")}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">تكلفة قطع الغيار</span>
+                <span className="font-semibold">
+                  {Number(repair.parts_cost).toLocaleString("ar-EG")}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">الدفعة المقدمة</span>
+                <span className="font-semibold text-amber-600">
+                  {Number(repair.deposit).toLocaleString("ar-EG")}
+                </span>
+              </div>
+              <div className="border-t pt-3 flex justify-between text-sm">
+                <span className="font-semibold">المتبقي</span>
+                <span
+                  className={`font-bold ${totalRemaining > 0 ? "text-destructive" : "text-green-600"}`}
+                >
+                  {totalRemaining.toLocaleString("ar-EG")}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default RepairDetails;

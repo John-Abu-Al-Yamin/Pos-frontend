@@ -18,7 +18,7 @@ import { productsSchema } from "@/validation/products/products";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Pencil, Trash2, Smartphone, Headphones, Search } from "lucide-react";
+import { Pencil, Trash2, Smartphone, Headphones, Search, Wrench } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import AppModalEdite from "@/customs/AppModalEdite";
@@ -46,7 +46,7 @@ const ProductPage = () => {
   const [debouncedSearch, setDebouncedSearch] = React.useState("");
   const [filters, setFilters] = React.useState({
     category_id: "",
-    is_serialized: "",
+    product_category: "",
   });
 
   React.useEffect(() => {
@@ -65,7 +65,7 @@ const ProductPage = () => {
     per_page,
     search: debouncedSearch || undefined,
     category_id: filters.category_id || undefined,
-    is_serialized: filters.is_serialized !== "" ? filters.is_serialized : undefined,
+    product_category: filters.product_category || undefined,
   });
   const { mutate: deleteMutate } = useDeleteProducts();
   const {
@@ -85,7 +85,7 @@ const ProductPage = () => {
     defaultValues: {
       name: "",
       category_id: "",
-      is_serialized: true,
+      product_category: "mobile",
     },
   });
 
@@ -94,7 +94,7 @@ const ProductPage = () => {
     defaultValues: {
       name: "",
       category_id: "",
-      is_serialized: false,
+      product_category: "mobile",
     },
   });
 
@@ -126,7 +126,7 @@ const ProductPage = () => {
     editForm.reset({
       name: product.name,
       category_id: String(product.category_id),
-      is_serialized: Boolean(product.is_serialized),
+      product_category: product.product_category || "mobile",
     });
   };
 
@@ -198,43 +198,60 @@ const ProductPage = () => {
               </div>
 
               <div className="space-y-3">
-                <Label>النوع</Label>
+                <Label>تصنيف المنتج</Label>
                 <Controller
-                  name="is_serialized"
+                  name="product_category"
                   control={form.control}
                   render={({ field }) => (
-                    <div className="flex ">
-                      <div className="inline-grid grid-cols-2 gap-3">
+                    <div className="flex">
+                      <div className="inline-grid grid-cols-3 gap-3">
                         <div
-                          onClick={() => field.onChange(true)}
-                          className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-28 cursor-pointer select-none transition-all duration-200 ${
-                            field.value === true
+                          onClick={() => field.onChange("mobile")}
+                          className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-24 cursor-pointer select-none transition-all duration-200 ${
+                            field.value === "mobile"
                               ? "bg-accent ring-2 ring-primary shadow-sm"
                               : "ring-1 ring-border hover:ring-primary/30 hover:shadow-sm hover:bg-accent/30"
                           }`}
                         >
                           <Smartphone
-                            className={`size-5 ${field.value === true ? "text-primary" : "text-muted-foreground"}`}
+                            className={`size-5 ${field.value === "mobile" ? "text-primary" : "text-muted-foreground"}`}
                           />
                           <span
-                            className={`text-xs font-medium ${field.value === true ? "text-primary" : "text-foreground"}`}
+                            className={`text-xs font-medium ${field.value === "mobile" ? "text-primary" : "text-foreground"}`}
                           >
                             موبايل
                           </span>
                         </div>
                         <div
-                          onClick={() => field.onChange(false)}
-                          className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-28 cursor-pointer select-none transition-all duration-200 ${
-                            field.value === false
+                          onClick={() => field.onChange("part")}
+                          className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-24 cursor-pointer select-none transition-all duration-200 ${
+                            field.value === "part"
+                              ? "bg-accent ring-2 ring-primary shadow-sm"
+                              : "ring-1 ring-border hover:ring-primary/30 hover:shadow-sm hover:bg-accent/30"
+                          }`}
+                        >
+                          <Wrench
+                            className={`size-5 ${field.value === "part" ? "text-primary" : "text-muted-foreground"}`}
+                          />
+                          <span
+                            className={`text-xs font-medium ${field.value === "part" ? "text-primary" : "text-foreground"}`}
+                          >
+                            قطعة غيار
+                          </span>
+                        </div>
+                        <div
+                          onClick={() => field.onChange("accessory")}
+                          className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-24 cursor-pointer select-none transition-all duration-200 ${
+                            field.value === "accessory"
                               ? "bg-accent ring-2 ring-primary shadow-sm"
                               : "ring-1 ring-border hover:ring-primary/30 hover:shadow-sm hover:bg-accent/30"
                           }`}
                         >
                           <Headphones
-                            className={`size-5 ${field.value === false ? "text-primary" : "text-muted-foreground"}`}
+                            className={`size-5 ${field.value === "accessory" ? "text-primary" : "text-muted-foreground"}`}
                           />
                           <span
-                            className={`text-xs font-medium ${field.value === false ? "text-primary" : "text-foreground"}`}
+                            className={`text-xs font-medium ${field.value === "accessory" ? "text-primary" : "text-foreground"}`}
                           >
                             اكسسوار
                           </span>
@@ -243,6 +260,11 @@ const ProductPage = () => {
                     </div>
                   )}
                 />
+                {form.formState.errors.product_category && (
+                  <p className="text-sm text-destructive">
+                    {form.formState.errors.product_category.message}
+                  </p>
+                )}
               </div>
             </div>
           ),
@@ -303,43 +325,60 @@ const ProductPage = () => {
           </div>
 
           <div className="space-y-3">
-            <Label>النوع</Label>
+            <Label>تصنيف المنتج</Label>
             <Controller
-              name="is_serialized"
+              name="product_category"
               control={editForm.control}
               render={({ field }) => (
-                <div className="flex ">
-                  <div className="inline-grid grid-cols-2 gap-3">
+                <div className="flex">
+                  <div className="inline-grid grid-cols-3 gap-3">
                     <div
-                      onClick={() => field.onChange(true)}
-                      className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-28 cursor-pointer select-none transition-all duration-200 ${
-                        field.value === true
+                      onClick={() => field.onChange("mobile")}
+                      className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-24 cursor-pointer select-none transition-all duration-200 ${
+                        field.value === "mobile"
                           ? "bg-accent ring-2 ring-primary shadow-sm"
                           : "ring-1 ring-border hover:ring-primary/30 hover:shadow-sm hover:bg-accent/30"
                       }`}
                     >
                       <Smartphone
-                        className={`size-5 ${field.value === true ? "text-primary" : "text-muted-foreground"}`}
+                        className={`size-5 ${field.value === "mobile" ? "text-primary" : "text-muted-foreground"}`}
                       />
                       <span
-                        className={`text-xs font-medium ${field.value === true ? "text-primary" : "text-foreground"}`}
+                        className={`text-xs font-medium ${field.value === "mobile" ? "text-primary" : "text-foreground"}`}
                       >
                         موبايل
                       </span>
                     </div>
                     <div
-                      onClick={() => field.onChange(false)}
-                      className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-28 cursor-pointer select-none transition-all duration-200 ${
-                        field.value === false
+                      onClick={() => field.onChange("part")}
+                      className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-24 cursor-pointer select-none transition-all duration-200 ${
+                        field.value === "part"
+                          ? "bg-accent ring-2 ring-primary shadow-sm"
+                          : "ring-1 ring-border hover:ring-primary/30 hover:shadow-sm hover:bg-accent/30"
+                      }`}
+                    >
+                      <Wrench
+                        className={`size-5 ${field.value === "part" ? "text-primary" : "text-muted-foreground"}`}
+                      />
+                      <span
+                        className={`text-xs font-medium ${field.value === "part" ? "text-primary" : "text-foreground"}`}
+                      >
+                        قطعة غيار
+                      </span>
+                    </div>
+                    <div
+                      onClick={() => field.onChange("accessory")}
+                      className={`flex flex-col items-center gap-1.5 rounded-xl p-3 min-w-24 cursor-pointer select-none transition-all duration-200 ${
+                        field.value === "accessory"
                           ? "bg-accent ring-2 ring-primary shadow-sm"
                           : "ring-1 ring-border hover:ring-primary/30 hover:shadow-sm hover:bg-accent/30"
                       }`}
                     >
                       <Headphones
-                        className={`size-5 ${field.value === false ? "text-primary" : "text-muted-foreground"}`}
+                        className={`size-5 ${field.value === "accessory" ? "text-primary" : "text-muted-foreground"}`}
                       />
                       <span
-                        className={`text-xs font-medium ${field.value === false ? "text-primary" : "text-foreground"}`}
+                        className={`text-xs font-medium ${field.value === "accessory" ? "text-primary" : "text-foreground"}`}
                       >
                         اكسسوار
                       </span>
@@ -348,6 +387,11 @@ const ProductPage = () => {
                 </div>
               )}
             />
+            {editForm.formState.errors.product_category && (
+              <p className="text-sm text-destructive">
+                {editForm.formState.errors.product_category.message}
+              </p>
+            )}
           </div>
         </div>
       </AppModalEdite>
@@ -381,16 +425,17 @@ const ProductPage = () => {
         </Select>
 
         <Select
-          value={filters.is_serialized}
-          onValueChange={(v) => setFilters((f) => ({ ...f, is_serialized: v }))}
+          value={filters.product_category}
+          onValueChange={(v) => setFilters((f) => ({ ...f, product_category: v }))}
         >
           <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="كل الأنواع" />
+            <SelectValue placeholder="كل التصنيفات" />
           </SelectTrigger>
           <SelectContent align="end">
-            <SelectItem value=" ">كل الأنواع</SelectItem>
-            <SelectItem value="1">موبايل</SelectItem>
-            <SelectItem value="0">اكسسوار</SelectItem>
+            <SelectItem value=" ">كل التصنيفات</SelectItem>
+            <SelectItem value="mobile">موبايل</SelectItem>
+            <SelectItem value="part">قطعة غيار</SelectItem>
+            <SelectItem value="accessory">اكسسوار</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -425,15 +470,21 @@ const ProductPage = () => {
             </div>
 
             <div className="mt-4 space-y-2">
-              <span
-                className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
-                  product.is_serialized === 1
-                    ? "bg-primary/90 text-white"
-                    : "bg-muted text-black"
-                }`}
-              >
-                {product.is_serialized === 1 ? "موبايل" : "اكسسوار"}
-              </span>
+              <div className="flex gap-2">
+                {product.product_category === "part" ? (
+                  <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-amber-100 text-amber-800">
+                    قطعة غيار
+                  </span>
+                ) : product.product_category === "accessory" ? (
+                  <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-purple-100 text-purple-800">
+                    اكسسوار
+                  </span>
+                ) : (
+                  <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
+                    موبايل
+                  </span>
+                )}
+              </div>
 
               <div className="text-xs text-muted-foreground/80 font-medium">
                 {formatDate(product.created_at)}

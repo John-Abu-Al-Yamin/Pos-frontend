@@ -43,11 +43,12 @@ All endpoints require `Authorization: Bearer <token>` (Sanctum).
 | Purchase Items   | `/purchase-items`        | Line items within a purchase         |
 | Stock Items      | `/stock-items`           | Individual units in inventory        |
 | Sales            | `/sales`                 | A sale transaction                   |
-| Returns          | `/returns`               | Return/refund transactions           |
+| Returns          | `/returns`          | Return/refund transactions           |
+| Repairs          | `/repairs`          | Repair/maintenance work orders       |
 
 Base URL: `http://127.0.0.1:8000/api`
 
-All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy` (except Stock Items which are read-only, Sales which are read-only after creation with a delete endpoint, and Returns which have no update/delete).
+All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy` (except Stock Items which are read-only, Sales which are read-only after creation with a delete endpoint, and Returns which have no update/delete). Repairs additionally expose `complete` and `cancel` status-transition endpoints.
 
 ---
 
@@ -294,7 +295,8 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 | Path | Component | Guard | Layout |
 |---|---|---|---|
 | `/auth/login` | `LoginForm` | `PublicRoute` | `AuthLayout` |
-| `/` | `StockPage` | `ProtectedRoute` | `MainLayout` |
+| `/` | `Dashboard` | `ProtectedRoute` | `MainLayout` |
+| `/dashboard` | `StockPage` | `ProtectedRoute` | `MainLayout` |
 | `/categories` | `CategoryPage` | `ProtectedRoute` | `MainLayout` |
 | `/products` | `ProductPage` | `ProtectedRoute` | `MainLayout` |
 | `/suppliers` | `SuppliersPage` | `ProtectedRoute` | `MainLayout` |
@@ -305,6 +307,10 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 | `/purchases/:id` | `PurchasesDetails` | `ProtectedRoute` | `MainLayout` |
 | `/purchases/:purchaseId/items/:itemId` | `PurchaseItemDetails` | `ProtectedRoute` | `MainLayout` |
 | `/purchases/:purchaseId/items/:itemId/edit` | `PurchaseItemEdit` | `ProtectedRoute` | `MainLayout` |
+| `/repairs` | `RepairsPage` | `ProtectedRoute` | `MainLayout` |
+| `/repairs/add` | `RepairAdd` | `ProtectedRoute` | `MainLayout` |
+| `/repairs/:id` | `RepairDetails` | `ProtectedRoute` | `MainLayout` |
+| `/repairs/edit/:id` | `RepairEdit` | `ProtectedRoute` | `MainLayout` |
 | `/sales` | `SalesPage` | `ProtectedRoute` | `MainLayout` |
 | `/sales/:id` | `SaleDetails` | `ProtectedRoute` | `MainLayout` |
 | `/sales/:id/return` | `CreateReturn` | `ProtectedRoute` | `MainLayout` |
@@ -314,7 +320,7 @@ All resources follow standard CRUD: `index`, `store`, `show`, `update`, `destroy
 | `/stock/:id` | `StockDetails` | `ProtectedRoute` | `MainLayout` |
 | `*` | `ErrorPage` (404) | `ProtectedRoute` | `MainLayout` |
 
-> **Note:** The default route `/` renders `StockPage`. The Dashboard component is imported but unused in routes.
+> **Note:** The default route `/` renders `Dashboard`. A secondary `/dashboard` route maps to `StockPage` (likely a misconfiguration — the path label suggests it should be the dashboard, but it renders the stock listing).
 
 ### 4.3 React Query CRUD Pattern
 
@@ -337,7 +343,9 @@ Implemented entities: `Categories`, `Product`, `Suppliers`, `PurchaseHeaders`, `
 | `useGetAllSales`, `useGetSaleById`, `useAddSale`, `useGetAvailableStock` | Sales (read-only + create) |
 | `useGetAllStock`, `useGetStockById` | Stock items (read-only) |
 | `useGetAllReturns`, `useGetReturnById`, `useGetSaleReturnable`, `useAddReturn` | Returns CRUD |
+| `useGetAllRepairs`, `useGetRepairById`, `useAddRepair`, `useUpdateRepair(id)`, `useCompleteRepair(id)`, `useCancelRepair(id)`, `useDeleteRepair` | Repairs CRUD with status transitions |
 | `useGetAvailableStock(params)` | Queries `GET /stock-items/available` with search/category filters |
+| `useGetDashboardData(params)`, `useGetProductsPerformance(params)`, `useGetLowStock()` | Dashboard financial/performance metrics |
 
 ### 4.4 API Endpoint Constants
 
@@ -355,12 +363,16 @@ const endPoints = {
   purchaseItems: "/purchase-items",
   stockItems: "/stock-items",
   returns: "/returns",
+  repairs: "/repairs",
+  dashboard: "/dashboard/financial",
+  productsPerformance: "/dashboard/products-performance",
+  dashboardLowStock: "/dashboard/low-stock",
 };
 ```
 
 ### 4.5 Query Keys
 
-Defined in `hooks/EndPoints/queryKeys.js` with individual keys per operation for cache invalidation. Includes keys for `returns` and `addreturns`.
+Defined in `hooks/EndPoints/queryKeys.js` with individual keys per operation for cache invalidation. Includes keys for `returns`, `addreturns`, `repairs`, `addRepairs`, `updateRepairs`, `dashboard`, `productsPerformance`, and `dashboardLowStock`.
 
 ### 4.6 Form & Validation Patterns
 
@@ -405,6 +417,7 @@ All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/
 | `Header` | `Dashboard` | Dashboard header bar |
 | `QuickActions` | `Dashboard` | Quick action buttons |
 | `StatsCards` | `Dashboard` | Stats overview cards |
+| `DateFilter` | `Dashboard` | Date range filter (Today/Week/Month/Year/Custom) |
 | `LanguageSwitcher` | `MainLayout` | i18n language toggle (commented out in sidebar) |
 | `CartPanel` | `PosPage` | POS cart sidebar |
 | `CustomerDialog` | `PosPage` | Customer selection dialog |
@@ -629,19 +642,27 @@ Same flow, but:
 | `customersSchema` | `name` | min 2, no digits (`/^[^\d]+$/`) |
 | `customersSchema` | `phone` | optional, Egyptian mobile regex |
 | `customersSchema` | `email` | optional, valid email (frontend-only, not stored) |
+| `repairsSchema` | `device_type` | required string |
+| `repairsSchema` | `issue_description` | required string |
+| `repairsSchema` | `estimated_cost` | optional number (min 0) |
+| `repairsSchema` | `deposit` | optional number (min 0) |
+| `repairsSchema` | `parts` | optional array of `{stock_item_id}` |
 
 ---
 
 ## 9. Known Issues & Leftovers
 
 - **Stock Items page:** Only details view exists (`/stock/:id`); no standalone stock item management page.
-- **Dashboard data:** `QuickActions` and `StatsCards` contain real-estate themed placeholder content (leftover from a different project). Dashboard is imported but unused in routes.
+- **Route mapping:** `/` renders `Dashboard` (the root route). `/dashboard` renders `StockPage` — the path label suggests it should be the dashboard, but it shows stock instead (likely a misconfiguration).
+- **Dashboard data:** `QuickActions` and `StatsCards` contain real-estate themed placeholder content (leftover from a different project). Neither component is actually imported or used by `Dashboard.jsx` — they are orphaned.
+- **DateFilter** in `_components/dashboard/` uses hardcoded English labels (`"Today"`, `"This Week"`, etc.) instead of i18n translation keys.
 - **PatchRequest bug:** `hooks/handleRequest/PatchRequest.js` uses `method: "POST"` instead of `"PATCH"`.
 - **usePatchData bug:** Imports `useAuthContext` from `@/context/AuthContext` which does not exist.
 - **useCurdsUsers bug:** References non-existent `@/config/endPoints` and `@/config/queryKes`.
 - **Users page:** Not implemented (no route, broken hooks).
 - **AppDeleteModal:** Stub component — returns `<div>AppDeleteModal</div>` only, never used.
 - **i18n inconsistency:** Desktop sidebar uses hardcoded Arabic; mobile sidebar uses `t("sidebar.*")` translation keys.
+- **Header i18n import:** `Header.jsx` imports `useTranslation` from `"next-i18next"` (a Next.js package) instead of `"react-i18next"`, which is inconsistent with the rest of the codebase.
 - **Pagination:** `CustomPagination` component exists but integration with entity hooks needs verification.
 - **Customer email field:** Frontend Zod schema includes optional `email` field, but the backend `customers` table has no `email` column. The email value is silently dropped.
 - **Customer update hook:** Missing `useUpdateCustomers` — only `add` and `delete` hooks exist.
@@ -661,7 +682,7 @@ src/
 ├── i18n.js                           # i18next config
 │
 ├── lib/
-│   └── utils.js                      # cn(), formatDate()
+│   └── utils.js                      # cn(), formatDate(), formatCurrency() (EGP)
 │
 ├── services/
 │   ├── clientService.js              # Axios instance + Bearer token
@@ -691,6 +712,11 @@ src/
 │   │   ├── SalesPage.jsx
 │   │   ├── SaleDetails.jsx
 │   │   └── CreateReturn.jsx                    (new)
+│   ├── repairs/
+│   │   ├── RepairsPage.jsx                     (new)
+│   │   ├── RepairAdd.jsx                       (new)
+│   │   ├── RepairDetails.jsx                   (new)
+│   │   └── RepairEdit.jsx                      (new)
 │   ├── returns/
 │   │   ├── ReturnsPage.jsx                     (new)
 │   │   └── ReturnDetails.jsx                   (new)
@@ -710,7 +736,7 @@ src/
 ├── _components/
 │   ├── LanguageSwitcher.jsx
 │   ├── Sidebar/Sidebar.jsx, SidebarMobil.jsx
-│   ├── dashboard/Header.jsx, QuickActions.jsx, StatsCards.jsx
+│   ├── dashboard/Header.jsx, QuickActions.jsx, StatsCards.jsx, DateFilter.jsx
 │   ├── purchases/
 │   │   ├── InvoiceInfoCards.jsx
 │   │   ├── InvoiceItemsSection.jsx
@@ -754,7 +780,9 @@ src/
 │   │   ├── Product/useCurdsProduct.jsx
 │   │   ├── suppliers/useCurdsSuppliers.jsx
 │   │   ├── customers/useCurdsCustomers.jsx
+│   │   ├── dashboard/useCurdsDashboard.jsx             (new)
 │   │   ├── returns/useCurdsReturns.jsx                 (new)
+│   │   ├── repairs/useCurdsRepairs.jsx                 (new)
 │   │   ├── sales/useCurdsSales.jsx
 │   │   ├── stock/useCurdsStock.jsx
 │   │   ├── PurchaseHeaders/useCurdsPurchaseHeaders.jsx
