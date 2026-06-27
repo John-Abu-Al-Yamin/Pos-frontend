@@ -20,8 +20,6 @@ import {
   useUpdatePurchaseItem,
   useGetAllPurchaseItems,
 } from "@/hooks/Actions/PurchaseItems/useCurdsPurchaseItems";
-import { useGetAllProducts } from "@/hooks/Actions/Product/useCurdsProduct";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -93,22 +91,13 @@ const PurchaseItemEdit = () => {
     },
   });
 
-  const { data: productsRes, isPending: productsPending } = useGetAllProducts(
-    1,
-    1000,
-  );
-  const products = productsRes?.data?.data ?? [];
-
   const { data: itemsRes, isPending: itemsPending } =
     useGetAllPurchaseItems(purchaseId);
   const allItems = itemsRes?.data?.data ?? itemsRes?.data ?? [];
   const fetchedItem = allItems.find((i) => String(i.id) === String(itemId));
   const item = stateItem ?? fetchedItem;
 
-  const selectedProduct = products.find(
-    (p) => String(p.id) === String(item?.product_id),
-  );
-  const isSerialized = selectedProduct?.is_serialized;
+  const isSerialized = item?.product?.is_serialized;
   const conditionValue = watch("condition");
 
   const { mutate: updateItem, isPending: submitPending } =
@@ -175,7 +164,7 @@ const PurchaseItemEdit = () => {
     );
   };
 
-  if ((!stateItem && itemsPending) || productsPending || !initialized) {
+  if ((!stateItem && itemsPending) || !initialized) {
     return <Loading />;
   }
 
@@ -222,11 +211,7 @@ const PurchaseItemEdit = () => {
                   {item.product?.name ?? `منتج #${item.product_id}`}
                 </p>
 
-                {selectedProduct && (
-                  <p className="text-xs text-muted-foreground">
-                    {selectedProduct.name}
-                  </p>
-                )}
+
               </div>
 
               <Badge

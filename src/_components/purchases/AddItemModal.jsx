@@ -17,13 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import ProductSearchCombobox from "@/customs/ProductSearchCombobox";
 import {
   Dialog,
   DialogContent,
@@ -36,8 +30,6 @@ import {
 const AddItemModal = ({
   open,
   onOpenChange,
-  products,
-  productsPending,
   addPending,
   selectedProductId,
   conditionValue,
@@ -50,6 +42,7 @@ const AddItemModal = ({
   onSubmit,
   deviceDetails,
   setDeviceDetails,
+  onProductSelect,
 }) => {
   console.log(
     "[AddItemModal] selectedProductId:",
@@ -75,26 +68,11 @@ const AddItemModal = ({
         <form onSubmit={onSubmit} className="space-y-5 py-2" id="add-item-form">
           <div className="space-y-2">
             <Label className="text-sm font-semibold">المنتج</Label>
-            <Select
-              onValueChange={(val) => setValue("product_id", val)}
+            <ProductSearchCombobox
               value={selectedProductId}
-              disabled={productsPending}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue
-                  placeholder={
-                    productsPending ? "جاري تحميل المنتجات..." : "اختر المنتج"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {products.map((product) => (
-                  <SelectItem key={product.id} value={String(product.id)}>
-                    {product.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onSelect={onProductSelect}
+              placeholder="اختر المنتج"
+            />
             {errors.product_id && (
               <p className="text-sm text-destructive font-medium">
                 {errors.product_id.message}

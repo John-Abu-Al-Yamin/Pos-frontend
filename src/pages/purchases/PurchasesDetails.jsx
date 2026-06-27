@@ -9,7 +9,6 @@ import {
   useAddPurchaseItem,
   useDeletePurchaseItem,
 } from "@/hooks/Actions/PurchaseItems/useCurdsPurchaseItems";
-import { useGetAllProducts } from "@/hooks/Actions/Product/useCurdsProduct";
 
 import { Button } from "@/components/ui/button";
 import Loading from "@/customs/Loading";
@@ -28,12 +27,6 @@ const PurchasesDetails = () => {
   const purchase = headerRes?.data?.data ?? headerRes?.data;
 
   const items = purchase?.purchase_items ?? [];
-
-  const { data: productsRes, isPending: productsPending } = useGetAllProducts(
-    1,
-    1000,
-  );
-  const products = productsRes?.data?.data ?? [];
 
   /* ── mutations ── */
   const { mutate: addItem, isPending: addPending } = useAddPurchaseItem();
@@ -63,11 +56,14 @@ const PurchasesDetails = () => {
 
   const selectedProductId = watch("product_id");
   const conditionValue = watch("condition");
-  const selectedProduct = products.find(
-    (p) => String(p.id) === String(selectedProductId),
-  );
+  const [selectedProduct, setSelectedProduct] = React.useState(null);
 
   const isSerialized = selectedProduct?.is_serialized;
+
+  const handleProductSelect = (product) => {
+    setValue("product_id", String(product.id));
+    setSelectedProduct(product);
+  };
 
   React.useEffect(() => {
     if (selectedProductId && !isSerialized) {
@@ -80,6 +76,7 @@ const PurchasesDetails = () => {
 
   const handleOpenModal = () => {
     reset({ product_id: "", quantity: "", unit_cost: "", condition: "" });
+    setSelectedProduct(null);
     setDeviceDetails({
       face_id_working: true,
       fingerprint_working: true,
@@ -95,9 +92,7 @@ const PurchasesDetails = () => {
       return;
     }
 
-    const product = products.find(
-      (p) => String(p.id) === String(formData.product_id),
-    );
+    const product = selectedProduct;
 
     const quantity = Number(formData.quantity);
     const condition = product?.is_serialized ? formData.condition : "new";
@@ -220,8 +215,6 @@ const PurchasesDetails = () => {
       <AddItemModal
         open={modalOpen}
         onOpenChange={setModalOpen}
-        products={products}
-        productsPending={productsPending}
         addPending={addPending}
         selectedProductId={selectedProductId}
         conditionValue={conditionValue}
@@ -234,6 +227,7 @@ const PurchasesDetails = () => {
         onSubmit={handleSubmit(onAddItem)}
         deviceDetails={deviceDetails}
         setDeviceDetails={setDeviceDetails}
+        onProductSelect={handleProductSelect}
       />
       
     </div>

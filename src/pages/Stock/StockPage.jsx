@@ -3,7 +3,6 @@ import Loading from "@/customs/Loading";
 import CustomPagination from "@/customs/CustomPagination";
 import { useGetAllStock } from "@/hooks/Actions/stock/useCurdsStock";
 import { useGetAllCategories } from "@/hooks/Actions/Categories/useCurdsCategories";
-import { useGetAllProducts } from "@/hooks/Actions/Product/useCurdsProduct";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X } from "lucide-react";
@@ -16,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ProductSearchCombobox from "@/customs/ProductSearchCombobox";
 import {
   Table,
   TableHeader,
@@ -107,12 +107,7 @@ const StockPage = () => {
   const { data: categoriesRes } = useGetAllCategories(1, 100);
   const categories = categoriesRes?.data?.data ?? [];
 
-  const { data: productsRes } = useGetAllProducts(1, 500);
-  const products = productsRes?.data?.data ?? [];
 
-  const filteredProducts = categoryId
-    ? products.filter((p) => String(p.category_id) === String(categoryId))
-    : products;
 
   const hasActiveFilters = debouncedSearch || categoryId || productId || status || condition;
 
@@ -160,19 +155,11 @@ const StockPage = () => {
             </SelectContent>
           </Select>
 
-          <Select value={productId} onValueChange={setProductId}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="كل المنتجات" />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value=" ">كل المنتجات</SelectItem>
-              {filteredProducts.map((p) => (
-                <SelectItem key={p.id} value={String(p.id)}>
-                  {p.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <ProductSearchCombobox
+            value={productId}
+            onSelect={(product) => setProductId(String(product.id))}
+            placeholder="كل المنتجات"
+          />
 
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger className="w-[140px]">

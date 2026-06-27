@@ -22,10 +22,18 @@ import {
   usePayRepair,
   useCancelRepair,
   useDeleteRepair,
+  useUpdateRepair,
 } from "@/hooks/Actions/repairs/useCurdsRepairs";
 import Loading from "@/customs/Loading";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -71,6 +79,8 @@ const RepairDetails = () => {
   const { mutate: payRepair, isPending: paying } = usePayRepair(id);
   const { mutate: cancelRepair, isPending: cancelling } = useCancelRepair(id);
   const { mutate: deleteRepair } = useDeleteRepair();
+  const { mutate: updateRepair, isPending: updatingStatus } =
+    useUpdateRepair(id);
 
   const repair = data?.data?.data;
 
@@ -86,6 +96,10 @@ const RepairDetails = () => {
   const canComplete = ["pending", "in_progress"].includes(repair.status);
   const canCancel = ["pending", "in_progress"].includes(repair.status);
   const canPay = repair.status === "completed" && repair.payment_status !== "paid";
+
+  const handleStatusChange = (newStatus) => {
+    updateRepair({ data: { status: newStatus } });
+  };
 
   const handleComplete = (markAsPaid) => {
     completeRepair(
@@ -168,13 +182,24 @@ const RepairDetails = () => {
         {/* Status + Actions */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Badge
-              variant="outline"
-              className={`text-sm px-3 py-1.5 ${STATUS_BADGE[repair.status] || ""}`}
+            <Select
+              value={repair.status}
+              onValueChange={handleStatusChange}
+              disabled={updatingStatus}
             >
-              {STATUS_OPTIONS.find((s) => s.value === repair.status)?.label ||
-                repair.status}
-            </Badge>
+              <SelectTrigger
+                className={`w-[160px] text-sm font-medium border-2 ${STATUS_BADGE[repair.status] || ""} [&_svg]:text-current`}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent align="end">
+                {STATUS_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {repair.status === "completed" && (
               <Badge
                 variant="outline"
