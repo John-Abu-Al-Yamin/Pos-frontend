@@ -18,7 +18,14 @@ import { productsSchema } from "@/validation/products/products";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Pencil, Trash2, Smartphone, Headphones, Search, Wrench } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Smartphone,
+  Headphones,
+  Search,
+  Wrench,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import AppModalEdite from "@/customs/AppModalEdite";
@@ -411,7 +418,7 @@ const ProductPage = () => {
           value={filters.category_id}
           onValueChange={(v) => setFilters((f) => ({ ...f, category_id: v }))}
         >
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-40">
             <SelectValue placeholder="كل التصنيفات" />
           </SelectTrigger>
           <SelectContent align="end">
@@ -426,9 +433,11 @@ const ProductPage = () => {
 
         <Select
           value={filters.product_category}
-          onValueChange={(v) => setFilters((f) => ({ ...f, product_category: v }))}
+          onValueChange={(v) =>
+            setFilters((f) => ({ ...f, product_category: v }))
+          }
         >
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-40">
             <SelectValue placeholder="كل التصنيفات" />
           </SelectTrigger>
           <SelectContent align="end">
@@ -447,51 +456,52 @@ const ProductPage = () => {
           </div>
         ) : (
           products?.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white rounded-xl border shadow-sm p-4 cursor-pointer hover:shadow-lg transition-all duration-300"
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium text-gray-700">
-                {product.name}
-              </h3>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => openEditModal(product)}
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button size="icon" onClick={() => confirmDelete(product.id)}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-2">
-              <div className="flex gap-2">
-                {product.product_category === "part" ? (
-                  <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-amber-100 text-amber-800">
-                    قطعة غيار
-                  </span>
-                ) : product.product_category === "accessory" ? (
-                  <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-purple-100 text-purple-800">
-                    اكسسوار
-                  </span>
-                ) : (
-                  <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
-                    موبايل
-                  </span>
-                )}
+            <div
+              key={product.id}
+              className="bg-white rounded-xl border shadow-sm p-4 cursor-pointer hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-700">
+                  {product.name}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => openEditModal(product)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button size="icon" onClick={() => confirmDelete(product.id)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
 
-              <div className="text-xs text-muted-foreground/80 font-medium">
-                {formatDate(product.created_at)}
+              <div className="mt-4 space-y-2">
+                <div className="flex gap-2">
+                  {product.product_category === "part" ? (
+                    <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-amber-100 text-amber-800">
+                      قطعة غيار
+                    </span>
+                  ) : product.product_category === "accessory" ? (
+                    <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-purple-100 text-purple-800">
+                      اكسسوار
+                    </span>
+                  ) : (
+                    <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800">
+                      موبايل
+                    </span>
+                  )}
+                </div>
+
+                <div className="text-xs text-muted-foreground/80 font-medium">
+                  {formatDate(product.created_at)}
+                </div>
               </div>
             </div>
-          </div>
-        )))}
+          ))
+        )}
       </div>
 
       <CustomPagination

@@ -51,6 +51,15 @@ export const useCompleteRepair = (id) => {
   return { mutate, data, error, isPending, isSuccess, isError };
 };
 
+export const usePayRepair = (id) => {
+  const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
+    `${endPoints.repairs}/${id}/pay`,
+    [queryKeys.repairs],
+    [queryKeys.repairs],
+  );
+  return { mutate, data, error, isPending, isSuccess, isError };
+};
+
 export const useCancelRepair = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
     `${endPoints.repairs}/${id}/cancel`,

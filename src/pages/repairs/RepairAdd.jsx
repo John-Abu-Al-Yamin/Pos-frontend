@@ -210,7 +210,7 @@ const RepairAdd = () => {
               <Textarea
                 id="issue_description"
                 placeholder="ما هي المشكلة في الجهاز؟"
-                className="text-right pr-9 min-h-[80px]"
+                className="text-right pr-9 min-h-20"
                 {...form.register("issue_description")}
               />
             </div>
@@ -228,7 +228,7 @@ const RepairAdd = () => {
               <Textarea
                 id="work_description"
                 placeholder="ما هي الإصلاحات التي ستتم؟"
-                className="text-right pr-9 min-h-[80px]"
+                className="text-right pr-9 min-h-20"
                 {...form.register("work_description")}
               />
             </div>
@@ -372,7 +372,7 @@ const RepairAdd = () => {
 
           {selectedParts.length > 0 && (
             <div className="text-sm text-muted-foreground">
-              إجمالي قطع الغيار: {totalPartsCost.toLocaleString("ar-EG")}
+              إجمال يفلوس قطع الغيار: {totalPartsCost.toLocaleString("ar-EG")}
             </div>
           )}
 

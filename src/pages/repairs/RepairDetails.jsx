@@ -12,11 +12,14 @@ import {
   XCircle,
   Edit,
   BadgeIcon as WrenchIcon,
+  CreditCard,
+  Banknote,
 } from "lucide-react";
 
 import {
   useGetRepairById,
   useCompleteRepair,
+  usePayRepair,
   useCancelRepair,
   useDeleteRepair,
 } from "@/hooks/Actions/repairs/useCurdsRepairs";
@@ -45,6 +48,12 @@ const STATUS_OPTIONS = [
   { value: "cancelled", label: "ملغي" },
 ];
 
+const PAYMENT_STATUS_OPTIONS = {
+  pending: { label: "غير مدفوع", className: "bg-red-50 text-red-700 border-red-200" },
+  partial: { label: "مدفوع جزئياً", className: "bg-amber-50 text-amber-700 border-amber-200" },
+  paid: { label: "مدفوع", className: "bg-green-50 text-green-700 border-green-200" },
+};
+
 const STATUS_BADGE = {
   pending: "bg-amber-50 text-amber-700 border-amber-200",
   in_progress: "bg-blue-50 text-blue-700 border-blue-200",
@@ -59,6 +68,7 @@ const RepairDetails = () => {
   const { data, isPending } = useGetRepairById(id);
   const { mutate: completeRepair, isPending: completing } =
     useCompleteRepair(id);
+  const { mutate: payRepair, isPending: paying } = usePayRepair(id);
   const { mutate: cancelRepair, isPending: cancelling } = useCancelRepair(id);
   const { mutate: deleteRepair } = useDeleteRepair();
 
@@ -75,13 +85,22 @@ const RepairDetails = () => {
   const canEdit = !["completed", "cancelled"].includes(repair.status);
   const canComplete = ["pending", "in_progress"].includes(repair.status);
   const canCancel = ["pending", "in_progress"].includes(repair.status);
+  const canPay = repair.status === "completed" && repair.payment_status !== "paid";
 
-  const handleComplete = () => {
+  const handleComplete = (markAsPaid) => {
     completeRepair(
+      { mark_as_paid: markAsPaid },
+      {
+        onError: () => toast.error("فشل في إكمال أمر الإصلاح"),
+      },
+    );
+  };
+
+  const handlePay = () => {
+    payRepair(
       {},
       {
-        // onSuccess: () => toast.success("تم إكمال أمر الإصلاح"),
-        onError: () => toast.error("فشل في إكمال أمر الإصلاح"),
+        onError: () => toast.error("فشل في تسجيل الدفع"),
       },
     );
   };
@@ -148,24 +167,86 @@ const RepairDetails = () => {
       <div className="space-y-6">
         {/* Status + Actions */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <Badge
-            variant="outline"
-            className={`text-sm px-3 py-1.5 ${STATUS_BADGE[repair.status] || ""}`}
-          >
-            {STATUS_OPTIONS.find((s) => s.value === repair.status)?.label ||
-              repair.status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant="outline"
+              className={`text-sm px-3 py-1.5 ${STATUS_BADGE[repair.status] || ""}`}
+            >
+              {STATUS_OPTIONS.find((s) => s.value === repair.status)?.label ||
+                repair.status}
+            </Badge>
+            {repair.status === "completed" && (
+              <Badge
+                variant="outline"
+                className={`text-sm px-3 py-1.5 ${PAYMENT_STATUS_OPTIONS[repair.payment_status]?.className || ""}`}
+              >
+                {PAYMENT_STATUS_OPTIONS[repair.payment_status]?.label || repair.payment_status}
+              </Badge>
+            )}
+          </div>
 
           <div className="flex gap-2">
             {canComplete && (
-              <Button
-                onClick={handleComplete}
-                disabled={completing}
-                className="gap-2"
-              >
-                <CheckCircle className="h-4 w-4" />
-                {completing ? "جاري..." : "إكمال"}
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button disabled={completing} className="gap-2">
+                    <CheckCircle className="h-4 w-4" />
+                    {completing ? "جاري..." : "إكمال"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>تأكيد إكمال أمر الإصلاح</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-3">
+                      <p>هل تريد تأكيد إكمال أمر الإصلاح <span className="font-semibold">{repair.reference_code}</span>؟</p>
+                      {totalRemaining > 0 && (
+                        <div className="rounded-lg border border-border bg-muted/50 p-3 space-y-1">
+                          <div className="flex justify-between text-sm">
+                            <span>المبلغ المتبقي:</span>
+                            <span className="font-bold text-destructive">{totalRemaining.toLocaleString("ar-EG")}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">هل تم استلام المبلغ المتبقي من العميل؟</p>
+                        </div>
+                      )}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="gap-2">
+                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                    <Button variant="outline" onClick={() => handleComplete(false)}>
+                      إكمال فقط
+                    </Button>
+                    <Button onClick={() => handleComplete(true)} className="gap-2">
+                      <Banknote className="h-4 w-4" />
+                      إكمال وتسجيل الدفع
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+            {canPay && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button disabled={paying} className="gap-2">
+                    <Banknote className="h-4 w-4" />
+                    {paying ? "جاري..." : "تسجيل الدفع"}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>تأكيد الدفع</AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-3">
+                      <p>هل تم استلام المبلغ المتبقي <span className="font-bold text-destructive">{totalRemaining.toLocaleString("ar-EG")}</span> من العميل؟</p>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                    <Button onClick={handlePay} className="gap-2">
+                      <Banknote className="h-4 w-4" />
+                      تأكيد الدفع
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
             {canCancel && (
               <Button
@@ -348,6 +429,14 @@ const RepairDetails = () => {
                   {Number(repair.deposit).toLocaleString("ar-EG")}
                 </span>
               </div>
+              {repair.payment_status && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">حالة الدفع</span>
+                  <span className={`font-semibold ${repair.payment_status === "paid" ? "text-green-600" : repair.payment_status === "partial" ? "text-amber-600" : "text-destructive"}`}>
+                    {PAYMENT_STATUS_OPTIONS[repair.payment_status]?.label || repair.payment_status}
+                  </span>
+                </div>
+              )}
               <div className="border-t pt-3 flex justify-between text-sm">
                 <span className="font-semibold">المتبقي</span>
                 <span

@@ -11,6 +11,7 @@ import {
   RefreshCw,
   ArrowUp,
   ArrowDown,
+  Wrench,
 } from "lucide-react";
 import { useGetDashboardData, useGetProductsPerformance, useGetLowStock } from "@/hooks/Actions/dashboard/useCurdsDashboard";
 import { formatCurrency } from "@/lib/utils";
@@ -62,6 +63,24 @@ const cardConfig = [
     label: "إجمالي الربح",
     icon: BarChart3,
     color: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400",
+  },
+  {
+    key: "repairRevenue",
+    label: "إيرادات الصيانة",
+    icon: Wrench,
+    color: "bg-cyan-50 text-cyan-600 dark:bg-cyan-950 dark:text-cyan-400",
+  },
+  {
+    key: "repairExpenses",
+    label: "تكاليف الصيانة",
+    icon: Wrench,
+    color: "bg-rose-50 text-rose-600 dark:bg-rose-950 dark:text-rose-400",
+  },
+  {
+    key: "repairProfit",
+    label: "ربح الصيانة",
+    icon: TrendingUp,
+    color: "bg-violet-50 text-violet-600 dark:bg-violet-950 dark:text-violet-400",
   },
 ];
 
@@ -127,7 +146,7 @@ export default function Dashboard() {
       <div className="mt-6">
         {isPending ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 8 }).map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>

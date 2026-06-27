@@ -9,6 +9,7 @@ import {
   XCircle,
   Clock,
   Loader2,
+  CreditCard,
 } from "lucide-react";
 
 import { useGetAllRepairs } from "@/hooks/Actions/repairs/useCurdsRepairs";
@@ -57,6 +58,12 @@ const STATUS_BADGE = {
     variant: "outline",
     className: "bg-red-50 text-red-700 border-red-200",
   },
+};
+
+const PAYMENT_STATUS_BADGE = {
+  pending: { variant: "outline", className: "bg-red-50 text-red-700 border-red-200" },
+  partial: { variant: "outline", className: "bg-amber-50 text-amber-700 border-amber-200" },
+  paid: { variant: "outline", className: "bg-green-50 text-green-700 border-green-200" },
 };
 
 const STATUS_ICON = {
@@ -194,19 +201,41 @@ const RepairsPage = () => {
                     {Number(repair.estimated_cost).toLocaleString("ar-EG")}
                   </TableCell>
                   <TableCell>
-                    {Number(repair.deposit) > 0
-                      ? Number(repair.deposit).toLocaleString("ar-EG")
-                      : "—"}
+                    <div className="flex flex-col">
+                      {Number(repair.deposit) > 0 ? (
+                        <>
+                          <span className="text-xs text-muted-foreground">مدفوع: {Number(repair.deposit).toLocaleString("ar-EG")}</span>
+                          {repair.status !== "cancelled" && (
+                            <span className={`text-xs font-semibold ${(Number(repair.estimated_cost) - Number(repair.deposit)) > 0 ? "text-destructive" : "text-green-600"}`}>
+                              باقي: {(Number(repair.estimated_cost) - Number(repair.deposit)).toLocaleString("ar-EG")}
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={`gap-1 ${badge.className}`}
-                    >
-                      <StatusIcon className="h-3 w-3" />
-                      {STATUS_OPTIONS.find((s) => s.value === repair.status)
-                        ?.label || repair.status}
-                    </Badge>
+                    <div className="flex flex-col gap-1">
+                      <Badge
+                        variant="outline"
+                        className={`gap-1 ${badge.className}`}
+                      >
+                        <StatusIcon className="h-3 w-3" />
+                        {STATUS_OPTIONS.find((s) => s.value === repair.status)
+                          ?.label || repair.status}
+                      </Badge>
+                      {repair.status === "completed" && repair.payment_status && repair.payment_status !== "paid" && (
+                        <Badge
+                          variant="outline"
+                          className={`gap-1 text-xs ${PAYMENT_STATUS_BADGE[repair.payment_status]?.className || ""}`}
+                        >
+                          <CreditCard className="h-3 w-3" />
+                          {repair.payment_status === "pending" ? "غير مدفوع" : "مدفوع جزئياً"}
+                        </Badge>
+                      )}
+                    </div>
                   </TableCell>
                   <TableCell className="text-xs">
                     {repair.expected_delivery_date || "—"}

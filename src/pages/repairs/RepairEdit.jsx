@@ -282,7 +282,7 @@ const RepairEdit = () => {
             <Label>وصف المشكلة *</Label>
             <Textarea
               placeholder="ما هي المشكلة؟"
-              className="text-right min-h-[80px]"
+              className="text-right min-h-20"
               {...form.register("issue_description")}
             />
             {form.formState.errors.issue_description && (
@@ -296,7 +296,7 @@ const RepairEdit = () => {
             <Label>العمل المطلوب</Label>
             <Textarea
               placeholder="ما هي الإصلاحات؟"
-              className="text-right min-h-[80px]"
+              className="text-right min-h-20"
               {...form.register("work_description")}
             />
           </div>
@@ -437,7 +437,7 @@ const RepairEdit = () => {
 
           {selectedParts.length > 0 && (
             <div className="text-sm text-muted-foreground">
-              إجمالي قطع الغيار: {totalPartsCost.toLocaleString("ar-EG")}
+              إجمالي فلوس قطع الغيار: {totalPartsCost.toLocaleString("ar-EG")}
             </div>
           )}
 
