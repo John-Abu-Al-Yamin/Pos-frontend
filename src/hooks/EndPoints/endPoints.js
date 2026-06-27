@@ -11,6 +11,7 @@ const endPoints = {
   returns: "/returns",
   dashboard: "/dashboard/financial",
   productsPerformance: "/dashboard/products-performance",
+  dashboardLowStock: "/dashboard/low-stock",
 };
 
 

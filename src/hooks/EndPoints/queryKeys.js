@@ -51,6 +51,7 @@ const queryKeys = {
   // dashboard
   dashboard: "/dashboard",
   productsPerformance: "/dashboard/products-performance",
+  dashboardLowStock: "/dashboard/low-stock",
 
 };
 export default queryKeys;

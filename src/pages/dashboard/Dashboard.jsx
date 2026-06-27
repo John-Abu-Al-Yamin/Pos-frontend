@@ -12,7 +12,7 @@ import {
   ArrowUp,
   ArrowDown,
 } from "lucide-react";
-import { useGetDashboardData, useGetProductsPerformance } from "@/hooks/Actions/dashboard/useCurdsDashboard";
+import { useGetDashboardData, useGetProductsPerformance, useGetLowStock } from "@/hooks/Actions/dashboard/useCurdsDashboard";
 import { formatCurrency } from "@/lib/utils";
 import DateFilter from "@/_components/dashboard/DateFilter";
 import Header from "@/_components/dashboard/Header";
@@ -87,10 +87,12 @@ export default function Dashboard() {
     useGetDashboardData(queryParams);
   const { data: perfData, isPending: perfLoading } =
     useGetProductsPerformance(queryParams);
+  const { data: lowStockData, isPending: lowStockLoading } = useGetLowStock();
 
   const metrics = data?.data?.data;
   const bestSellers = perfData?.data?.data?.bestSelling ?? [];
   const worstSellers = perfData?.data?.data?.worstSelling ?? [];
+  const lowStockItems = lowStockData?.data?.data ?? [];
 
   function cashFlowIcon(value) {
     if (value >= 0) return <TrendingUp className="h-3 w-3 text-emerald-500" />;
@@ -274,6 +276,63 @@ export default function Dashboard() {
                     </td>
                     <td className="py-2 text-gray-500">{p.category_name}</td>
                     <td className="py-2 text-end font-medium">{p.total_sold}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <div className="bg-white dark:bg-gray-900 rounded-xl border shadow-sm p-5">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-amber-500" />
+            مخزون منخفض
+          </h3>
+          {lowStockLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              ))}
+            </div>
+          ) : lowStockItems.length === 0 ? (
+            <p className="text-sm text-gray-400">جميع المنتجات متوفرة بكميات كافية.</p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-gray-400 border-b dark:border-gray-700">
+                  <th className="text-start pb-2 font-medium">المنتج</th>
+                  <th className="text-start pb-2 font-medium">التصنيف</th>
+                  <th className="text-center pb-2 font-medium">المتوفر</th>
+                  <th className="text-center pb-2 font-medium">الحد الأدنى</th>
+                  <th className="text-center pb-2 font-medium">الحالة</th>
+                </tr>
+              </thead>
+              <tbody>
+                {lowStockItems.map((p) => (
+                  <tr key={p.id} className="border-b dark:border-gray-800 last:border-0">
+                    <td className="py-2 text-gray-900 dark:text-gray-100">
+                      <span className="font-medium">{p.name}</span>
+                      {p.is_serialized ? (
+                        <span className="text-[10px] text-blue-500 mr-1">(جهاز)</span>
+                      ) : (
+                        <span className="text-[10px] text-orange-500 mr-1">(اكسسوار)</span>
+                      )}
+                    </td>
+                    <td className="py-2 text-gray-500">{p.category_name}</td>
+                    <td className="py-2 text-center font-mono font-bold text-red-600">
+                      {p.available_count}
+                    </td>
+                    <td className="py-2 text-center text-gray-500">
+                      {p.min_stock}
+                    </td>
+                    <td className="py-2 text-center">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                        <AlertCircle className="h-3 w-3" />
+                        منخفض
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>

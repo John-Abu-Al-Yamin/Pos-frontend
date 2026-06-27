@@ -31,3 +31,18 @@ export const useGetProductsPerformance = (params = {}) => {
     refetch,
   };
 };
+
+export const useGetLowStock = () => {
+  const { data, isPending, refetch, ...rest } = useGetData({
+    url: endPoints.dashboardLowStock,
+    params: { page: 1, per_page: 1 },
+    queryKeys: [queryKeys.dashboardLowStock],
+  });
+
+  return {
+    data,
+    isPending,
+    isError: rest.error,
+    refetch,
+  };
+};
