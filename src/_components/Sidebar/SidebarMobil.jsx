@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Tags, Smartphone, Users, ShoppingBag, ShoppingCart, MonitorSmartphone, Undo2, X, ChevronUp, LogOut, Warehouse, Receipt } from "lucide-react";
+import { LayoutDashboard, Tags, Smartphone, Users, ShoppingBag, ShoppingCart, MonitorSmartphone, Undo2, X, ChevronUp, LogOut, Warehouse, Receipt, ClipboardList } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../LanguageSwitcher";
 import { removeAuthToken } from "@/services/cookies";
@@ -22,6 +22,7 @@ const SidebarMobile = () => {
     { key: "returns", href: "/returns", icon: Undo2 },
     { key: "purchases", href: "/purchases", icon: ShoppingCart },
     { key: "expenses", href: "/expenses", icon: Receipt },
+    { key: "inventoryAdjustments", href: "/inventory-adjustments", icon: ClipboardList },
     { key: "pos", href: "/pos", icon: MonitorSmartphone },
   ];
 

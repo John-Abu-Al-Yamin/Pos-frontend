@@ -65,5 +65,11 @@ const queryKeys = {
   updateExpenses: "/updateExpenses",
   expenseSummary: "/expenses/summary",
 
+  // inventory adjustments
+  inventoryAdjustments: "/inventory-adjustments",
+  addInventoryAdjustments: "/addInventoryAdjustments",
+  deleteInventoryAdjustments: "/deleteInventoryAdjustments",
+  inventoryAdjustmentsSummary: "/inventory-adjustments/summary",
+
 };
 export default queryKeys;

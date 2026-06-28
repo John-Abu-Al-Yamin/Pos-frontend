@@ -15,6 +15,8 @@ const endPoints = {
   repairs: "/repairs",
   expenses: "/expenses",
   expenseSummary: "/expenses/summary",
+  inventoryAdjustments: "/inventory-adjustments",
+  inventoryAdjustmentsSummary: "/inventory-adjustments/summary",
 };
 
 

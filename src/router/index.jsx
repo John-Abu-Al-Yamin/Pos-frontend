@@ -28,6 +28,7 @@ import ReturnDetails from "@/pages/returns/ReturnDetails";
 import PosPage from "@/pages/pos/PosPage";
 import RepairsPage from "@/pages/repairs/RepairsPage";
 import ExpensesPage from "@/pages/expenses/ExpensesPage";
+import InventoryAdjustmentsPage from "@/pages/inventoryAdjustments/InventoryAdjustmentsPage";
 import RepairAdd from "@/pages/repairs/RepairAdd";
 import RepairDetails from "@/pages/repairs/RepairDetails";
 import RepairEdit from "@/pages/repairs/RepairEdit";
@@ -125,6 +126,12 @@ const router = createBrowserRouter([
       {
         path: "/expenses",
         element: <ExpensesPage />,
+      },
+
+      // inventory adjustments Routes
+      {
+        path: "/inventory-adjustments",
+        element: <InventoryAdjustmentsPage />,
       },
 
       // repairs Routes

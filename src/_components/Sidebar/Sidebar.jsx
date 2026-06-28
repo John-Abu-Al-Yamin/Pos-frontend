@@ -14,6 +14,7 @@ import {
   Undo2,
   Wrench,
   Receipt,
+  ClipboardList,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
@@ -35,6 +36,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "المرتجعات", href: "/returns", icon: Undo2 },
     { key: "المشتريات", href: "/purchases", icon: ShoppingCart },
     { key: "المصروفات", href: "/expenses", icon: Receipt },
+    { key: "تسويات المخزون", href: "/inventory-adjustments", icon: ClipboardList },
     { key: "صيانة", href: "/repairs", icon: Wrench },
     { key: "نقطة البيع", href: "/pos", icon: MonitorSmartphone },
   ];
