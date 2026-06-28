@@ -381,7 +381,7 @@ All forms use **react-hook-form** with **Zod** schemas via `@hookform/resolvers/
 | Schema | File | Fields | Key Rules |
 |---|---|---|---|
 | `categorySchema` | `validation/category/category.js` | `name` | min 2 chars, letters only (Arabic/English), no digits |
-| `productsSchema` | `validation/products/products.js` | `name`, `category_id`, `is_serialized` | name 1-100 chars, category required, `is_serialized` boolean |
+| `productsSchema` | `validation/products/products.js` | `name`, `category_id`, `product_category` | name 1-100 chars, category required, `product_category` enum `mobile`/`part`/`accessory` (backend auto-derives `is_serialized`) |
 | `suppliersSchema` | `validation/suppliers/suppliers.js` | `name`, `phone` | name min 2, no digits; phone: Egyptian mobile regex `^01[0-2,5]{1}[0-9]{8}$` |
 | `purchasesSchema` | `validation/Purchases/Purchases.js` | `supplier_id`, `date`, `reference`, `type` | `supplier_id` required when `type="purchase"`; date required; reference required; type enum |
 | `customersSchema` | `validation/customers/customers.js` | `name`, `phone`, `email` | name min 2, no digits; phone optional Egyptian mobile; email optional (not stored on backend) |
@@ -632,7 +632,7 @@ Same flow, but:
 | `categorySchema` | `name` | min 2, letters only (Arabic/English), no digits |
 | `productsSchema` | `name` | 1-100 chars |
 | `productsSchema` | `category_id` | required string |
-| `productsSchema` | `is_serialized` | required boolean |
+| `productsSchema` | `product_category` | required enum `mobile`/`part`/`accessory`; sidebar auto-derives `is_serialized` from this |
 | `suppliersSchema` | `name` | min 2, no digits (`/^[^\d]+$/`) |
 | `suppliersSchema` | `phone` | Egyptian mobile regex (`^01[0-2,5]{1}[0-9]{8}$`) |
 | `purchasesSchema` | `supplier_id` | required when `type="purchase"` (via `superRefine`) |

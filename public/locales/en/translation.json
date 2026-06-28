@@ -18,6 +18,7 @@
     "returns": "Returns",
     "purchases": "Purchases",
     "pos": "POS",
+    "expenses": "Expenses",
     "menu": "Menu",
     "logout": "Logout"
   },

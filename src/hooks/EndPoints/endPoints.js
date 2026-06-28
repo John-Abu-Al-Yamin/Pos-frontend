@@ -13,6 +13,8 @@ const endPoints = {
   productsPerformance: "/dashboard/products-performance",
   dashboardLowStock: "/dashboard/low-stock",
   repairs: "/repairs",
+  expenses: "/expenses",
+  expenseSummary: "/expenses/summary",
 };
 
 

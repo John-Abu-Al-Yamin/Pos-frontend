@@ -27,6 +27,7 @@ import ReturnsPage from "@/pages/returns/ReturnsPage";
 import ReturnDetails from "@/pages/returns/ReturnDetails";
 import PosPage from "@/pages/pos/PosPage";
 import RepairsPage from "@/pages/repairs/RepairsPage";
+import ExpensesPage from "@/pages/expenses/ExpensesPage";
 import RepairAdd from "@/pages/repairs/RepairAdd";
 import RepairDetails from "@/pages/repairs/RepairDetails";
 import RepairEdit from "@/pages/repairs/RepairEdit";
@@ -118,6 +119,12 @@ const router = createBrowserRouter([
       {
         path: "/pos",
         element: <PosPage />,
+      },
+
+      // expenses Routes
+      {
+        path: "/expenses",
+        element: <ExpensesPage />,
       },
 
       // repairs Routes

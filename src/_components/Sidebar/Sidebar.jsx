@@ -13,6 +13,7 @@ import {
   MonitorSmartphone,
   Undo2,
   Wrench,
+  Receipt,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
@@ -33,6 +34,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "المبيعات", href: "/sales", icon: ShoppingBag },
     { key: "المرتجعات", href: "/returns", icon: Undo2 },
     { key: "المشتريات", href: "/purchases", icon: ShoppingCart },
+    { key: "المصروفات", href: "/expenses", icon: Receipt },
     { key: "صيانة", href: "/repairs", icon: Wrench },
     { key: "نقطة البيع", href: "/pos", icon: MonitorSmartphone },
   ];

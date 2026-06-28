@@ -12,6 +12,8 @@ import {
   ArrowUp,
   ArrowDown,
   Wrench,
+  Receipt,
+  PiggyBank,
 } from "lucide-react";
 import { useGetDashboardData, useGetProductsPerformance, useGetLowStock } from "@/hooks/Actions/dashboard/useCurdsDashboard";
 import { formatCurrency } from "@/lib/utils";
@@ -63,6 +65,18 @@ const cardConfig = [
     label: "إجمالي الربح",
     icon: BarChart3,
     color: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400",
+  },
+  {
+    key: "totalExpenses",
+    label: "إجمالي المصروفات",
+    icon: Receipt,
+    color: "bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400",
+  },
+  {
+    key: "netProfit",
+    label: "صافي الربح",
+    icon: PiggyBank,
+    color: "bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400",
   },
   {
     key: "repairRevenue",

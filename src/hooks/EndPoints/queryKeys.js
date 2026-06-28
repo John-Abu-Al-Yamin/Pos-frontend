@@ -58,5 +58,12 @@ const queryKeys = {
   addRepairs: "/addRepairs",
   updateRepairs: "/updateRepairs",
 
+  // expenses
+  expenses: "/expenses",
+  addExpenses: "/addExpenses",
+  deleteExpenses: "/deleteExpenses",
+  updateExpenses: "/updateExpenses",
+  expenseSummary: "/expenses/summary",
+
 };
 export default queryKeys;
