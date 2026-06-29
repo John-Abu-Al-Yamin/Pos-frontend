@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Tags, Smartphone, Users, ShoppingBag, ShoppingCart, MonitorSmartphone, Undo2, X, ChevronUp, LogOut, Warehouse, Receipt, ClipboardList } from "lucide-react";
+import { Tags, Smartphone, Users, X, ChevronUp, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "../LanguageSwitcher";
 import { removeAuthToken } from "@/services/cookies";
 
 const SidebarMobile = () => {
@@ -13,17 +12,9 @@ const SidebarMobile = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const navItems = [
-    { key: "dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { key: "stock", href: "/", icon: Warehouse },
     { key: "categories", href: "/categories", icon: Tags },
     { key: "products", href: "/products", icon: Smartphone },
     { key: "suppliers", href: "/suppliers", icon: Users },
-    { key: "sales", href: "/sales", icon: ShoppingBag },
-    { key: "returns", href: "/returns", icon: Undo2 },
-    { key: "purchases", href: "/purchases", icon: ShoppingCart },
-    { key: "expenses", href: "/expenses", icon: Receipt },
-    { key: "inventoryAdjustments", href: "/inventory-adjustments", icon: ClipboardList },
-    { key: "pos", href: "/pos", icon: MonitorSmartphone },
   ];
 
   const handleExpand = () => setIsExpanded((prev) => !prev);
@@ -59,7 +50,7 @@ const SidebarMobile = () => {
         bg-white/20 dark:bg-black/20 backdrop-blur-xl shadow-2xl border border-white/40 dark:border-white/15
         rounded-2xl z-50 md:hidden max-w-[95%] mx-auto h-[68px]`}
       >
-        {navItems.slice(0, 4).map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
           return (
@@ -139,11 +130,6 @@ const SidebarMobile = () => {
 
           <div className="max-h-[70vh] overflow-y-auto pb-4 px-4 space-y-2">
             {navItems.map(renderNavLink)}
-
-            {/* Language Switcher */}
-            {/* <div className="mt-4">
-              <LanguageSwitcher isSidebarOpen={true} />
-            </div> */}
 
             <button
               onClick={() => {

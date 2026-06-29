@@ -1,44 +1,25 @@
 import {
-  LayoutDashboard,
-  Warehouse,
   Tags,
   Smartphone,
   Truck,
   Users,
-  ShoppingBag,
-  ShoppingCart,
-  Menu ,
-  Settings ,
-  LogOut ,
-  MonitorSmartphone,
-  Undo2,
-  Wrench,
-  Receipt,
-  ClipboardList,
+  Menu,
+  Settings,
+  LogOut,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import LanguageSwitcher from "../LanguageSwitcher";
 import { removeAuthToken } from "@/services/cookies";
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
 
   const navItems = [
-    { key: "لوحة التحكم", href: "/", icon: LayoutDashboard },
-    { key: "المخزن", href: "/dashboard", icon: Warehouse },
     { key: "التصنيفات", href: "/categories", icon: Tags },
     { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
     { key: "الموردين", href: "/suppliers", icon: Truck },
     { key: "العملاء", href: "/customers", icon: Users },
-    { key: "المبيعات", href: "/sales", icon: ShoppingBag },
-    { key: "المرتجعات", href: "/returns", icon: Undo2 },
-    { key: "المشتريات", href: "/purchases", icon: ShoppingCart },
-    { key: "المصروفات", href: "/expenses", icon: Receipt },
-    { key: "تسويات المخزون", href: "/inventory-adjustments", icon: ClipboardList },
-    { key: "صيانة", href: "/repairs", icon: Wrench },
-    { key: "نقطة البيع", href: "/pos", icon: MonitorSmartphone },
   ];
   return (
     <div
@@ -112,8 +93,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
             الاعدادات
           </span>
         </NavLink>
-
-        {/* <LanguageSwitcher isSidebarOpen={isOpen} /> */}
 
         <button
           onClick={() => {
