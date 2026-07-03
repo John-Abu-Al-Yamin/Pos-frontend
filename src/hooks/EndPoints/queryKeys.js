@@ -24,5 +24,11 @@ const queryKeys = {
   addcustomers: "/addcustomers",
   deletecustomers: "/deletecustomers",
   updatecustomers: "/updatecustomers",
+
+  // brands
+  brands: "/brands",
+  addbrands: "/addbrands",
+  deletebrands: "/deletebrands",
+  updatebrands: "/updatebrands",
 };
 export default queryKeys;

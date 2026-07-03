@@ -2,16 +2,20 @@ import endPoints from "@/hooks/EndPoints/endPoints";
 import queryKeys from "@/hooks/EndPoints/queryKeys";
 import useDeleteData from "@/hooks/curdsHook/useDeleteData";
 import useGetData from "@/hooks/curdsHook/useGetData";
-import usePutData from "@/hooks/curdsHook/usePutData";
 import usePostData from "@/hooks/curdsHook/usePostData";
 
-/* Main Units*/
+export const useGetAllProducts = (page = 1, per_page = 20, filters = {}) => {
+  const { search, category_id, brand_id, type } = filters;
+  const params = { page, per_page };
+  if (search) params.search = search;
+  if (category_id) params.category_id = category_id;
+  if (brand_id) params.brand_id = brand_id;
+  if (type) params.type = type;
 
-export const useGetAllProducts = (params = {}) => {
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.products,
     params,
-    queryKeys: [queryKeys.products, params],
+    queryKeys: [queryKeys.products, page, per_page, params],
   });
 
   return {
@@ -19,24 +23,8 @@ export const useGetAllProducts = (params = {}) => {
     isPending,
     isError: rest.error,
     refetch,
-  };
-};
-
-export const useGetproductById = (id) => {
-  const { data, isPending, refetch, ...rest } = useGetData({
-    url: `${endPoints.products}/${id}`,
-    params: {
-      id,
-    },
-
-    queryKeys: [queryKeys.products, id],
-  });
-
-  return {
-    data,
-    isPending,
-    isError: rest.error,
-    refetch,
+    page,
+    per_page,
   };
 };
 
@@ -50,19 +38,7 @@ export const useAddProducts = () => {
   return { mutate, data, error, isPending, isSuccess, isError };
 };
 
-
-export const useUpdateProducts = (id) => {
-  const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
-    `${endPoints.products}/${id}`,
-    [queryKeys.products, id],
-    [queryKeys.products, ],
-  );
-
-  return { mutate, data, error, isPending, isSuccess, isError };
-};
-
-
-export const useDeleteProducts = (id) => {
+export const useDeleteProducts = () => {
   const { mutate, data, error, isPending, isSuccess, isError } = useDeleteData(
     endPoints.products,
     [queryKeys.deleteproducts],

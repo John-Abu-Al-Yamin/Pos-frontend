@@ -1,8 +1,9 @@
 import {
   Tags,
-  Smartphone,
   Truck,
   Users,
+  Bookmark,
+  Package,
   Menu,
   Settings,
   LogOut,
@@ -17,9 +18,10 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   const navItems = [
     { key: "التصنيفات", href: "/categories", icon: Tags },
-    { key: "موديلات الأجهزة", href: "/products", icon: Smartphone },
     { key: "الموردين", href: "/suppliers", icon: Truck },
     { key: "العملاء", href: "/customers", icon: Users },
+    { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
+    { key: "المنتجات", href: "/products", icon: Package },
   ];
   return (
     <div

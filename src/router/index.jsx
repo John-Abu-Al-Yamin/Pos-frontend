@@ -8,9 +8,10 @@ import LoginForm from "@/pages/auth/LoginForm";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import CategoryPage from "@/pages/categories/CategoryPage";
-import ProductPage from "@/pages/Product/ProductPage";
 import SuppliersPage from "@/pages/suppliers/SuppliersPage";
 import CustomersPage from "@/pages/customers/CustomersPage";
+import BrandsPage from "@/pages/brands/BrandsPage";
+import ProductPage from "@/pages/Product/ProductPage";
 
 const router = createBrowserRouter([
   {
@@ -37,12 +38,6 @@ const router = createBrowserRouter([
         element: <CategoryPage />,
       },
 
-      // products Routes
-      {
-        path: "/products",
-        element: <ProductPage />,
-      },
-
       // suppliers Routes
       {
         path: "/suppliers",
@@ -53,6 +48,18 @@ const router = createBrowserRouter([
       {
         path: "/customers",
         element: <CustomersPage />,
+      },
+
+      // brands Routes
+      {
+        path: "/brands",
+        element: <BrandsPage />,
+      },
+
+      // products Routes
+      {
+        path: "/products",
+        element: <ProductPage />,
       },
 
       {

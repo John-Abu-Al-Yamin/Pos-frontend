@@ -4,6 +4,7 @@ const endPoints = {
   products: "/products",
   suppliers: "/suppliers",
   customers: "/customers",
+  brands: "/brands",
 };
 
 export default endPoints;

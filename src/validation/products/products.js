@@ -3,15 +3,17 @@ import { z } from "zod";
 export const productsSchema = z.object({
   name: z
     .string()
-    .min(1, "اسم المنتج مطلوب")
-    .max(100, "اسم المنتج طويل جدًا"),
-
+    .min(2, { message: "اسم المنتج يجب ان يكون على الاقل 2 حروف" }),
   category_id: z
     .string()
-    .min(1, "يجب اختيار التصنيف"),
-
-  product_category: z.enum(["mobile", "part", "accessory"], {
-    required_error: "يجب اختيار تصنيف المنتج",
-    invalid_type_error: "تصنيف المنتج غير صالح",
-  }),
+    .min(1, { message: "يرجى اختيار التصنيف" }),
+  brand_id: z
+    .string()
+    .min(1, { message: "يرجى اختيار العلامة التجارية" }),
+  type: z
+    .string()
+    .min(1, { message: "يرجى اختيار النوع" }),
+  min_stock: z
+    .string()
+    .optional(),
 });

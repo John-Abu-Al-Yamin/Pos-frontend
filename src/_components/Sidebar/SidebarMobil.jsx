@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Tags, Smartphone, Users, X, ChevronUp, LogOut } from "lucide-react";
+import { Tags, Users, Bookmark, Package, X, ChevronUp, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
 
@@ -13,8 +13,9 @@ const SidebarMobile = () => {
 
   const navItems = [
     { key: "categories", href: "/categories", icon: Tags },
-    { key: "products", href: "/products", icon: Smartphone },
     { key: "suppliers", href: "/suppliers", icon: Users },
+    { key: "brands", href: "/brands", icon: Bookmark },
+    { key: "products", href: "/products", icon: Package },
   ];
 
   const handleExpand = () => setIsExpanded((prev) => !prev);
