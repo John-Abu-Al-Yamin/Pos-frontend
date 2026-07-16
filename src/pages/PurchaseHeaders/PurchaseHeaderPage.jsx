@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, Pencil, CheckCheck, XCircle, Plus } from "lucide-react";
+import { Eye, Pencil, CheckCheck, XCircle, Plus, Search, X } from "lucide-react";
 import { toast } from "sonner";
 
 import CustomHeader from "@/customs/CustomHeader";
 import CustomPagination from "@/customs/CustomPagination";
 import Loading from "@/customs/Loading";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableHeader,
@@ -14,12 +23,13 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import {
   useGetAllPurchaseHeaders,
   useCompletePurchaseHeaders,
   useCancelPurchaseHeaders,
 } from "@/hooks/Actions/PurchaseHeader/useCurdsPurchaseHeader";
+import { useGetAllSuppliers } from "@/hooks/Actions/suppliers/useCurdsSuppliers";
+import useSearch from "@/hooks/useSearch/useSearch";
 import endPoints from "@/hooks/EndPoints/endPoints";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
 
@@ -29,19 +39,49 @@ const statusConfig = {
   cancelled: { label: "ملغية", className: "bg-red-100 text-red-800" },
 };
 
+const statusOptions = [
+  { value: "draft", label: "مسودة" },
+  { value: "completed", label: "مكتملة" },
+  { value: "cancelled", label: "ملغية" },
+];
+
 const PurchaseHeaderPage = () => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = React.useState(1);
   const per_page = 12;
+  const [filterStatus, setFilterStatus] = React.useState("");
+  const [filterSupplier, setFilterSupplier] = React.useState("");
+  const { debouncedSearch, search, handelSearch, setSearch } = useSearch("", 400);
 
-  const { data, isPending } = useGetAllPurchaseHeaders(page, per_page);
+  const filters = {
+    search: debouncedSearch || undefined,
+    status: filterStatus || undefined,
+    supplier_id: filterSupplier || undefined,
+  };
+
+  const { data, isPending } = useGetAllPurchaseHeaders(page, per_page, filters);
+  const { data: suppliersData } = useGetAllSuppliers(1, 100);
   const { mutate: completeMutate } = useCompletePurchaseHeaders();
   const { mutate: cancelMutate } = useCancelPurchaseHeaders();
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filterStatus, filterSupplier]);
+
+  const clearFilters = () => {
+    setSearch("");
+    setFilterStatus("");
+    setFilterSupplier("");
+    setPage(1);
+  };
+
+  const hasActiveFilters = debouncedSearch || filterStatus || filterSupplier;
 
   if (isPending) return <Loading />;
 
   const purchaseHeaders = data?.data?.data ?? [];
   const pagination = data?.data?.pagination;
+  const suppliers = suppliersData?.data?.data ?? [];
 
   const handleComplete = (id) => {
     toast("هل أنت متأكد من إتمام الفاتورة؟", {
@@ -59,16 +99,63 @@ const PurchaseHeaderPage = () => {
       duration: Infinity,
     });
   };
-  
-  
+
   return (
     <div>
       <CustomHeader
         title="الفواتير"
-        description="قائمة الفواتير الشرائية"
+        description="قائمة الفواتير الشرائية"
         buttonText="فاتوره شراء"
         onButtonClick={() => navigate("/purchase-headers/add")}
       />
+
+      <div className="mb-6 flex flex-wrap items-end gap-3">
+        <div className="relative w-72">
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="بحث برقم الفاتورة أو رقم فاتورة المورد..."
+            value={search}
+            onChange={handelSearch}
+            className="pr-9"
+          />
+        </div>
+
+        <div className="w-44">
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="الحالة" />
+            </SelectTrigger>
+            <SelectContent>
+              {statusOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="w-44">
+          <Select value={filterSupplier} onValueChange={setFilterSupplier}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="المورد" />
+            </SelectTrigger>
+            <SelectContent>
+              {suppliers.map((supplier) => (
+                <SelectItem key={supplier.id} value={String(supplier.id)}>
+                  {supplier.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {hasActiveFilters && (
+          <Button variant="outline" size="icon" onClick={clearFilters} title="مسح الفلترة">
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
 
       <div className="rounded-md border bg-white">
         <Table>
@@ -146,7 +233,6 @@ const PurchaseHeaderPage = () => {
                             <XCircle className="h-4 w-4" />
                             إلغاء
                           </Button>
-                          
                         </>
                       )}
                     </div>

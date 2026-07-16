@@ -41,8 +41,11 @@ const AddPurchaseHeader = () => {
       { data: data },
 
       {
-        onSuccess: () => {
-          navigate("/purchase-headers");
+        onSuccess: (response) => {
+          const purchaseHeaderId = response?.data?.data?.id;
+          if (purchaseHeaderId) {
+            navigate(`/purchase-item/add/${purchaseHeaderId}`);
+          }
         },
       },
     );
