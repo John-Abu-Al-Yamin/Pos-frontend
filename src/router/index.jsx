@@ -12,6 +12,12 @@ import SuppliersPage from "@/pages/suppliers/SuppliersPage";
 import CustomersPage from "@/pages/customers/CustomersPage";
 import BrandsPage from "@/pages/brands/BrandsPage";
 import ProductPage from "@/pages/Product/ProductPage";
+import PurchaseHeaderPage from "@/pages/PurchaseHeaders/PurchaseHeaderPage";
+import AddPurchaseHeader from "@/pages/PurchaseHeaders/AddPurchaseHeader";
+import UpdatePurchaseHeader from "@/pages/PurchaseHeaders/UpdatePurchaseHeader";
+import DetlaisPurchaseHeader from "@/pages/PurchaseHeaders/DetlaisPurchaseHeader";
+import AddPurchaseItem from "@/pages/PurchaseItem/AddPurchaseItem";
+import UpdatePurchaseItem from "@/pages/PurchaseItem/UpdatePurchaseItem";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +38,11 @@ const router = createBrowserRouter([
     ),
     errorElement: <ErrorPage />,
     children: [
+      {
+        path: "/",
+        element: <h1>dashboard</h1>,
+      },
+
       // categories Routes
       {
         path: "/categories",
@@ -60,6 +71,36 @@ const router = createBrowserRouter([
       {
         path: "/products",
         element: <ProductPage />,
+      },
+
+      // PurchaseHeader
+      {
+        path: "/purchase-headers",
+        element: <PurchaseHeaderPage />,
+      },
+
+      {
+        path: "/purchase-headers/add",
+        element: <AddPurchaseHeader />,
+      },
+      {
+        path: "/purchase-headers/update/:id",
+        element: <UpdatePurchaseHeader />,
+      },
+      {
+        path: "/purchase-headers/details/:id",
+        element: <DetlaisPurchaseHeader />,
+      },
+
+      // Purchase Item
+      {
+        path: "/purchase-item/add/:id",
+        element: <AddPurchaseItem />,
+      },
+
+      {
+        path: "/purchase-item/update/:id",
+        element: <UpdatePurchaseItem />,
       },
 
       {

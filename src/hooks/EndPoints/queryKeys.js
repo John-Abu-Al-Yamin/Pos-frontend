@@ -30,5 +30,19 @@ const queryKeys = {
   addbrands: "/addbrands",
   deletebrands: "/deletebrands",
   updatebrands: "/updatebrands",
+
+  // purchaseHeaders
+  purchaseHeaders: "/purchase-headers",
+  addpurchaseHeaders: "/addpurchaseHeaders",
+  deletePurchaseHeaders: "/deletePurchaseHeaders",
+  updatepurchaseHeaders: "/updatepurchaseHeaders",
+
+  // purchaseItems
+  purchaseItems: "/purchase-items",
+  addpurchaseItems: "/addpurchaseItems",
+  deletePurchaseItems: "/deletePurchaseItems",
+  updatepurchaseItems: "/updatepurchaseItems",
+
+
 };
 export default queryKeys;

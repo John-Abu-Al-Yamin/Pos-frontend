@@ -7,23 +7,24 @@ const AddEditHeader = ({ title, description, backPath, backText }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">{title}</h1>
+    <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold text-foreground">{title}</h1>
         {description && (
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          <p className="text-sm text-muted-foreground">{description}</p>
         )}
       </div>
 
       <Button
         onClick={() => navigate(backPath)}
         variant="outline"
-        className="sm:self-center gap-2 self-start"
+        size="sm"
+        className="gap-2 self-start sm:self-center"
       >
         <ArrowRight className="h-4 w-4" />
         {backText}
       </Button>
-    </div>
+    </header>
   );
 };
 
