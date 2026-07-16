@@ -46,7 +46,7 @@ export const useAddPurchaseItems = () => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePostData(
     endPoints.purchaseItems,
     [queryKeys.addpurchaseItems],
-    [queryKeys.purchaseItems, queryKeys.addpurchaseItems],
+    [queryKeys.purchaseItems, queryKeys.addpurchaseItems, queryKeys.purchaseHeaders],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
@@ -56,17 +56,21 @@ export const useUpdatePurchaseItems = (id) => {
   const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
     `${endPoints.purchaseItems}/${id}`,
     [queryKeys.purchaseItems, id],
-    [queryKeys.purchaseItems],
+    [queryKeys.purchaseItems, queryKeys.purchaseHeaders],
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };
 };
 
-export const useDeletePurchaseItems = (id) => {
+export const useDeletePurchaseItems = (headerId) => {
+  const invalidateKeys = headerId
+    ? [queryKeys.purchaseItems, queryKeys.deletePurchaseItems, queryKeys.purchaseHeaders]
+    : [queryKeys.purchaseItems, queryKeys.deletePurchaseItems];
+
   const { mutate, data, error, isPending, isSuccess, isError } = useDeleteData(
     endPoints.purchaseItems,
     [queryKeys.deletePurchaseItems],
-    [queryKeys.purchaseItems, queryKeys.deletePurchaseItems],
+    invalidateKeys,
   );
 
   return { mutate, data, error, isPending, isSuccess, isError };

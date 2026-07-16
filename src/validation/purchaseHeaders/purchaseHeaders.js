@@ -6,7 +6,7 @@ export const purchaseHeadersSchema = z.object({
     .min(1, { message: "يرجى اختيار المورد" }),
   supplier_invoice_number: z
     .string()
-    .min(1, { message: "يرجى إدخال رقم فاتورة المورد" }),
+    .optional(),
   notes: z
     .string()
     .optional(),

@@ -29,7 +29,7 @@ const DetlaisPurchaseHeader = () => {
   const navigate = useNavigate();
 
   const { data, isPending } = useGetPurchaseHeadersById(id);
-  const { mutate: deleteItemMutate } = useDeletePurchaseItems();
+  const { mutate: deleteItemMutate } = useDeletePurchaseItems(id);
 
   const confirmDeleteItem = (itemId) => {
     toast("هل أنت متأكد من حذف هذا الصنف؟", {
