@@ -18,6 +18,12 @@ import UpdatePurchaseHeader from "@/pages/PurchaseHeaders/UpdatePurchaseHeader";
 import DetlaisPurchaseHeader from "@/pages/PurchaseHeaders/DetlaisPurchaseHeader";
 import AddPurchaseItem from "@/pages/PurchaseItem/AddPurchaseItem";
 import UpdatePurchaseItem from "@/pages/PurchaseItem/UpdatePurchaseItem";
+import UsedDevicePurchaseHeaderPage from "@/pages/UsedDevicePurchaseHeaders/UsedDevicePurchaseHeaderPage";
+import AddUsedDevicePurchaseHeader from "@/pages/UsedDevicePurchaseHeaders/AddUsedDevicePurchaseHeader";
+import UpdateUsedDevicePurchaseHeader from "@/pages/UsedDevicePurchaseHeaders/UpdateUsedDevicePurchaseHeader";
+import DetlaisUsedDevicePurchaseHeader from "@/pages/UsedDevicePurchaseHeaders/DetlaisUsedDevicePurchaseHeader";
+import AddUsedDevicePurchaseItem from "@/pages/UsedDevicePurchaseItem/AddUsedDevicePurchaseItem";
+import UpdateUsedDevicePurchaseItem from "@/pages/UsedDevicePurchaseItem/UpdateUsedDevicePurchaseItem";
 
 const router = createBrowserRouter([
   {
@@ -101,6 +107,36 @@ const router = createBrowserRouter([
       {
         path: "/purchase-item/update/:id",
         element: <UpdatePurchaseItem />,
+      },
+
+      // UsedDevicePurchaseHeader
+      {
+        path: "/used-purchase-headers",
+        element: <UsedDevicePurchaseHeaderPage />,
+      },
+
+      {
+        path: "/used-purchase-headers/add",
+        element: <AddUsedDevicePurchaseHeader />,
+      },
+      {
+        path: "/used-purchase-headers/update/:id",
+        element: <UpdateUsedDevicePurchaseHeader />,
+      },
+      {
+        path: "/used-purchase-headers/details/:id",
+        element: <DetlaisUsedDevicePurchaseHeader />,
+      },
+
+      // Used Device Purchase Item
+      {
+        path: "/used-purchase-item/add/:id",
+        element: <AddUsedDevicePurchaseItem />,
+      },
+
+      {
+        path: "/used-purchase-item/update/:id",
+        element: <UpdateUsedDevicePurchaseItem />,
       },
 
       {

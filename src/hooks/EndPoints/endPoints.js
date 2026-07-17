@@ -7,6 +7,7 @@ const endPoints = {
   brands: "/brands",
   purchaseHeaders: "/purchase-headers",
   purchaseItems: "/purchase-items",
+  usedPurchaseHeaders: "/used-purchase-headers",
 };
 
 export default endPoints;

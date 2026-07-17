@@ -23,6 +23,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
     { key: "المنتجات", href: "/products", icon: Package },
     { key: "المشتريات", href: "/purchase-headers", icon: Package },
+    { key: "مشتريات المستعمل", href: "/used-purchase-headers", icon: Package },
   ];
   return (
     <div

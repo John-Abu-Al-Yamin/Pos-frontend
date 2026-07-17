@@ -43,6 +43,16 @@ const queryKeys = {
   deletePurchaseItems: "/deletePurchaseItems",
   updatepurchaseItems: "/updatepurchaseItems",
 
+  // usedDevicePurchaseHeaders
+  usedPurchaseHeaders: "/used-purchase-headers",
+  addUsedPurchaseHeaders: "/addUsedPurchaseHeaders",
+  deleteUsedPurchaseHeaders: "/deleteUsedPurchaseHeaders",
+  updateUsedPurchaseHeaders: "/updateUsedPurchaseHeaders",
 
+  // usedDevicePurchaseItems
+  usedPurchaseItems: "/used-purchase-items",
+  addUsedPurchaseItems: "/addUsedPurchaseItems",
+  deleteUsedPurchaseItems: "/deleteUsedPurchaseItems",
+  updateUsedPurchaseItems: "/updateUsedPurchaseItems",
 };
 export default queryKeys;
