@@ -137,10 +137,12 @@ const DetlaisUsedDevicePurchaseHeader = () => {
           <TableHeader>
             <TableRow>
               <TableHead className="text-right">#</TableHead>
+              <TableHead className="text-right">الرقم التسلسلي</TableHead>
               <TableHead className="text-right">المنتج</TableHead>
               <TableHead className="text-right">الكمية</TableHead>
               <TableHead className="text-right">سعر الوحدة</TableHead>
               <TableHead className="text-right">الإجمالي</TableHead>
+              <TableHead className="text-right">البطارية %</TableHead>
               <TableHead className="text-right">حالة الشاشة</TableHead>
               <TableHead className="text-right">حالة الهيكل</TableHead>
               <TableHead className="text-right">بصمة</TableHead>
@@ -152,10 +154,12 @@ const DetlaisUsedDevicePurchaseHeader = () => {
             {purchaseHeader.used_device_purchase_items?.map((item, index) => (
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>{item.serial_number || "—"}</TableCell>
                 <TableCell>{item.product?.name || "—"}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell>{formatCurrency(item.unit_price)}</TableCell>
                 <TableCell>{formatCurrency(item.total_price)}</TableCell>
+                <TableCell>{item.battery_health != null ? `${item.battery_health}%` : "—"}</TableCell>
                 <TableCell>{item.screen_condition || "—"}</TableCell>
                 <TableCell>{item.body_condition || "—"}</TableCell>
                 <TableCell>{item.fingerprint_working ? "نعم" : "لا"}</TableCell>
@@ -192,7 +196,7 @@ const DetlaisUsedDevicePurchaseHeader = () => {
             {(!purchaseHeader.used_device_purchase_items || purchaseHeader.used_device_purchase_items.length === 0) && (
               <TableRow>
                 <TableCell
-                  colSpan={10}
+                  colSpan={12}
                   className="h-24 text-center text-muted-foreground"
                 >
                   لا توجد أجهزة في هذه الفاتورة

@@ -60,6 +60,7 @@ const UpdateUsedDevicePurchaseItem = () => {
       product_id: String(item.product_id),
       quantity: String(item.quantity),
       unit_price: String(item.unit_price),
+      battery_health: item.battery_health == null ? "" : String(item.battery_health),
       screen_condition: item.screen_condition || "",
       body_condition: item.body_condition || "",
       fingerprint_working: item.fingerprint_working == null ? "" : item.fingerprint_working ? "true" : "false",
@@ -69,6 +70,7 @@ const UpdateUsedDevicePurchaseItem = () => {
       product_id: "",
       quantity: "",
       unit_price: "",
+      battery_health: "",
       screen_condition: "",
       body_condition: "",
       fingerprint_working: "",
@@ -84,6 +86,7 @@ const UpdateUsedDevicePurchaseItem = () => {
           product_id: Number(formData.product_id),
           quantity: Number(formData.quantity),
           unit_price: Number(formData.unit_price),
+          battery_health: formData.battery_health === "" ? undefined : Number(formData.battery_health),
           screen_condition: formData.screen_condition || undefined,
           body_condition: formData.body_condition || undefined,
           fingerprint_working: formData.fingerprint_working === "" ? undefined : formData.fingerprint_working === "true",
@@ -203,6 +206,18 @@ const UpdateUsedDevicePurchaseItem = () => {
                   {form.formState.errors.unit_price.message}
                 </p>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="battery_health">نسبة البطارية %</Label>
+              <Input
+                id="battery_health"
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                {...form.register("battery_health")}
+              />
             </div>
 
             <div className="space-y-2">

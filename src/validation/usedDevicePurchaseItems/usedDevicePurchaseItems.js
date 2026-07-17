@@ -10,6 +10,9 @@ export const usedDevicePurchaseItemsSchema = z.object({
   unit_price: z
     .string()
     .min(1, { message: "يرجى إدخال سعر الوحدة" }),
+  battery_health: z
+    .string()
+    .optional(),
   screen_condition: z
     .string()
     .optional(),

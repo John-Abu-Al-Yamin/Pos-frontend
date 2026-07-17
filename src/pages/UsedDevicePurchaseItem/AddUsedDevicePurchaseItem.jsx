@@ -50,6 +50,7 @@ const AddUsedDevicePurchaseItem = () => {
       product_id: "",
       quantity: "",
       unit_price: "",
+      battery_health: "",
       screen_condition: "",
       body_condition: "",
       fingerprint_working: "",
@@ -65,6 +66,7 @@ const AddUsedDevicePurchaseItem = () => {
         product_id: Number(formData.product_id),
         quantity: Number(formData.quantity),
         unit_price: Number(formData.unit_price),
+        battery_health: formData.battery_health === "" ? undefined : Number(formData.battery_health),
         screen_condition: formData.screen_condition || undefined,
         body_condition: formData.body_condition || undefined,
         fingerprint_working: formData.fingerprint_working === "" ? undefined : formData.fingerprint_working === "true",
@@ -182,6 +184,18 @@ const AddUsedDevicePurchaseItem = () => {
                   {form.formState.errors.unit_price.message}
                 </p>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="battery_health">نسبة البطارية %</Label>
+              <Input
+                id="battery_health"
+                type="number"
+                min="0"
+                max="100"
+                step="1"
+                {...form.register("battery_health")}
+              />
             </div>
 
             <div className="space-y-2">
