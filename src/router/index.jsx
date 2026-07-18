@@ -24,6 +24,9 @@ import UpdateUsedDevicePurchaseHeader from "@/pages/UsedDevicePurchaseHeaders/Up
 import DetlaisUsedDevicePurchaseHeader from "@/pages/UsedDevicePurchaseHeaders/DetlaisUsedDevicePurchaseHeader";
 import AddUsedDevicePurchaseItem from "@/pages/UsedDevicePurchaseItem/AddUsedDevicePurchaseItem";
 import UpdateUsedDevicePurchaseItem from "@/pages/UsedDevicePurchaseItem/UpdateUsedDevicePurchaseItem";
+import PosPage from "@/pages/Pos/PosPage";
+import SalesHeaderPage from "@/pages/SalesHeaders/SalesHeaderPage";
+import DetlaisSalesHeader from "@/pages/SalesHeaders/DetlaisSalesHeader";
 
 const router = createBrowserRouter([
   {
@@ -137,6 +140,22 @@ const router = createBrowserRouter([
       {
         path: "/used-purchase-item/update/:id",
         element: <UpdateUsedDevicePurchaseItem />,
+      },
+
+      // POS / Sales
+      {
+        path: "/pos",
+        element: <PosPage />,
+      },
+
+      {
+        path: "/sales-headers",
+        element: <SalesHeaderPage />,
+      },
+
+      {
+        path: "/sales-headers/details/:id",
+        element: <DetlaisSalesHeader />,
       },
 
       {

@@ -54,5 +54,16 @@ const queryKeys = {
   addUsedPurchaseItems: "/addUsedPurchaseItems",
   deleteUsedPurchaseItems: "/deleteUsedPurchaseItems",
   updateUsedPurchaseItems: "/updateUsedPurchaseItems",
+
+  // users
+  users: "/users",
+
+  // pos / sales
+  posSales: "/pos/sales",
+  posCheckout: "/pos/checkout",
+  salesHeaders: "/sales-headers",
+  addSalesHeaders: "/addSalesHeaders",
+  deleteSalesHeaders: "/deleteSalesHeaders",
+  updateSalesHeaders: "/updateSalesHeaders",
 };
 export default queryKeys;

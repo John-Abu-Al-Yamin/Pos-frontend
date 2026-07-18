@@ -8,6 +8,10 @@ const endPoints = {
   purchaseHeaders: "/purchase-headers",
   purchaseItems: "/purchase-items",
   usedPurchaseHeaders: "/used-purchase-headers",
+  posSales: "/pos/sales",
+  posCheckout: "/pos/checkout",
+  salesHeaders: "/sales-headers",
+  users: "/users",
 };
 
 export default endPoints;

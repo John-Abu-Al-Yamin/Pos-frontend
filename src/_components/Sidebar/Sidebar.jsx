@@ -4,6 +4,8 @@ import {
   Users,
   Bookmark,
   Package,
+  ShoppingCart,
+  Receipt,
   Menu,
   Settings,
   LogOut,
@@ -24,6 +26,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "المنتجات", href: "/products", icon: Package },
     { key: "المشتريات", href: "/purchase-headers", icon: Package },
     { key: "مشتريات المستعمل", href: "/used-purchase-headers", icon: Package },
+    { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
+    { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
   ];
   return (
     <div
