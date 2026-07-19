@@ -30,8 +30,17 @@ const AddPurchaseItem = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [open, setOpen] = useState(false);
+  const [productSearch, setProductSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const { data: productsData } = useGetAllProducts(1, 100);
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(productSearch);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [productSearch]);
+
+  const { data: productsData } = useGetAllProducts(1, 100, { search: debouncedSearch || undefined });
   const { mutate: addMutate, isPending } = useAddPurchaseItems();
 
   const products = productsData?.data?.data ?? [];
@@ -97,7 +106,11 @@ const AddPurchaseItem = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                       <Command>
-                        <CommandInput placeholder="بحث عن منتج..." />
+                        <CommandInput
+                          placeholder="بحث عن منتج..."
+                          value={productSearch}
+                          onValueChange={setProductSearch}
+                        />
                         <CommandList>
                           <CommandEmpty>لا توجد نتائج</CommandEmpty>
                           <CommandGroup>

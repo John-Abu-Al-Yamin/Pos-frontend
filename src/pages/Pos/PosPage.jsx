@@ -8,6 +8,7 @@ import {
   Trash2,
   Smartphone,
   Headphones,
+  Wrench,
   CreditCard,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -39,6 +40,7 @@ const productTypeTabs = [
   { value: "new_mobile", label: "موبايل جديد" },
   { value: "used_mobile", label: "موبايل مستعمل" },
   { value: "accessory", label: "اكسسوارات" },
+  { value: "spare_part", label: "قطع غيار" },
 ];
 
 const PosPage = () => {
@@ -92,6 +94,7 @@ const PosPage = () => {
 
   const mobiles = data?.data?.data?.mobiles ?? [];
   const accessories = data?.data?.data?.accessories ?? [];
+  const spareParts = data?.data?.data?.spare_parts ?? [];
 
   const annotateItem = (item, type, category) => ({
     ...item,
@@ -111,6 +114,7 @@ const PosPage = () => {
       ),
     ),
     ...accessories.map((a) => annotateItem(a, "accessory", "accessory")),
+    ...spareParts.map((s) => annotateItem(s, "spare_part", "spare_part")),
   ];
   const totalPages = Math.ceil(allItems.length / per_page);
   const paginatedItems = allItems.slice((page - 1) * per_page, page * per_page);
@@ -124,9 +128,9 @@ const PosPage = () => {
       return c.product_id === item.product_id;
     });
 
-    const defaultPrice = item.cost_price ? Number(item.cost_price) : 0;
+    const defaultPrice = item.suggested_price ? Number(item.suggested_price) : 0;
 
-    if (existingIndex >= 0 && item._type === "accessory") {
+    if (existingIndex >= 0 && (item._type === "accessory" || item._type === "spare_part")) {
       setCart((prev) => {
         const updated = [...prev];
         updated[existingIndex] = {
@@ -150,6 +154,7 @@ const PosPage = () => {
             product_name: item.product?.name,
             serial: item.internal_serial,
             unit_price: defaultPrice,
+            unit_cost: Number(item.cost_price) || 0,
             quantity: 1,
             total_price: defaultPrice,
             _type: "mobile",
@@ -163,9 +168,10 @@ const PosPage = () => {
             product_name: item.product?.name,
             quantity: 1,
             unit_price: defaultPrice,
+            unit_cost: Number(item.cost_price) || 0,
             total_price: defaultPrice,
             available_qty: item.quantity,
-            _type: "accessory",
+            _type: item._type,
           },
         ]);
       }
@@ -177,6 +183,11 @@ const PosPage = () => {
   };
 
   const updateCartPrice = (index, newPrice) => {
+    const item = cart[index];
+    if (Number(newPrice) < item.unit_cost) {
+      toast("السعر لا يمكن أن يكون أقل من سعر التكلفة");
+      return;
+    }
     setCart((prev) => {
       const updated = [...prev];
       updated[index] = {
@@ -190,7 +201,7 @@ const PosPage = () => {
 
   const updateCartQuantity = (index, newQty) => {
     const item = cart[index];
-    if (item._type === "accessory" && newQty > item.available_qty) {
+    if ((item._type === "accessory" || item._type === "spare_part") && newQty > item.available_qty) {
       toast("الكمية المتاحة غير كافية");
       return;
     }
@@ -213,6 +224,11 @@ const PosPage = () => {
   const handleCheckout = () => {
     if (cart.length === 0) {
       toast("السلة فارغة");
+      return;
+    }
+
+    if (discount > subtotal) {
+      toast("قيمة الخصم لا يمكن أن تتجاوز المجموع الفرعي");
       return;
     }
 
@@ -252,8 +268,7 @@ const PosPage = () => {
   };
 
   const getItemDisplayPrice = (item) => {
-    if (item._type === "mobile") return Number(item.cost_price) || 0;
-    return 0;
+    return Number(item.suggested_price) || Number(item.cost_price) || 0;
   };
 
   const isInCart = (item) => {
@@ -341,8 +356,10 @@ const PosPage = () => {
                         <div className="flex items-center gap-2">
                           {item._type === "mobile" ? (
                             <Smartphone className="h-4 w-4 text-muted-foreground" />
-                          ) : (
+                          ) : item._type === "accessory" ? (
                             <Headphones className="h-4 w-4 text-muted-foreground" />
+                          ) : (
+                            <Wrench className="h-4 w-4 text-muted-foreground" />
                           )}
                           <CardTitle className="text-sm font-medium">
                             {item.product?.name || "منتج"}
@@ -357,7 +374,9 @@ const PosPage = () => {
                             ? "جديد"
                             : item._category === "used"
                               ? "مستعمل"
-                              : "اكسسوار"}
+                              : item._category === "accessory"
+                                ? "اكسسوار"
+                                : "قطعة غيار"}
                         </Badge>
                       </div>
                     </CardHeader>
@@ -375,7 +394,7 @@ const PosPage = () => {
                             )}
                           </>
                         )}
-                        {item._type === "accessory" && (
+                        {(item._type === "accessory" || item._type === "spare_part") && (
                           <p className="text-xs">
                             الكمية المتاحة: {item.quantity}
                           </p>
@@ -473,7 +492,7 @@ const PosPage = () => {
                         />
                       </div>
 
-                      {item._type === "accessory" && (
+                      {(item._type === "accessory" || item._type === "spare_part") && (
                         <div className="flex items-center gap-2">
                           <Label className="text-xs w-16">الكمية</Label>
                           <div className="flex items-center gap-1">

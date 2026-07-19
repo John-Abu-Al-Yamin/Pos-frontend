@@ -39,7 +39,7 @@ const AddUsedDevicePurchaseItem = () => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
 
-  const { data: productsData } = useGetAllProducts(1, 100);
+  const { data: productsData } = useGetAllProducts(1, 100, { type: "mobile" });
   const { mutate: addMutate, isPending } = useAddUsedPurchaseItems();
 
   const products = productsData?.data?.data ?? [];
