@@ -24,7 +24,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { useGetAllSalesHeaders } from "@/hooks/Actions/SalesHeaders/useCurdsSalesHeaders";
-import useSearch from "@/hooks/useSearch/useSearch";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
 import endPoints from "@/hooks/EndPoints/endPoints";
 import queryKeys from "@/hooks/EndPoints/queryKeys";
@@ -34,13 +33,14 @@ const SalesHeaderPage = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(1);
   const per_page = 12;
-  const { debouncedSearch, search, handelSearch, setSearch } = useSearch("", 400);
+  const [searchInput, setSearchInput] = React.useState("");
+  const [activeSearch, setActiveSearch] = React.useState("");
   const [filterDateFrom, setFilterDateFrom] = React.useState("");
   const [filterDateTo, setFilterDateTo] = React.useState("");
   const [filterCreatedBy, setFilterCreatedBy] = React.useState("");
 
   const filters = {
-    search: debouncedSearch || undefined,
+    search: activeSearch || undefined,
     from_date: filterDateFrom || undefined,
     to_date: filterDateTo || undefined,
     created_by: filterCreatedBy || undefined,
@@ -56,17 +56,30 @@ const SalesHeaderPage = () => {
 
   React.useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, filterDateFrom, filterDateTo, filterCreatedBy]);
+  }, [activeSearch, filterDateFrom, filterDateTo, filterCreatedBy]);
+
+  const handleSearchSubmit = () => {
+    setActiveSearch(searchInput);
+    setPage(1);
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearchSubmit();
+    }
+  };
 
   const clearFilters = () => {
-    setSearch("");
+    setSearchInput("");
+    setActiveSearch("");
     setFilterDateFrom("");
     setFilterDateTo("");
     setFilterCreatedBy("");
     setPage(1);
   };
 
-  const hasActiveFilters = debouncedSearch || filterDateFrom || filterDateTo || filterCreatedBy;
+  const hasActiveFilters =
+    activeSearch || filterDateFrom || filterDateTo || filterCreatedBy;
 
   if (isPending) return <Loading />;
 
@@ -76,20 +89,20 @@ const SalesHeaderPage = () => {
 
   return (
     <div>
-      <CustomHeader
-        title="فواتير البيع"
-        description="قائمة فواتير البيع"
-      />
+      <CustomHeader title="فواتير البيع" description="قائمة فواتير البيع" />
 
       <div className="mb-6 flex flex-wrap items-end gap-3">
-        <div className="relative w-72">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="بحث برقم الفاتورة أو اسم العميل..."
-            value={search}
-            onChange={handelSearch}
-            className="pr-9"
-          />
+        <div className="flex items-end gap-2">
+          <div className="relative w-72">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="بحث برقم الفاتورة أو اسم العميل..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              className="pr-9"
+            />
+          </div>
         </div>
 
         <div className="w-44">
@@ -106,9 +119,18 @@ const SalesHeaderPage = () => {
             </SelectContent>
           </Select>
         </div>
+        <Button onClick={handleSearchSubmit}>
+          <Search className="h-4 w-4 ml-1" />
+          بحث
+        </Button>
 
         {hasActiveFilters && (
-          <Button variant="outline" size="icon" onClick={clearFilters} title="مسح الفلترة">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={clearFilters}
+            title="مسح الفلترة"
+          >
             <X className="h-4 w-4" />
           </Button>
         )}

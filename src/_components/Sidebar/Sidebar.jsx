@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Tags,
   Truck,
@@ -9,11 +10,103 @@ import {
   Menu,
   Settings,
   LogOut,
+  ChevronDown,
+  Percent,
 } from "lucide-react";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
+
+const settingsItems = [
+  { key: "الربح", href: "/settings", icon: Percent },
+];
+
+const SidebarSettingsDropdown = ({ isOpen }) => {
+  const [expanded, setExpanded] = React.useState(false);
+  const location = useLocation();
+  const isActive = location.pathname.startsWith("/settings");
+  const hasActiveChild = settingsItems.some(
+    (item) => location.pathname === item.href,
+  );
+
+  const toggle = () => setExpanded((prev) => !prev);
+
+  React.useEffect(() => {
+    if (hasActiveChild) {
+      setExpanded(true);
+    }
+  }, [hasActiveChild]);
+
+  return (
+    <div>
+      <button
+        onClick={toggle}
+        className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium w-full cursor-pointer transition-all duration-300 ease-in-out ${
+          isActive || expanded
+            ? "bg-black text-white"
+            : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
+        }`}
+      >
+        <Settings
+          className={`h-[18px] w-[18px] shrink-0 transition-transform duration-300 ease-in-out ${
+            expanded ? "scale-110" : ""
+          }`}
+          strokeWidth={1.5}
+        />
+        <span
+          className={`flex items-center justify-between flex-1 overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "opacity-100 w-auto" : "opacity-0 w-0 hidden"
+          }`}
+        >
+          <span>الاعدادات</span>
+          <ChevronDown
+            className={`h-4 w-4 transition-all duration-300 ease-in-out ${
+              expanded ? "rotate-180" : ""
+            }`}
+          />
+        </span>
+      </button>
+
+      <div
+        className={`grid transition-all duration-300 ease-in-out ${
+          expanded && isOpen
+            ? "grid-rows-[1fr] opacity-100 mt-1"
+            : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="mr-5 border-r-2 border-gray-200 dark:border-gray-700 pr-3 space-y-1 py-0.5">
+            {settingsItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.href}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out ${
+                      isActive
+                        ? "bg-black/10 dark:bg-white/10 text-black dark:text-white shadow-sm"
+                        : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+                    }`
+                  }
+                >
+                  <Icon
+                    className={`h-4 w-4 shrink-0 transition-all duration-200 ${
+                      hasActiveChild ? "opacity-70" : ""
+                    }`}
+                    strokeWidth={1.5}
+                  />
+                  <span>{item.key}</span>
+                </NavLink>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
@@ -82,25 +175,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
       {/* Settings + Language */}
       <div className="px-2 mb-4 flex flex-col gap-2">
-        <NavLink
-          to="/settings"
-          className={({ isActive }) =>
-            `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
-              isActive
-                ? "bg-black text-white"
-                : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
-            }`
-          }
-        >
-          <Settings className="h-[18px] w-[18px]" strokeWidth={1.5} />
-          <span
-            className={`transition-all duration-300 ${
-              isOpen ? "opacity-100 w-auto" : "opacity-0 w-0 hidden"
-            }`}
-          >
-            الاعدادات
-          </span>
-        </NavLink>
+        <SidebarSettingsDropdown isOpen={isOpen} />
 
         <button
           onClick={() => {

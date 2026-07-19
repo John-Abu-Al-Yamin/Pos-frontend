@@ -25,6 +25,7 @@ import DetlaisUsedDevicePurchaseHeader from "@/pages/UsedDevicePurchaseHeaders/D
 import AddUsedDevicePurchaseItem from "@/pages/UsedDevicePurchaseItem/AddUsedDevicePurchaseItem";
 import UpdateUsedDevicePurchaseItem from "@/pages/UsedDevicePurchaseItem/UpdateUsedDevicePurchaseItem";
 import PosPage from "@/pages/Pos/PosPage";
+import MarkupSettingsPage from "@/pages/markupSettings/MarkupSettingsPage";
 import SalesHeaderPage from "@/pages/SalesHeaders/SalesHeaderPage";
 import DetlaisSalesHeader from "@/pages/SalesHeaders/DetlaisSalesHeader";
 
@@ -74,6 +75,12 @@ const router = createBrowserRouter([
       {
         path: "/brands",
         element: <BrandsPage />,
+      },
+
+      // settings Routes
+      {
+        path: "/settings",
+        element: <MarkupSettingsPage />,
       },
 
       // products Routes

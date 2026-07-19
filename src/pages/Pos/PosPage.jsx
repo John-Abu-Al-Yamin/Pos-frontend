@@ -32,7 +32,6 @@ import {
   usePosCheckout,
 } from "@/hooks/Actions/Pos/useCurdsPos";
 import { useGetAllCustomers } from "@/hooks/Actions/customers/useCurdsCustomers";
-import useSearch from "@/hooks/useSearch/useSearch";
 import { formatCurrency } from "@/lib/utils";
 
 const productTypeTabs = [
@@ -46,12 +45,10 @@ const PosPage = () => {
   const [page, setPage] = React.useState(1);
   const per_page = 12;
   const [filterType, setFilterType] = React.useState("all");
-  const { debouncedSearch, search, handelSearch, setSearch } = useSearch(
-    "",
-    400,
-  );
+  const [searchInput, setSearchInput] = React.useState("");
+  const [activeSearch, setActiveSearch] = React.useState("");
 
-  const { data, isPending } = useGetAllPosItems(debouncedSearch, filterType);
+  const { data, isPending } = useGetAllPosItems(activeSearch, filterType);
   const { data: customersData } = useGetAllCustomers(1, 200);
   const { mutate: checkoutMutate, isPending: checkoutPending } =
     usePosCheckout();
@@ -71,15 +68,27 @@ const PosPage = () => {
 
   React.useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, filterType]);
+  }, [activeSearch, filterType]);
+
+  const handleSearchSubmit = () => {
+    setActiveSearch(searchInput);
+    setPage(1);
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearchSubmit();
+    }
+  };
 
   const clearFilters = () => {
-    setSearch("");
+    setSearchInput("");
+    setActiveSearch("");
     setFilterType("all");
     setPage(1);
   };
 
-  const hasActiveFilters = debouncedSearch || filterType !== "all";
+  const hasActiveFilters = activeSearch || filterType !== "all";
 
   const mobiles = data?.data?.data?.mobiles ?? [];
   const accessories = data?.data?.data?.accessories ?? [];
@@ -247,8 +256,6 @@ const PosPage = () => {
     return 0;
   };
 
-  
-
   const isInCart = (item) => {
     return cart.some((c) => {
       if (item._type === "mobile") return c.inventory_item_id === item.id;
@@ -264,14 +271,17 @@ const PosPage = () => {
 
       {/* searh and filter */}
       <div className="mb-6 flex flex-wrap items-end gap-3">
-        <div className="relative w-72">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="بحث باسم المنتج..."
-            value={search}
-            onChange={handelSearch}
-            className="pr-9"
-          />
+        <div className="flex items-end gap-2">
+          <div className="relative w-72">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="بحث باسم المنتج..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              className="pr-9"
+            />
+          </div>
         </div>
 
         <div className="w-44">
@@ -289,6 +299,10 @@ const PosPage = () => {
           </Select>
         </div>
 
+        <Button onClick={handleSearchSubmit}>
+          <Search className="h-4 w-4 ml-1" />
+          بحث
+        </Button>
         {hasActiveFilters && (
           <Button
             variant="outline"

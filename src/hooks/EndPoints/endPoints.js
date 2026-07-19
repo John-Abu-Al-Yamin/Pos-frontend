@@ -12,6 +12,7 @@ const endPoints = {
   posCheckout: "/pos/checkout",
   salesHeaders: "/sales-headers",
   users: "/users",
+  markupSettings: "/markup-settings",
 };
 
 export default endPoints;

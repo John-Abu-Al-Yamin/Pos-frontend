@@ -58,6 +58,12 @@ const queryKeys = {
   // users
   users: "/users",
 
+  // markupSettings
+  markupSettings: "/markup-settings",
+  addMarkupSettings: "/addMarkupSettings",
+  deleteMarkupSettings: "/deleteMarkupSettings",
+  updateMarkupSettings: "/updateMarkupSettings",
+
   // pos / sales
   posSales: "/pos/sales",
   posCheckout: "/pos/checkout",
