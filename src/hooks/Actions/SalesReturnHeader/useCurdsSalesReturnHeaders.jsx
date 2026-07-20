@@ -43,12 +43,3 @@ export const useGetSalesReturnHeaderById = (id) => {
   };
 };
 
-export const useAddSalesReturnHeaders = () => {
-  const { mutate, data, error, isPending, isSuccess, isError } = usePostData(
-    endPoints.salesReturns,
-    [queryKeys.addSalesReturns],
-    [queryKeys.salesReturns, queryKeys.addSalesReturns],
-  );
-
-  return { mutate, data, error, isPending, isSuccess, isError };
-};

@@ -29,7 +29,6 @@ import MarkupSettingsPage from "@/pages/markupSettings/MarkupSettingsPage";
 import SalesHeaderPage from "@/pages/SalesHeaders/SalesHeaderPage";
 import DetlaisSalesHeader from "@/pages/SalesHeaders/DetlaisSalesHeader";
 import SalesReturnHeaderPage from "@/pages/SalesReturnHeaders/SalesReturnHeaderPage";
-import AddSalesReturnHeader from "@/pages/SalesReturnHeaders/AddSalesReturnHeader";
 import DetlaisSalesReturnHeader from "@/pages/SalesReturnHeaders/DetlaisSalesReturnHeader";
 import SalesReturnablePage from "@/pages/SalesReturnable/SalesReturnablePage";
 import ReturnableInvoiceItems from "@/pages/SalesReturnable/ReturnableInvoiceItems";
@@ -176,10 +175,6 @@ const router = createBrowserRouter([
         element: <SalesReturnHeaderPage />,
       },
 
-      {
-        path: "/sales-returns/add",
-        element: <AddSalesReturnHeader />,
-      },
 
       {
         path: "/sales-returns/details/:id",

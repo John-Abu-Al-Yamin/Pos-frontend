@@ -14,7 +14,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { useGetReturnableSaleById } from "@/hooks/Actions/SalesReturnable/useCurdsSalesReturnable";
-import { useAddSalesReturnHeaders } from "@/hooks/Actions/SalesReturnHeader/useCurdsSalesReturnHeaders";
 import { formatCurrency } from "@/lib/utils";
 import { ShoppingCart, Info, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,8 +23,6 @@ const ReturnableInvoiceItems = () => {
   const navigate = useNavigate();
 
   const { data, isPending } = useGetReturnableSaleById(id);
-  const { mutate: addReturnMutate, isPending: isCreating } =
-    useAddSalesReturnHeaders();
 
   const [selectedItems, setSelectedItems] = React.useState({});
   const [selectedQty, setSelectedQty] = React.useState({});
@@ -110,25 +107,7 @@ const totalSelectedRefund = React.useMemo(() => {
     const itemsPayload = buildItemsPayload();
     if (itemsPayload.length === 0) return;
 
-    addReturnMutate(
-      {
-        data: {
-          sales_header_id: Number(id),
-          return_date: new Date().toISOString().split("T")[0],
-          items: itemsPayload,
-        },
-      },
-      {
-        onSuccess: (response) => {
-          const returnId = response?.data?.data?.id;
-          if (returnId) {
-            navigate(`/sales-returns/details/${returnId}`);
-          } else {
-            navigate("/sales-returns");
-          }
-        },
-      },
-    );
+    
   };
 
   const mobileItems = items.filter(isMobile);
@@ -367,11 +346,11 @@ const totalSelectedRefund = React.useMemo(() => {
           </div>
           <Button
             onClick={handleCreateReturn}
-            disabled={!hasSelection || isCreating}
+            disabled={!hasSelection }
             size="lg"
           >
             <ShoppingCart className="h-4 w-4" />
-            {isCreating ? "جاري الإنشاء..." : "إنشاء مرتجع"}
+            { "إنشاء مرتجع"}
           </Button>
         </div>
       </div>
