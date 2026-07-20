@@ -1,12 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, RotateCcw, Search, X } from "lucide-react";
+import { ArrowLeftFromLine, Search, X } from "lucide-react";
 
 import CustomHeader from "@/customs/CustomHeader";
 import CustomPagination from "@/customs/CustomPagination";
 import Loading from "@/customs/Loading";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -23,40 +22,35 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { useGetAllSalesHeaders } from "@/hooks/Actions/SalesHeaders/useCurdsSalesHeaders";
+import { useGetAllReturnableSales } from "@/hooks/Actions/SalesReturnable/useCurdsSalesReturnable";
+import { useGetAllCustomers } from "@/hooks/Actions/customers/useCurdsCustomers";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
-import endPoints from "@/hooks/EndPoints/endPoints";
-import queryKeys from "@/hooks/EndPoints/queryKeys";
-import useGetData from "@/hooks/curdsHook/useGetData";
 
-const SalesHeaderPage = () => {
+const SalesReturnablePage = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(1);
   const per_page = 12;
   const [searchInput, setSearchInput] = React.useState("");
   const [activeSearch, setActiveSearch] = React.useState("");
+  const [filterCustomer, setFilterCustomer] = React.useState("");
   const [filterDateFrom, setFilterDateFrom] = React.useState("");
   const [filterDateTo, setFilterDateTo] = React.useState("");
-  const [filterCreatedBy, setFilterCreatedBy] = React.useState("");
 
   const filters = {
     search: activeSearch || undefined,
+    customer_id: filterCustomer || undefined,
     from_date: filterDateFrom || undefined,
     to_date: filterDateTo || undefined,
-    created_by: filterCreatedBy || undefined,
   };
 
-  const { data, isPending } = useGetAllSalesHeaders(page, per_page, filters);
+  const { data, isPending } = useGetAllReturnableSales(page, per_page, filters);
 
-  const { data: usersData } = useGetData({
-    url: endPoints.users,
-    params: {},
-    queryKeys: [queryKeys.users],
-  });
+  const { data: customersData } = useGetAllCustomers(1, 1000);
+  const customers = customersData?.data?.data ?? [];
 
   React.useEffect(() => {
     setPage(1);
-  }, [activeSearch, filterDateFrom, filterDateTo, filterCreatedBy]);
+  }, [activeSearch, filterCustomer, filterDateFrom, filterDateTo]);
 
   const handleSearchSubmit = () => {
     setActiveSearch(searchInput);
@@ -72,24 +66,23 @@ const SalesHeaderPage = () => {
   const clearFilters = () => {
     setSearchInput("");
     setActiveSearch("");
+    setFilterCustomer("");
     setFilterDateFrom("");
     setFilterDateTo("");
-    setFilterCreatedBy("");
     setPage(1);
   };
 
   const hasActiveFilters =
-    activeSearch || filterDateFrom || filterDateTo || filterCreatedBy;
+    activeSearch || filterCustomer || filterDateFrom || filterDateTo;
 
   if (isPending) return <Loading />;
 
-  const salesHeaders = data?.data?.data ?? [];
+  const returnableSales = data?.data?.data ?? [];
   const pagination = data?.data?.pagination;
-  const users = usersData?.data?.data ?? [];
 
   return (
     <div>
-      <CustomHeader title="فواتير البيع" description="قائمة فواتير البيع" />
+      <CustomHeader title="إنشاء مرتجع بيع" description="اختر فاتورة بيع لإرجاع أصناف منها" />
 
       <div className="mb-6 flex flex-wrap items-end gap-3">
         <div className="flex items-end gap-2">
@@ -106,19 +99,38 @@ const SalesHeaderPage = () => {
         </div>
 
         <div className="w-44">
-          <Select value={filterCreatedBy} onValueChange={setFilterCreatedBy}>
+          <Select value={filterCustomer} onValueChange={setFilterCustomer}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="أنشئ بواسطة" />
+              <SelectValue placeholder="العميل" />
             </SelectTrigger>
             <SelectContent>
-              {users.map((user) => (
-                <SelectItem key={user.id} value={String(user.id)}>
-                  {user.name}
+              {customers.map((customer) => (
+                <SelectItem key={customer.id} value={String(customer.id)}>
+                  {customer.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
+
+        <div className="w-44">
+          <Input
+            type="date"
+            value={filterDateFrom}
+            onChange={(e) => setFilterDateFrom(e.target.value)}
+            placeholder="من تاريخ"
+          />
+        </div>
+
+        <div className="w-44">
+          <Input
+            type="date"
+            value={filterDateTo}
+            onChange={(e) => setFilterDateTo(e.target.value)}
+            placeholder="إلى تاريخ"
+          />
+        </div>
+
         <Button onClick={handleSearchSubmit}>
           <Search className="h-4 w-4 ml-1" />
           بحث
@@ -142,59 +154,43 @@ const SalesHeaderPage = () => {
             <TableRow>
               <TableHead className="text-right">رقم الفاتورة</TableHead>
               <TableHead className="text-right">العميل</TableHead>
-              <TableHead className="text-right">المجموع الفرعي</TableHead>
-              <TableHead className="text-right">قيمة الخصم</TableHead>
+              <TableHead className="text-right">عدد الأصناف</TableHead>
               <TableHead className="text-right">الإجمالي</TableHead>
-              <TableHead className="text-right">أنشئ بواسطة</TableHead>
-              <TableHead className="text-right">تاريخ الإنشاء</TableHead>
+              <TableHead className="text-right">تاريخ الفاتورة</TableHead>
               <TableHead className="text-right">الإجراءات</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {salesHeaders.map((header) => (
-              <TableRow key={header.id}>
+            {returnableSales.map((sale) => (
+              <TableRow key={sale.id}>
                 <TableCell className="font-medium">
-                  {header.invoice_number}
+                  {sale.invoice_number}
                 </TableCell>
-                <TableCell>{header.customer?.name || "—"}</TableCell>
-                <TableCell>{formatCurrency(header.subtotal)}</TableCell>
-                <TableCell>{formatCurrency(header.discount_amount)}</TableCell>
-                <TableCell>{formatCurrency(header.total_amount)}</TableCell>
-                <TableCell>{header.created_by?.name || "—"}</TableCell>
-                <TableCell>{formatDateTime(header.created_at)}</TableCell>
+                <TableCell>{sale.customer?.name || "—"}</TableCell>
+                <TableCell>{sale.items_count || 0}</TableCell>
+                <TableCell>{formatCurrency(sale.total_amount)}</TableCell>
+                <TableCell>{formatDateTime(sale.created_at)}</TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        navigate(`/sales-headers/details/${header.id}`)
-                      }
-                    >
-                      <Eye className="h-4 w-4" />
-                      عرض
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        navigate(`/sales-returnable/${header.id}`)
-                      }
-                    >
-                      <RotateCcw className="h-4 w-4" />
-                      مرتجع
-                    </Button>
-                  </div>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() =>
+                      navigate(`/sales-returnable/${sale.id}`)
+                    }
+                  >
+                    <ArrowLeftFromLine className="h-4 w-4" />
+                    اختيار
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
-            {salesHeaders.length === 0 && (
+            {returnableSales.length === 0 && (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={6}
                   className="h-24 text-center text-muted-foreground"
                 >
-                  لا توجد فواتير بيع
+                  لا توجد فواتير قابلة للإرجاع
                 </TableCell>
               </TableRow>
             )}
@@ -210,4 +206,4 @@ const SalesHeaderPage = () => {
   );
 };
 
-export default SalesHeaderPage;
+export default SalesReturnablePage;

@@ -11,6 +11,8 @@ const endPoints = {
   posSales: "/pos/sales",
   posCheckout: "/pos/checkout",
   salesHeaders: "/sales-headers",
+  salesReturns: "/sales-returns",
+  salesReturnable: "/sales-returnable",
   users: "/users",
   markupSettings: "/markup-settings",
 };

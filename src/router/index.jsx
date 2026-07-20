@@ -28,6 +28,11 @@ import PosPage from "@/pages/Pos/PosPage";
 import MarkupSettingsPage from "@/pages/markupSettings/MarkupSettingsPage";
 import SalesHeaderPage from "@/pages/SalesHeaders/SalesHeaderPage";
 import DetlaisSalesHeader from "@/pages/SalesHeaders/DetlaisSalesHeader";
+import SalesReturnHeaderPage from "@/pages/SalesReturnHeaders/SalesReturnHeaderPage";
+import AddSalesReturnHeader from "@/pages/SalesReturnHeaders/AddSalesReturnHeader";
+import DetlaisSalesReturnHeader from "@/pages/SalesReturnHeaders/DetlaisSalesReturnHeader";
+import SalesReturnablePage from "@/pages/SalesReturnable/SalesReturnablePage";
+import ReturnableInvoiceItems from "@/pages/SalesReturnable/ReturnableInvoiceItems";
 
 const router = createBrowserRouter([
   {
@@ -163,6 +168,33 @@ const router = createBrowserRouter([
       {
         path: "/sales-headers/details/:id",
         element: <DetlaisSalesHeader />,
+      },
+
+      // Sales Return Routes
+      {
+        path: "/sales-returns",
+        element: <SalesReturnHeaderPage />,
+      },
+
+      {
+        path: "/sales-returns/add",
+        element: <AddSalesReturnHeader />,
+      },
+
+      {
+        path: "/sales-returns/details/:id",
+        element: <DetlaisSalesReturnHeader />,
+      },
+
+      // Sales Returnable Routes
+      {
+        path: "/sales-returnable",
+        element: <SalesReturnablePage />,
+      },
+
+      {
+        path: "/sales-returnable/:id",
+        element: <ReturnableInvoiceItems />,
       },
 
       {

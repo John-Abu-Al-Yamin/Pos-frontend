@@ -71,5 +71,14 @@ const queryKeys = {
   addSalesHeaders: "/addSalesHeaders",
   deleteSalesHeaders: "/deleteSalesHeaders",
   updateSalesHeaders: "/updateSalesHeaders",
+
+  // salesReturns
+  salesReturns: "/sales-returns",
+  addSalesReturns: "/addSalesReturns",
+  deleteSalesReturns: "/deleteSalesReturns",
+  updateSalesReturns: "/updateSalesReturns",
+
+  // salesReturnable
+  salesReturnable: "/sales-returnable",
 };
 export default queryKeys;

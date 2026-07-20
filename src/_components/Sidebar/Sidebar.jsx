@@ -7,6 +7,8 @@ import {
   Package,
   ShoppingCart,
   Receipt,
+  RotateCcw,
+  Undo2,
   Menu,
   Settings,
   LogOut,
@@ -121,6 +123,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "مشتريات المستعمل", href: "/used-purchase-headers", icon: Package },
     { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
     { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
+    { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },
+    { key: "إنشاء مرتجع", href: "/sales-returnable", icon: Undo2 },
   ];
   return (
     <div

@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import AddEditHeader from "@/customs/AddEditHeader";
 import Loading from "@/customs/Loading";
@@ -11,11 +11,14 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { RotateCcw } from "lucide-react";
 import { useGetSalesHeaderById } from "@/hooks/Actions/SalesHeaders/useCurdsSalesHeaders";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
 
 const DetlaisSalesHeader = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data, isPending } = useGetSalesHeaderById(id);
 
@@ -26,12 +29,24 @@ const DetlaisSalesHeader = () => {
 
   return (
     <div>
-      <AddEditHeader
-        title={`فاتورة بيع رقم ${sale.invoice_number}`}
-        description={sale.notes || "لا توجد ملاحظات"}
-        backPath="/sales-headers"
-        backText="رجوع"
-      />
+      <div className="flex items-center justify-between mb-2">
+        <AddEditHeader
+          title={`فاتورة بيع رقم ${sale.invoice_number}`}
+          description={sale.notes || "لا توجد ملاحظات"}
+          backPath="/sales-headers"
+          backText="رجوع"
+        />
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() =>
+            navigate(`/sales-returnable/${sale.id}`)
+          }
+        >
+          <RotateCcw className="h-4 w-4" />
+          إنشاء مرتجع
+        </Button>
+      </div>
 
       <div className="p-6 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
