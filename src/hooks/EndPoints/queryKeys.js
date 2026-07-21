@@ -80,5 +80,14 @@ const queryKeys = {
 
   // salesReturnable
   salesReturnable: "/sales-returnable",
+
+  // purchaseReturnable
+  purchaseReturnable: "/purchase-returnable",
+
+  // purchaseReturnHeaders
+  purchaseReturnHeaders: "/purchase-returns",
+  addPurchaseReturnHeaders: "/addPurchaseReturnHeaders",
+  deletePurchaseReturnHeaders: "/deletePurchaseReturnHeaders",
+  updatePurchaseReturnHeaders: "/updatePurchaseReturnHeaders",
 };
 export default queryKeys;

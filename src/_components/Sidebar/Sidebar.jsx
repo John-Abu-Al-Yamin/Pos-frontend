@@ -124,7 +124,9 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
     { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
     { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },
-    { key: "إنشاء مرتجع", href: "/sales-returnable", icon: Undo2 },
+    { key: "إنشاء مرتجع بيع", href: "/sales-returnable", icon: Undo2 },
+    { key: "مرتجعات الشراء", href: "/purchase-returns", icon: RotateCcw },
+    { key: "إنشاء مرتجع شراء", href: "/purchase-returnable", icon: Undo2 },
   ];
   return (
     <div

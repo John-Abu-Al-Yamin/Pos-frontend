@@ -32,6 +32,10 @@ import SalesReturnHeaderPage from "@/pages/SalesReturnHeaders/SalesReturnHeaderP
 import DetlaisSalesReturnHeader from "@/pages/SalesReturnHeaders/DetlaisSalesReturnHeader";
 import SalesReturnablePage from "@/pages/SalesReturnable/SalesReturnablePage";
 import ReturnableInvoiceItems from "@/pages/SalesReturnable/ReturnableInvoiceItems";
+import PurchaseReturnablePage from "@/pages/PurchaseReturnable/PurchaseReturnablePage";
+import ReturnablePurchaseInvoiceItems from "@/pages/PurchaseReturnable/ReturnablePurchaseInvoiceItems";
+import PurchaseReturnHeaderPage from "@/pages/PurchaseReturnHeaders/PurchaseReturnHeaderPage";
+import DetlaisPurchaseReturnHeader from "@/pages/PurchaseReturnHeaders/DetlaisPurchaseReturnHeader";
 
 const router = createBrowserRouter([
   {
@@ -190,6 +194,28 @@ const router = createBrowserRouter([
       {
         path: "/sales-returnable/:id",
         element: <ReturnableInvoiceItems />,
+      },
+
+      // Purchase Return Routes
+      {
+        path: "/purchase-returns",
+        element: <PurchaseReturnHeaderPage />,
+      },
+
+      {
+        path: "/purchase-returns/details/:id",
+        element: <DetlaisPurchaseReturnHeader />,
+      },
+
+      // Purchase Returnable Routes
+      {
+        path: "/purchase-returnable",
+        element: <PurchaseReturnablePage />,
+      },
+
+      {
+        path: "/purchase-returnable/:id",
+        element: <ReturnablePurchaseInvoiceItems />,
       },
 
       {

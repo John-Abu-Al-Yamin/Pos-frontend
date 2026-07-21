@@ -13,6 +13,8 @@ const endPoints = {
   salesHeaders: "/sales-headers",
   salesReturns: "/sales-returns",
   salesReturnable: "/sales-returnable",
+  purchaseReturnable: "/purchase-returnable",
+  purchaseReturns: "/purchase-returns",
   users: "/users",
   markupSettings: "/markup-settings",
 };
