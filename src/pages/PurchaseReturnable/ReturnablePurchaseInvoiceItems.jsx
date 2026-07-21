@@ -40,27 +40,8 @@ const ReturnablePurchaseInvoiceItems = () => {
 
   const isMobile = (item) => item.product?.type === "mobile";
 
-  const getInventoryRecords = (item) => {
-    if (
-      Array.isArray(item.inventory_items) &&
-      item.inventory_items.length > 0
-    ) {
-      return item.inventory_items;
-    }
-    if (item.inventory_item?.id != null) {
-      return [item.inventory_item];
-    }
-    return [];
-  };
-
-  const hasSerializedUnits = (item) => getInventoryRecords(item).length > 0;
-
-  const mobileItems = items.filter(
-    (item) => isMobile(item) && hasSerializedUnits(item),
-  );
-  const accessoryItems = items.filter(
-    (item) => !isMobile(item) || !hasSerializedUnits(item),
-  );
+  const mobileItems = items.filter(isMobile);
+  const accessoryItems = items.filter((item) => !isMobile(item));
 
   const handleSerialToggle = (inventoryItemId) => {
     setSelectedSerials((prev) => ({
@@ -94,11 +75,10 @@ const ReturnablePurchaseInvoiceItems = () => {
     let total = 0;
 
     mobileItems.forEach((item) => {
-      getInventoryRecords(item).forEach((inv) => {
-        if (selectedSerials[inv.id]) {
-          total += Number(item.unit_price);
-        }
-      });
+      const inv = item.inventory_item;
+      if (inv && selectedSerials[inv.id]) {
+        total += Number(item.unit_price);
+      }
     });
 
     accessoryItems.forEach((item) => {
@@ -129,16 +109,15 @@ const ReturnablePurchaseInvoiceItems = () => {
     const payload = [];
 
     mobileItems.forEach((item) => {
-      getInventoryRecords(item).forEach((inv) => {
-        if (selectedSerials[inv.id]) {
-          payload.push({
-            purchase_item_id: item.purchase_item_id,
-            inventory_item_id: inv.id,
-            quantity: 1,
-            unit_refund_amount: item.unit_price,
-          });
-        }
-      });
+      const inv = item.inventory_item;
+      if (inv && selectedSerials[inv.id]) {
+        payload.push({
+          purchase_item_id: item.purchase_item_id,
+          inventory_item_id: inv.id,
+          quantity: 1,
+          unit_refund_amount: item.unit_price,
+        });
+      }
     });
 
     accessoryItems.forEach((item) => {
@@ -235,50 +214,50 @@ const ReturnablePurchaseInvoiceItems = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mobileItems.map((item) =>
-                  getInventoryRecords(item).map((inv) => {
-                    const isChecked = selectedSerials[inv.id] || false;
-                    return (
-                      <TableRow
-                        key={inv.id}
-                        className={cn(
-                          "cursor-pointer transition-colors",
-                          isChecked ? "bg-blue-50" : "",
-                        )}
-                        onClick={() => handleSerialToggle(inv.id)}
-                      >
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className={cn(
-                              "h-8 w-8 p-0",
-                              isChecked
-                                ? "bg-black text-white border-black"
-                                : "",
-                            )}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleSerialToggle(inv.id);
-                            }}
-                          >
-                            {isChecked && <Check className="h-4 w-4" />}
-                          </Button>
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          {item.product?.name || "—"}
-                        </TableCell>
-                        <TableCell>{inv.internal_serial || "—"}</TableCell>
-                        <TableCell>{formatCurrency(item.unit_price)}</TableCell>
-                        <TableCell className="font-medium">
-                          {isChecked
-                            ? formatCurrency(item.unit_price)
-                            : formatCurrency(0)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }),
-                )}
+                {mobileItems.map((item) => {
+                  const inv = item.inventory_item;
+                  if (!inv) return null;
+                  const isChecked = selectedSerials[inv.id] || false;
+                  return (
+                    <TableRow
+                      key={`${item.purchase_item_id}-${inv.id}`}
+                      className={cn(
+                        "cursor-pointer transition-colors",
+                        isChecked ? "bg-blue-50" : "",
+                      )}
+                      onClick={() => handleSerialToggle(inv.id)}
+                    >
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={cn(
+                            "h-8 w-8 p-0",
+                            isChecked
+                              ? "bg-black text-white border-black"
+                              : "",
+                          )}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSerialToggle(inv.id);
+                          }}
+                        >
+                          {isChecked && <Check className="h-4 w-4" />}
+                        </Button>
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {item.product?.name || "—"}
+                      </TableCell>
+                      <TableCell>{inv.internal_serial || "—"}</TableCell>
+                      <TableCell>{formatCurrency(item.unit_price)}</TableCell>
+                      <TableCell className="font-medium">
+                        {isChecked
+                          ? formatCurrency(item.unit_price)
+                          : formatCurrency(0)}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
