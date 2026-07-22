@@ -51,7 +51,9 @@ const UpdateMaintenanceOperation = () => {
     values: operation
       ? {
           description: operation.description || "",
-          operation_date: operation.operation_date || "",
+          operation_date: operation.operation_date
+            ? operation.operation_date.split("T")[0]
+            : "",
           technician: operation.technician || "",
           cost: operation.cost ?? "",
           notes: operation.notes || "",

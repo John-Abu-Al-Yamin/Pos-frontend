@@ -27,12 +27,8 @@ import { useGetAllProducts } from "@/hooks/Actions/Product/useCurdsProduct";
 import { useAddMaintenanceUsedParts } from "@/hooks/Actions/MaintenanceSpareParts/useCurdsMaintenanceSpareParts";
 
 const addUsedPartSchema = z.object({
-  product_id: z
-    .string()
-    .min(1, { message: "يرجى اختيار قطعة الغيار" }),
-  quantity: z
-    .string()
-    .min(1, { message: "يرجى إدخال الكمية" }),
+  product_id: z.string().min(1, { message: "يرجى اختيار قطعة الغيار" }),
+  quantity: z.string().min(1, { message: "يرجى إدخال الكمية" }),
 });
 
 const AddMaintenanceSparePart = () => {
@@ -40,7 +36,9 @@ const AddMaintenanceSparePart = () => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
 
-  const { data: productsData } = useGetAllProducts(1, 100, { type: "spare_part" });
+  const { data: productsData } = useGetAllProducts(1, 100, {
+    type: "spare_part",
+  });
   const { mutate: addMutate, isPending } = useAddMaintenanceUsedParts();
 
   const products = productsData?.data?.data ?? [];
@@ -81,7 +79,8 @@ const AddMaintenanceSparePart = () => {
 
       <div className="p-6">
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="max-w-lg space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {" "}
             <div className="space-y-2">
               <Label htmlFor="product_id">قطعة الغيار</Label>
               <Controller
@@ -141,7 +140,6 @@ const AddMaintenanceSparePart = () => {
                 </p>
               )}
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="quantity">الكمية</Label>
               <Input
@@ -157,9 +155,9 @@ const AddMaintenanceSparePart = () => {
                 </p>
               )}
             </div>
-
             <p className="text-xs text-muted-foreground">
-              سيتم احتساب سعر الوحدة والإجمالي تلقائياً بناءً على التسعير المحدد.
+              سيتم احتساب سعر الوحدة والإجمالي تلقائياً بناءً على التسعير
+              المحدد.
             </p>
           </div>
 

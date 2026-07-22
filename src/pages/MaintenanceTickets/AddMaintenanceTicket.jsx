@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Check,
-  ChevronsUpDown,
   User,
   Smartphone,
   Wrench,
@@ -17,34 +15,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-} from "@/components/ui/command";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import { useGetAllCustomers } from "@/hooks/Actions/customers/useCurdsCustomers";
-import { useGetAllProducts } from "@/hooks/Actions/Product/useCurdsProduct";
 import { useAddMaintenanceTickets } from "@/hooks/Actions/MaintenanceTickets/useCurdsMaintenanceTickets";
 import { z } from "zod";
 
 const addMaintenanceTicketSchema = z.object({
   customer_id: z.string().min(1, { message: "يرجى اختيار العميل" }),
-  product_id: z.string().min(1, { message: "يرجى اختيار الجهاز" }),
+  device_type: z.string().min(1, { message: "يرجى إدخال نوع الجهاز" }),
+  brand: z.string().optional(),
+  model: z.string().optional(),
   serial_number: z.string().optional(),
   color: z.string().optional(),
   condition_notes: z.string().optional(),
@@ -56,20 +41,19 @@ const addMaintenanceTicketSchema = z.object({
 
 const AddMaintenanceTicket = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = React.useState(false);
 
   const { data: customersData } = useGetAllCustomers(1, 100);
-  const { data: productsData } = useGetAllProducts(1, 100);
   const { mutate: addMutate, isPending } = useAddMaintenanceTickets();
 
   const customers = customersData?.data?.data ?? [];
-  const products = productsData?.data?.data ?? [];
 
   const form = useForm({
     resolver: zodResolver(addMaintenanceTicketSchema),
     defaultValues: {
       customer_id: "",
-      product_id: "",
+      device_type: "",
+      brand: "",
+      model: "",
       serial_number: "",
       color: "",
       condition_notes: "",
@@ -85,7 +69,9 @@ const AddMaintenanceTicket = () => {
       {
         data: {
           customer_id: Number(formData.customer_id),
-          product_id: Number(formData.product_id),
+          device_type: formData.device_type,
+          brand: formData.brand || undefined,
+          model: formData.model || undefined,
           serial_number: formData.serial_number || undefined,
           color: formData.color || undefined,
           condition_notes: formData.condition_notes || undefined,
@@ -123,11 +109,9 @@ const AddMaintenanceTicket = () => {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
             <User className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold">معلومات العميل والجهاز</h2>
+            <h2 className="text-lg font-semibold">معلومات العميل</h2>
           </div>
-          <p className="text-sm text-muted-foreground mr-7">
-            اختر العميل والجهاز المراد صيانته
-          </p>
+          <p className="text-sm text-muted-foreground mr-7">اختر العميل الذي تطلب الصيانة</p>
         </div>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -161,67 +145,53 @@ const AddMaintenanceTicket = () => {
                 </p>
               )}
             </div>
+          </div>
 
+          <hr className="my-6" />
+
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-1">
+              <Smartphone className="h-5 w-5 text-primary" />
+              <h2 className="text-lg font-semibold">معلومات الجهاز</h2>
+            </div>
+            <p className="text-sm text-muted-foreground mr-7">أدخل بيانات الجهاز المراد صيانته</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="product_id">الجهاز</Label>
-              <Controller
-                name="product_id"
-                control={form.control}
-                render={({ field }) => (
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className="w-full justify-between"
-                      >
-                        {field.value
-                          ? products.find((p) => String(p.id) === field.value)
-                              ?.name
-                          : "اختر الجهاز"}
-                        <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-                      <Command>
-                        <CommandInput placeholder="بحث عن جهاز..." />
-                        <CommandList>
-                          <CommandEmpty>لا توجد نتائج</CommandEmpty>
-                          <CommandGroup>
-                            {products.map((product) => (
-                              <CommandItem
-                                key={product.id}
-                                value={product.name}
-                                onSelect={() => {
-                                  field.onChange(String(product.id));
-                                  setOpen(false);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "ml-auto h-4 w-4",
-                                    field.value === String(product.id)
-                                      ? "opacity-100"
-                                      : "opacity-0",
-                                  )}
-                                />
-                                {product.name}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                )}
+              <Label htmlFor="device_type">نوع الجهاز</Label>
+              <Input
+                id="device_type"
+                placeholder="مثال: Mobile, Laptop, Tablet"
+                {...form.register("device_type")}
               />
-              {form.formState.errors.product_id && (
+              {form.formState.errors.device_type && (
                 <p className="text-sm text-destructive">
-                  {form.formState.errors.product_id.message}
+                  {form.formState.errors.device_type.message}
                 </p>
               )}
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="brand">العلامة التجارية (اختياري)</Label>
+              <Input
+                id="brand"
+                placeholder="مثال: Samsung, Apple"
+                {...form.register("brand")}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="model">الموديل (اختياري)</Label>
+              <Input
+                id="model"
+                placeholder="مثال: iPhone 13, Galaxy A54"
+                {...form.register("model")}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="serial_number">الرقم التسلسلي (اختياري)</Label>
               <Input

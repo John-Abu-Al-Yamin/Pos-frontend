@@ -2,11 +2,12 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import getRequest from "@/hooks/handleRequest/GetRequest";
 import endPoints from "@/hooks/EndPoints/endPoints";
 
-export const useSearchProducts = (search = "", enabled = true) => {
+export const useSearchProducts = (search = "", enabled = true, productType) => {
   const params = {
     search: search || undefined,
     per_page: 20,
   };
+  if (productType) params.type = productType;
 
   const query = useQuery({
     queryKey: ["products", "search", search],

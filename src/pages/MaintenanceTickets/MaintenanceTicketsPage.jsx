@@ -177,7 +177,11 @@ const MaintenanceTicketsPage = () => {
                   </TableCell>
                   <TableCell>{ticket.customer?.name || "—"}</TableCell>
                   <TableCell>
-                    {ticket.maintenance_device?.product?.name || "—"}
+                    {(() => {
+                      const d = ticket.maintenance_device;
+                      const parts = [d?.device_type, d?.brand, d?.model].filter(Boolean);
+                      return parts.length ? parts.join(" - ") : "—";
+                    })()}
                     {ticket.maintenance_device?.serial_number ? ` (${ticket.maintenance_device.serial_number})` : ""}
                   </TableCell>
                   <TableCell>

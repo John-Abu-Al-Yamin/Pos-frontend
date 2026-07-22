@@ -34,14 +34,32 @@ import { useAddMaintenanceUsedParts } from "@/hooks/Actions/MaintenanceSparePart
 import { useDeleteMaintenanceUsedParts } from "@/hooks/Actions/MaintenanceSpareParts/useCurdsMaintenanceSpareParts";
 import { formatCurrency } from "@/lib/utils";
 import {
-  Plus, Pencil, Trash2, Smartphone, User, Hash,
-  DollarSign, CreditCard, CalendarClock, Wrench, Package,
+  Plus,
+  Pencil,
+  Trash2,
+  Smartphone,
+  User,
+  Hash,
+  DollarSign,
+  CreditCard,
+  CalendarClock,
+  Wrench,
+  Package,
 } from "lucide-react";
 
 const statusConfig = {
-  pending: { label: "قيد الانتظار", className: "bg-yellow-100 text-yellow-800" },
-  under_repair: { label: "قيد الإصلاح", className: "bg-blue-100 text-blue-800" },
-  waiting_parts: { label: "بانتظار قطع الغيار", className: "bg-purple-100 text-purple-800" },
+  pending: {
+    label: "قيد الانتظار",
+    className: "bg-yellow-100 text-yellow-800",
+  },
+  under_repair: {
+    label: "قيد الإصلاح",
+    className: "bg-blue-100 text-blue-800",
+  },
+  waiting_parts: {
+    label: "بانتظار قطع الغيار",
+    className: "bg-purple-100 text-purple-800",
+  },
   repaired: { label: "تم الإصلاح", className: "bg-green-100 text-green-800" },
   delivered: { label: "تم التسليم", className: "bg-gray-100 text-gray-800" },
   cancelled: { label: "ملغي", className: "bg-red-100 text-red-800" },
@@ -78,23 +96,32 @@ const DetlaisMaintenanceTicket = () => {
     toast("هل أنت متأكد من حذف هذه العملية؟", {
       action: {
         label: "نعم",
-        onClick: () => deleteOperationMutate({ operationId }, { onSuccess: () => refetch() }),
+        onClick: () =>
+          deleteOperationMutate(
+            { operationId },
+            { onSuccess: () => refetch() },
+          ),
       },
       duration: Infinity,
     });
   };
 
   const confirmDeleteUsedPart = (partId) => {
-    toast("هل أنت متأكد من حذف قطعة الغيار هذه؟ سيتم إعادة الكمية إلى المخزون.", {
-      action: {
-        label: "نعم",
-        onClick: () => deleteUsedPartMutate({ partId }, { onSuccess: () => refetch() }),
+    toast(
+      "هل أنت متأكد من حذف قطعة الغيار هذه؟ سيتم إعادة الكمية إلى المخزون.",
+      {
+        action: {
+          label: "نعم",
+          onClick: () =>
+            deleteUsedPartMutate({ partId }, { onSuccess: () => refetch() }),
+        },
+        duration: Infinity,
       },
-      duration: Infinity,
-    });
+    );
   };
 
   const handleStatusChange = (newStatus) => {
+    if (newStatus === ticket.status) return;
     updateStatusMutate(id, newStatus, {
       onSuccess: () => refetch(),
     });
@@ -153,10 +180,13 @@ const DetlaisMaintenanceTicket = () => {
   const canMutate = !["delivered", "cancelled"].includes(ticket.status);
   const device = ticket.maintenance_device;
 
-  const partsTotal = ticket.parts_total ?? ticket.used_parts_sum_total_price ?? 0;
+  const partsTotal =
+    ticket.parts_total ?? ticket.used_parts_sum_total_price ?? 0;
   const laborCost = ticket.labor_cost ?? ticket.operations_sum_cost ?? 0;
   const grandTotal = ticket.grand_total ?? ticket.total_cost ?? 0;
-  const remainingAmount = ticket.remaining_amount ?? Math.max(0, grandTotal - (ticket.advance_payment || 0));
+  const remainingAmount =
+    ticket.remaining_amount ??
+    Math.max(0, grandTotal - (ticket.advance_payment || 0));
 
   return (
     <div>
@@ -168,16 +198,18 @@ const DetlaisMaintenanceTicket = () => {
       />
 
       <div className="p-6 mb-6">
-        {canMutate && allowedTransitions.length > 0 && (
+        {canMutate && (allowedTransitions.length > 0) && (
           <div className="flex items-center gap-3 mb-6">
-            <span className="text-sm font-medium text-muted-foreground">تغيير الحالة:</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              تغيير الحالة:
+            </span>
             <div className="w-48">
-              <Select onValueChange={handleStatusChange}>
+              <Select value={ticket.status} onValueChange={handleStatusChange}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="اختر حالة جديدة" />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {allowedTransitions.map((st) => (
+                  {[ticket.status, ...allowedTransitions].map((st) => (
                     <SelectItem key={st} value={st}>
                       {statusConfig[st]?.label}
                     </SelectItem>
@@ -189,7 +221,11 @@ const DetlaisMaintenanceTicket = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          <InfoCard icon={Hash} label="رقم التذكرة" value={ticket.ticket_number} />
+          <InfoCard
+            icon={Hash}
+            label="رقم التذكرة"
+            value={ticket.ticket_number}
+          />
           <InfoCard
             icon={User}
             label="العميل"
@@ -198,11 +234,21 @@ const DetlaisMaintenanceTicket = () => {
           />
           <InfoCard
             icon={Smartphone}
-            label="الجهاز"
-            value={device?.product?.name || "—"}
+            label="نوع الجهاز"
+            value={device?.device_type || "—"}
             accent
           />
-          <InfoCard icon={Hash} label="الرقم التسلسلي" value={device?.serial_number || "—"} />
+          <InfoCard
+            icon={Hash}
+            label="العلامة التجارية"
+            value={device?.brand || "—"}
+          />
+          <InfoCard icon={Hash} label="الموديل" value={device?.model || "—"} />
+          <InfoCard
+            icon={Hash}
+            label="الرقم التسلسلي"
+            value={device?.serial_number || "—"}
+          />
           <InfoCard icon={Hash} label="اللون" value={device?.color || "—"} />
           <InfoCard
             icon={CalendarClock}
@@ -228,7 +274,9 @@ const DetlaisMaintenanceTicket = () => {
           </div>
           {ticket.delivery_date && (
             <div className="space-y-1">
-              <p className="text-xs text-muted-foreground">تاريخ التسليم المتوقع</p>
+              <p className="text-xs text-muted-foreground">
+                تاريخ التسليم المتوقع
+              </p>
               <p className="text-sm font-medium">{ticket.delivery_date}</p>
             </div>
           )}
@@ -243,7 +291,6 @@ const DetlaisMaintenanceTicket = () => {
       </div>
 
       <div className="space-y-8 px-6 pb-8">
-
         <div>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-lg font-semibold flex items-center gap-2">
@@ -254,9 +301,7 @@ const DetlaisMaintenanceTicket = () => {
               <Button
                 variant="default"
                 size="sm"
-                onClick={() =>
-                  navigate(`/maintenance-operations/add/${id}`)
-                }
+                onClick={() => navigate(`/maintenance-operations/add/${id}`)}
               >
                 <Plus className="h-4 w-4" />
                 إضافة عملية
@@ -284,7 +329,9 @@ const DetlaisMaintenanceTicket = () => {
                     <TableCell>{op.description}</TableCell>
                     <TableCell>{op.operation_date || "—"}</TableCell>
                     <TableCell>{op.technician || "—"}</TableCell>
-                    <TableCell>{op.cost ? formatCurrency(op.cost) : "—"}</TableCell>
+                    <TableCell>
+                      {op.cost ? formatCurrency(op.cost) : "—"}
+                    </TableCell>
                     <TableCell>{op.notes || "—"}</TableCell>
                     <TableCell>
                       {canMutate && (
@@ -355,9 +402,7 @@ const DetlaisMaintenanceTicket = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() =>
-                    navigate(`/maintenance-used-parts/add/${id}`)
-                  }
+                  onClick={() => navigate(`/maintenance-used-parts/add/${id}`)}
                 >
                   <Package className="h-4 w-4" />
                   إضافة (قائمة كاملة)
@@ -375,6 +420,7 @@ const DetlaisMaintenanceTicket = () => {
                     value={newPartProduct?.id}
                     onSelect={(product) => setNewPartProduct(product)}
                     placeholder="اختر قطعة الغيار..."
+                    productType="spare_part"
                   />
                 </div>
                 <div className="w-24 space-y-1">
@@ -480,19 +526,33 @@ const DetlaisMaintenanceTicket = () => {
           <h2 className="text-lg font-semibold mb-4">ملخص الفاتورة</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="rounded-lg bg-blue-50 p-4 border border-blue-100">
-              <p className="text-xs font-medium text-blue-600 mb-1">إجمالي قطع الغيار</p>
-              <p className="text-xl font-bold text-blue-700">{formatCurrency(partsTotal)}</p>
+              <p className="text-xs font-medium text-blue-600 mb-1">
+                إجمالي قطع الغيار
+              </p>
+              <p className="text-xl font-bold text-blue-700">
+                {formatCurrency(partsTotal)}
+              </p>
             </div>
             <div className="rounded-lg bg-green-50 p-4 border border-green-100">
-              <p className="text-xs font-medium text-green-600 mb-1">تكلفة العمالة</p>
-              <p className="text-xl font-bold text-green-700">{formatCurrency(laborCost)}</p>
+              <p className="text-xs font-medium text-green-600 mb-1">
+                تكلفة العمالة
+              </p>
+              <p className="text-xl font-bold text-green-700">
+                {formatCurrency(laborCost)}
+              </p>
             </div>
             <div className="rounded-lg bg-primary/5 p-4 border border-primary/20">
-              <p className="text-xs font-medium text-primary mb-1">الإجمالي الكلي</p>
-              <p className="text-xl font-bold text-primary">{formatCurrency(grandTotal)}</p>
+              <p className="text-xs font-medium text-primary mb-1">
+                الإجمالي الكلي
+              </p>
+              <p className="text-xl font-bold text-primary">
+                {formatCurrency(grandTotal)}
+              </p>
             </div>
             <div className="rounded-lg bg-purple-50 p-4 border border-purple-100">
-              <p className="text-xs font-medium text-purple-600 mb-1">المدفوع مقدمًا</p>
+              <p className="text-xs font-medium text-purple-600 mb-1">
+                المدفوع مقدمًا
+              </p>
               {canMutate && editingAdvance ? (
                 <div className="flex items-center gap-1 mt-1">
                   <Input
@@ -503,10 +563,20 @@ const DetlaisMaintenanceTicket = () => {
                     onChange={(e) => setAdvanceValue(e.target.value)}
                     className="h-8 text-sm"
                   />
-                  <Button size="sm" variant="default" className="h-8 px-2" onClick={handleSaveAdvance}>
+                  <Button
+                    size="sm"
+                    variant="default"
+                    className="h-8 px-2"
+                    onClick={handleSaveAdvance}
+                  >
                     حفظ
                   </Button>
-                  <Button size="sm" variant="outline" className="h-8 px-2" onClick={() => setEditingAdvance(false)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 px-2"
+                    onClick={() => setEditingAdvance(false)}
+                  >
                     إلغاء
                   </Button>
                 </div>
@@ -532,12 +602,15 @@ const DetlaisMaintenanceTicket = () => {
               )}
             </div>
             <div className="rounded-lg bg-amber-50 p-4 border border-amber-100">
-              <p className="text-xs font-medium text-amber-600 mb-1">المبلغ المتبقي</p>
-              <p className="text-xl font-bold text-amber-700">{formatCurrency(remainingAmount)}</p>
+              <p className="text-xs font-medium text-amber-600 mb-1">
+                المبلغ المتبقي
+              </p>
+              <p className="text-xl font-bold text-amber-700">
+                {formatCurrency(remainingAmount)}
+              </p>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

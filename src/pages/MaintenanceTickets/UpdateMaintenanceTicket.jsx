@@ -25,21 +25,11 @@ import {
 } from "@/hooks/Actions/MaintenanceTickets/useCurdsMaintenanceTickets";
 
 const updateMaintenanceTicketSchema = z.object({
-  customer_id: z
-    .string()
-    .min(1, { message: "يرجى اختيار العميل" }),
-  problem_description: z
-    .string()
-    .min(1, { message: "يرجى إدخال وصف المشكلة" }),
-  received_date: z
-    .string()
-    .min(1, { message: "يرجى إدخال تاريخ الاستلام" }),
-  advance_payment: z
-    .string()
-    .optional(),
-  notes: z
-    .string()
-    .optional(),
+  customer_id: z.string().min(1, { message: "يرجى اختيار العميل" }),
+  problem_description: z.string().min(1, { message: "يرجى إدخال وصف المشكلة" }),
+  received_date: z.string().min(1, { message: "يرجى إدخال تاريخ الاستلام" }),
+  advance_payment: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 const lockedStatuses = ["repaired", "delivered", "cancelled"];
@@ -75,7 +65,9 @@ const UpdateMaintenanceTicket = () => {
       form.reset({
         customer_id: String(ticket.customer_id),
         problem_description: ticket.problem_description || "",
-        received_date: ticket.received_date || "",
+        received_date: ticket.received_date
+          ? ticket.received_date.split("T")[0]
+          : "",
         advance_payment: ticket.advance_payment ?? "",
         notes: ticket.notes || "",
       });
@@ -89,7 +81,9 @@ const UpdateMaintenanceTicket = () => {
           customer_id: Number(formData.customer_id),
           problem_description: formData.problem_description,
           received_date: formData.received_date,
-          advance_payment: formData.advance_payment ? Number(formData.advance_payment) : undefined,
+          advance_payment: formData.advance_payment
+            ? Number(formData.advance_payment)
+            : undefined,
           notes: formData.notes || undefined,
         },
       },

@@ -23,6 +23,7 @@ const ProductSearchCombobox = ({
   onSelect,
   placeholder = "اختر المنتج",
   disabled = false,
+  productType,
 }) => {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -30,6 +31,7 @@ const ProductSearchCombobox = ({
   const { products, isPending, isFetching } = useSearchProducts(
     search,
     open,
+    productType,
   );
 
   const selectedProduct = products.find(
