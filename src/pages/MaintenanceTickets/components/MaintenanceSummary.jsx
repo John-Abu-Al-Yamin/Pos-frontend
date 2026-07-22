@@ -15,6 +15,7 @@ const MaintenanceSummary = ({ ticket, headerId, canMutate, refetchTicket, onPayA
   const grandTotal = Number(ticket.total_cost || 0);
   const paidAmount = Number(ticket.advance_payment || 0);
   const remainingAmount = Math.max(0, grandTotal - paidAmount);
+  const canEditAdvance = canMutate && ticket.status !== "repaired";
 
   const handleSaveAdvance = () => {
     const val = parseFloat(advanceValue);
@@ -59,7 +60,7 @@ const MaintenanceSummary = ({ ticket, headerId, canMutate, refetchTicket, onPayA
           <p className="text-xs font-medium text-purple-600 mb-1">
             المدفوع مقدمًا
           </p>
-          {canMutate && editingAdvance ? (
+          {canEditAdvance && editingAdvance ? (
             <div className="flex items-center gap-1 mt-1">
               <Input
                 type="number"
@@ -91,7 +92,7 @@ const MaintenanceSummary = ({ ticket, headerId, canMutate, refetchTicket, onPayA
               <p className="text-xl font-bold text-purple-700">
                 {formatCurrency(paidAmount)}
               </p>
-              {canMutate && (
+              {canEditAdvance && (
                 <Button
                   variant="ghost"
                   size="sm"

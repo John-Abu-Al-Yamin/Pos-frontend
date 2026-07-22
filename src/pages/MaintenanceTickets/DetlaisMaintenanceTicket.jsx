@@ -46,7 +46,7 @@ const statusTransitions = {
   pending: ["under_repair", "cancelled"],
   under_repair: ["waiting_parts", "repaired", "cancelled"],
   waiting_parts: ["under_repair", "cancelled"],
-  repaired: ["delivered", "cancelled"],
+  repaired: ["cancelled"],
   delivered: [],
   cancelled: [],
 };

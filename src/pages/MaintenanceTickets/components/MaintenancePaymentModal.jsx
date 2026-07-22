@@ -10,12 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/utils";
-import { useUpdateMaintenanceStatus, useUpdateMaintenanceTickets } from "@/hooks/Actions/MaintenanceTickets/useCurdsMaintenanceTickets";
+import { useUpdateMaintenanceStatus } from "@/hooks/Actions/MaintenanceTickets/useCurdsMaintenanceTickets";
 import { toast } from "sonner";
 
 const MaintenancePaymentModal = ({ isOpen, onClose, ticket, headerId, refetchTicket }) => {
   const { mutate: updateStatusMutate } = useUpdateMaintenanceStatus();
-  const { mutate: updateHeaderMutate } = useUpdateMaintenanceTickets(headerId);
 
   const grandTotal = Number(ticket.total_cost || 0);
   const paidAmount = Number(ticket.advance_payment || 0);
@@ -32,30 +31,19 @@ const MaintenancePaymentModal = ({ isOpen, onClose, ticket, headerId, refetchTic
 
     setIsProcessing(true);
 
-    // First update the advance_payment to fully paid
-    const newPaidAmount = paidAmount + Number(paymentInput);
-    
-    updateHeaderMutate(
-      { data: { advance_payment: newPaidAmount } },
+    updateStatusMutate(
+      headerId,
+      "delivered",
       {
         onSuccess: () => {
-          // Then update status to delivered
-          updateStatusMutate(
-            headerId, 
-            "delivered",
-            {
-              onSuccess: () => {
-                toast.success("تم تسديد المبلغ وتسليم الجهاز بنجاح!");
-                setIsProcessing(false);
-                onClose();
-                refetchTicket();
-              },
-              onError: () => setIsProcessing(false)
-            }
-          );
+          toast.success("تم تسديد المبلغ وتسليم الجهاز بنجاح!");
+          setIsProcessing(false);
+          onClose();
+          refetchTicket();
         },
-        onError: () => setIsProcessing(false)
-      }
+        onError: () => setIsProcessing(false),
+      },
+      paymentInput,
     );
   };
 

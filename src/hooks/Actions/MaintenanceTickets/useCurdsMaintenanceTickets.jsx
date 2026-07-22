@@ -89,9 +89,13 @@ export const useUpdateMaintenanceStatus = () => {
     [queryKeys.maintenanceHeaders],
   );
 
-  const mutate = (id, status, options) => {
+  const mutate = (id, status, options, paidAmount) => {
+    const data = { status };
+    if (paidAmount !== undefined && paidAmount !== null) {
+      data.paid_amount = paidAmount;
+    }
     originalMutate(
-      { url: `${endPoints.maintenanceHeaders}/${id}/status`, data: { status } },
+      { url: `${endPoints.maintenanceHeaders}/${id}/status`, data },
       options,
     );
   };
