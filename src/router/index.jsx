@@ -36,6 +36,14 @@ import PurchaseReturnablePage from "@/pages/PurchaseReturnable/PurchaseReturnabl
 import ReturnablePurchaseInvoiceItems from "@/pages/PurchaseReturnable/ReturnablePurchaseInvoiceItems";
 import PurchaseReturnHeaderPage from "@/pages/PurchaseReturnHeaders/PurchaseReturnHeaderPage";
 import DetlaisPurchaseReturnHeader from "@/pages/PurchaseReturnHeaders/DetlaisPurchaseReturnHeader";
+import MaintenanceTicketsPage from "@/pages/MaintenanceTickets/MaintenanceTicketsPage";
+import AddMaintenanceTicket from "@/pages/MaintenanceTickets/AddMaintenanceTicket";
+import UpdateMaintenanceTicket from "@/pages/MaintenanceTickets/UpdateMaintenanceTicket";
+import DetlaisMaintenanceTicket from "@/pages/MaintenanceTickets/DetlaisMaintenanceTicket";
+import AddMaintenanceOperation from "@/pages/MaintenanceOperations/AddMaintenanceOperation";
+import UpdateMaintenanceOperation from "@/pages/MaintenanceOperations/UpdateMaintenanceOperation";
+import AddMaintenanceUsedPart from "@/pages/MaintenanceSpareParts/AddMaintenanceSparePart";
+import UpdateMaintenanceUsedPart from "@/pages/MaintenanceSpareParts/UpdateMaintenanceSparePart";
 
 const router = createBrowserRouter([
   {
@@ -216,6 +224,49 @@ const router = createBrowserRouter([
       {
         path: "/purchase-returnable/:id",
         element: <ReturnablePurchaseInvoiceItems />,
+      },
+
+      // Maintenance Tickets Routes
+      {
+        path: "/maintenance-tickets",
+        element: <MaintenanceTicketsPage />,
+      },
+
+      {
+        path: "/maintenance-tickets/add",
+        element: <AddMaintenanceTicket />,
+      },
+
+      {
+        path: "/maintenance-tickets/update/:id",
+        element: <UpdateMaintenanceTicket />,
+      },
+
+      {
+        path: "/maintenance-tickets/details/:id",
+        element: <DetlaisMaintenanceTicket />,
+      },
+
+      // Maintenance Operations Routes
+      {
+        path: "/maintenance-operations/add/:id",
+        element: <AddMaintenanceOperation />,
+      },
+
+      {
+        path: "/maintenance-operations/update/:id",
+        element: <UpdateMaintenanceOperation />,
+      },
+
+      // Maintenance Used Parts Routes
+      {
+        path: "/maintenance-used-parts/add/:id",
+        element: <AddMaintenanceUsedPart />,
+      },
+
+      {
+        path: "/maintenance-used-parts/update/:id",
+        element: <UpdateMaintenanceUsedPart />,
       },
 
       {

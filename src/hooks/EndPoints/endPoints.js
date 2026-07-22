@@ -17,6 +17,8 @@ const endPoints = {
   purchaseReturns: "/purchase-returns",
   users: "/users",
   markupSettings: "/markup-settings",
+  maintenanceTickets: "/maintenance-tickets",
+  maintenanceHeaders: "/maintenance-headers",
 };
 
 export default endPoints;

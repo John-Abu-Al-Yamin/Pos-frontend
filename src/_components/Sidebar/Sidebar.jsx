@@ -14,6 +14,7 @@ import {
   LogOut,
   ChevronDown,
   Percent,
+  Wrench,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -121,6 +122,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "المنتجات", href: "/products", icon: Package },
     { key: "المشتريات", href: "/purchase-headers", icon: Package },
     { key: "مشتريات المستعمل", href: "/used-purchase-headers", icon: Package },
+    { key: "الصيانة", href: "/maintenance-tickets", icon: Wrench },
     { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
     { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
     { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },

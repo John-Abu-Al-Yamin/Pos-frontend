@@ -89,5 +89,20 @@ const queryKeys = {
   addPurchaseReturnHeaders: "/addPurchaseReturnHeaders",
   deletePurchaseReturnHeaders: "/deletePurchaseReturnHeaders",
   updatePurchaseReturnHeaders: "/updatePurchaseReturnHeaders",
+
+  // maintenanceHeaders
+  maintenanceHeaders: "/maintenance-headers",
+  addMaintenanceHeaders: "/addMaintenanceHeaders",
+  deleteMaintenanceHeaders: "/deleteMaintenanceHeaders",
+
+  // maintenanceOperations
+  maintenanceOperations: "/maintenance-operations",
+  addMaintenanceOperations: "/addMaintenanceOperations",
+  deleteMaintenanceOperations: "/deleteMaintenanceOperations",
+
+  // maintenanceUsedParts
+  maintenanceUsedParts: "/maintenance-used-parts",
+  addMaintenanceUsedParts: "/addMaintenanceUsedParts",
+  deleteMaintenanceUsedParts: "/deleteMaintenanceUsedParts",
 };
 export default queryKeys;
