@@ -161,7 +161,10 @@ const DetlaisMaintenanceTicket = () => {
           headerId={id} 
           canMutate={canMutate} 
           refetchTicket={refetch} 
-          onPayAndDeliver={() => setIsPaymentModalOpen(true)}
+          onPayAndDeliver={() => {
+            refetch();
+            setIsPaymentModalOpen(true);
+          }}
         />
       </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -23,9 +23,20 @@ const MaintenancePaymentModal = ({ isOpen, onClose, ticket, headerId, refetchTic
   const [paymentInput, setPaymentInput] = useState(remainingAmount);
   const [isProcessing, setIsProcessing] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      setPaymentInput(remainingAmount);
+    }
+  }, [isOpen, remainingAmount]);
+
   const handleConfirm = () => {
     if (paymentInput < remainingAmount) {
       toast.error("المبلغ المدخل أقل من المبلغ المتبقي لتسليم الجهاز.");
+      return;
+    }
+
+    if (paymentInput > remainingAmount) {
+      toast.error("المبلغ المدخل يتجاوز المبلغ المطلوب. أقصى مبلغ مسموح به هو " + formatCurrency(remainingAmount) + ".");
       return;
     }
 
@@ -76,6 +87,7 @@ const MaintenancePaymentModal = ({ isOpen, onClose, ticket, headerId, refetchTic
               id="payment"
               type="number"
               min={remainingAmount}
+              max={remainingAmount}
               step="any"
               value={paymentInput}
               onChange={(e) => setPaymentInput(Number(e.target.value))}

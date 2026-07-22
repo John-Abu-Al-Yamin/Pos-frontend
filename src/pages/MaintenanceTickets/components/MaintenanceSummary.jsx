@@ -58,7 +58,7 @@ const MaintenanceSummary = ({ ticket, headerId, canMutate, refetchTicket, onPayA
         
         <div className="rounded-lg bg-purple-50 p-4 border border-purple-100">
           <p className="text-xs font-medium text-purple-600 mb-1">
-            المدفوع مقدمًا
+            المدفوع الحالي
           </p>
           {canEditAdvance && editingAdvance ? (
             <div className="flex items-center gap-1 mt-1">
