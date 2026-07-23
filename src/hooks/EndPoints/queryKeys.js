@@ -110,5 +110,23 @@ const queryKeys = {
   addExpenses: "/addExpenses",
   deleteExpenses: "/deleteExpenses",
   updateExpenses: "/updateExpenses",
+
+  // salaryAssignments
+  salaryAssignments: "/salary-assignments",
+  addSalaryAssignments: "/addSalaryAssignments",
+  deleteSalaryAssignments: "/deleteSalaryAssignments",
+  updateSalaryAssignments: "/updateSalaryAssignments",
+
+  // salaryPayments
+  salaryPayments: "/salary-payments",
+  addSalaryPayments: "/addSalaryPayments",
+  deleteSalaryPayments: "/deleteSalaryPayments",
+  updateSalaryPayments: "/updateSalaryPayments",
+
+  // salaryPaymentItems
+  salaryPaymentItems: "/salary-payment-items",
+  addSalaryPaymentItems: "/addSalaryPaymentItems",
+  deleteSalaryPaymentItems: "/deleteSalaryPaymentItems",
+  updateSalaryPaymentItems: "/updateSalaryPaymentItems",
 };
 export default queryKeys;

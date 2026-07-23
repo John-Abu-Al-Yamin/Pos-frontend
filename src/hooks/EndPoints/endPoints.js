@@ -21,6 +21,11 @@ const endPoints = {
   maintenanceHeaders: "/maintenance-headers",
   expenseCategories: "/expense-categories",
   expenses: "/expenses",
+
+  // salary
+  salaryAssignments: "/salary-assignments",
+  salaryPayments: "/salary-payments",
+  salaryPaymentItems: "/salary-payment-items",
 };
 
 export default endPoints;

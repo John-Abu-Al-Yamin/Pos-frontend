@@ -131,6 +131,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "مرتجعات الشراء", href: "/purchase-returns", icon: RotateCcw },
     { key: "إنشاء مرتجع شراء", href: "/purchase-returnable", icon: Undo2 },
     { key: "المصروفات", href: "/expenses", icon: DollarSign },
+    { key: "تخصيصات الرواتب", href: "/salary-assignments", icon: DollarSign },
+    { key: "دفعات الرواتب", href: "/salary-payments", icon: DollarSign },
   ];
   return (
     <div

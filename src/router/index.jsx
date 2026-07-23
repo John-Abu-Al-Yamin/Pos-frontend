@@ -49,6 +49,14 @@ import AddExpense from "@/pages/expenses/AddExpense";
 import UpdateExpense from "@/pages/expenses/UpdateExpense";
 import DetlaisExpense from "@/pages/expenses/DetlaisExpense";
 
+// Salary
+import SalaryAssignmentsPage from "@/pages/salary/SalaryAssignmentsPage";
+import AddSalaryAssignment from "@/pages/salary/AddSalaryAssignment";
+import UpdateSalaryAssignment from "@/pages/salary/UpdateSalaryAssignment";
+import SalaryPaymentsPage from "@/pages/salary/SalaryPaymentsPage";
+import AddSalaryPayment from "@/pages/salary/AddSalaryPayment";
+import DetlaisSalaryPayment from "@/pages/salary/DetlaisSalaryPayment";
+
 const router = createBrowserRouter([
   {
     path: "/auth",
@@ -284,6 +292,34 @@ const router = createBrowserRouter([
       {
         path: "/expenses/details/:id",
         element: <DetlaisExpense />,
+      },
+
+      // Salary Assignments Routes
+      {
+        path: "/salary-assignments",
+        element: <SalaryAssignmentsPage />,
+      },
+      {
+        path: "/salary-assignments/add",
+        element: <AddSalaryAssignment />,
+      },
+      {
+        path: "/salary-assignments/update/:id",
+        element: <UpdateSalaryAssignment />,
+      },
+
+      // Salary Payments Routes
+      {
+        path: "/salary-payments",
+        element: <SalaryPaymentsPage />,
+      },
+      {
+        path: "/salary-payments/add",
+        element: <AddSalaryPayment />,
+      },
+      {
+        path: "/salary-payments/details/:id",
+        element: <DetlaisSalaryPayment />,
       },
 
       {

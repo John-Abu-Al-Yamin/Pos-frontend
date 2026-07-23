@@ -1,8 +1,10 @@
-import { endPoints } from "@/config/endPoints";
-import { queryKeys } from "@/config/queryKes";
+import endPoints from "@/hooks/EndPoints/endPoints";
+import queryKeys from "@/hooks/EndPoints/queryKeys";
 import useDeleteData from "@/hooks/curdsHook/useDeleteData";
 import useGetData from "@/hooks/curdsHook/useGetData";
-import usePatchData from "@/hooks/curdsHook/usePatchData";
+// import usePatchData from "@/hooks/curdsHook/usePatchData";
+import usePutData from "@/hooks/curdsHook/usePutData";
+
 import usePostData from "@/hooks/curdsHook/usePostData";
 
 /* Main Units*/
@@ -45,7 +47,7 @@ export const useDeleteUser = () => {
 };
 
 export const useUpdateUser = () => {
-  const { mutate, data, error, isPending, isSuccess, isError } = usePatchData(
+  const { mutate, data, error, isPending, isSuccess, isError } = usePutData(
     endPoints.users,
     [queryKeys.updateUsers],
     [queryKeys.users, queryKeys.updateUsers, queryKeys.profile]

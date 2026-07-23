@@ -1,10 +1,10 @@
-import { useAuthContext } from "@/context/AuthContext";
+    // import { useAuthContext } from "@/context/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import patchRequest from "../handleRequest/PatchRequest";
 
 const usePatchData = (url, mutationKeys, invalidateQueryKey) => {
-  const { token } = useAuthContext();
+  // const { token } = useAuthContext();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
