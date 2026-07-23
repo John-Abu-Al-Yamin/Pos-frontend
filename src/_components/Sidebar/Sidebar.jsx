@@ -157,8 +157,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-2">
-        {navItems.map((item) => {
+{/* Navigation */}
+<nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 space-y-1 scrollbar-thin">        {navItems.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink

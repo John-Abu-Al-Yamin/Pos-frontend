@@ -9,11 +9,19 @@ import usePostData from "@/hooks/curdsHook/usePostData";
 
 /* Main Units*/
 
-export const useGetAllUsers = (page = 1, per_page = 20) => {
+export const useGetAllUsers = (page = 1, per_page = 20, filters = {}) => {
+  const params = {
+    page,
+    per_page,
+    ...Object.fromEntries(
+      Object.entries(filters).filter(([_, v]) => v !== undefined && v !== ""),
+    ),
+  };
+
   const { data, isPending, refetch, ...rest } = useGetData({
     url: endPoints.users,
-    params: { page, per_page },
-    queryKeys: [queryKeys.users, page, per_page],
+    params,
+    queryKeys: [queryKeys.users, page, per_page, JSON.stringify(filters)],
   });
 
   return {

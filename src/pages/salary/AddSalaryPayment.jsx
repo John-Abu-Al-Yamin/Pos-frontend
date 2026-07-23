@@ -22,7 +22,7 @@ const AddSalaryPayment = () => {
   const navigate = useNavigate();
 
   const { mutate: addMutate, isPending } = useAddSalaryPayment();
-  const { data: usersData } = useGetAllUsers(1, 500);
+  const { data: usersData } = useGetAllUsers(1, 500, { role: "employee" });
 
   const users = usersData?.data?.data ?? [];
 

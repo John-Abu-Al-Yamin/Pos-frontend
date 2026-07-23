@@ -25,7 +25,7 @@ const AddSalaryAssignment = () => {
   const navigate = useNavigate();
 
   const { mutate: addMutate, isPending } = useAddSalaryAssignment();
-  const { data: usersData } = useGetAllUsers(1, 500);
+  const { data: usersData } = useGetAllUsers(1, 500, { role: "employee" });
 
   const users = usersData?.data?.data ?? [];
 

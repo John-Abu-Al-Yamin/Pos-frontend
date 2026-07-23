@@ -30,7 +30,7 @@ const UpdateSalaryAssignment = () => {
 
   const { data: assignmentData, isPending: isFetching } = useGetSalaryAssignmentById(id);
   const { mutate: updateMutate, isPending: isUpdating } = useUpdateSalaryAssignment();
-  const { data: usersData } = useGetAllUsers(1, 500);
+  const { data: usersData } = useGetAllUsers(1, 500, { role: "employee" });
 
   const assignment = assignmentData?.data?.data;
   const users = usersData?.data?.data ?? [];
