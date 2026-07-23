@@ -44,6 +44,10 @@ import AddMaintenanceOperation from "@/pages/MaintenanceOperations/AddMaintenanc
 import UpdateMaintenanceOperation from "@/pages/MaintenanceOperations/UpdateMaintenanceOperation";
 import AddMaintenanceUsedPart from "@/pages/MaintenanceSpareParts/AddMaintenanceSparePart";
 import UpdateMaintenanceUsedPart from "@/pages/MaintenanceSpareParts/UpdateMaintenanceSparePart";
+import ExpensesPage from "@/pages/expenses/ExpensesPage";
+import AddExpense from "@/pages/expenses/AddExpense";
+import UpdateExpense from "@/pages/expenses/UpdateExpense";
+import DetlaisExpense from "@/pages/expenses/DetlaisExpense";
 
 const router = createBrowserRouter([
   {
@@ -260,13 +264,26 @@ const router = createBrowserRouter([
 
       // Maintenance Used Parts Routes
       {
-        path: "/maintenance-used-parts/add/:id",
-        element: <AddMaintenanceUsedPart />,
-      },
-
-      {
         path: "/maintenance-used-parts/update/:id",
         element: <UpdateMaintenanceUsedPart />,
+      },
+
+      // Expenses Routes
+      {
+        path: "/expenses",
+        element: <ExpensesPage />,
+      },
+      {
+        path: "/expenses/add",
+        element: <AddExpense />,
+      },
+      {
+        path: "/expenses/update/:id",
+        element: <UpdateExpense />,
+      },
+      {
+        path: "/expenses/details/:id",
+        element: <DetlaisExpense />,
       },
 
       {

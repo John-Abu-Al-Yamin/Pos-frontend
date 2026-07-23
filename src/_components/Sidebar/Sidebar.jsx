@@ -15,6 +15,7 @@ import {
   ChevronDown,
   Percent,
   Wrench,
+  DollarSign,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -129,6 +130,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     { key: "إنشاء مرتجع بيع", href: "/sales-returnable", icon: Undo2 },
     { key: "مرتجعات الشراء", href: "/purchase-returns", icon: RotateCcw },
     { key: "إنشاء مرتجع شراء", href: "/purchase-returnable", icon: Undo2 },
+    { key: "المصروفات", href: "/expenses", icon: DollarSign },
   ];
   return (
     <div

@@ -104,5 +104,11 @@ const queryKeys = {
   maintenanceUsedParts: "/maintenance-used-parts",
   addMaintenanceUsedParts: "/addMaintenanceUsedParts",
   deleteMaintenanceUsedParts: "/deleteMaintenanceUsedParts",
+
+  // expenses
+  expenses: "/expenses",
+  addExpenses: "/addExpenses",
+  deleteExpenses: "/deleteExpenses",
+  updateExpenses: "/updateExpenses",
 };
 export default queryKeys;

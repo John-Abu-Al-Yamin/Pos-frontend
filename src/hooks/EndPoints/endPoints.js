@@ -19,6 +19,8 @@ const endPoints = {
   markupSettings: "/markup-settings",
   maintenanceTickets: "/maintenance-tickets",
   maintenanceHeaders: "/maintenance-headers",
+  expenseCategories: "/expense-categories",
+  expenses: "/expenses",
 };
 
 export default endPoints;
