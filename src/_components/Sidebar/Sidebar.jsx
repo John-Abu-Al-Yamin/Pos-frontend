@@ -115,24 +115,49 @@ const SidebarSettingsDropdown = ({ isOpen }) => {
 const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
 
-  const navItems = [
-    { key: "التصنيفات", href: "/categories", icon: Tags },
-    { key: "الموردين", href: "/suppliers", icon: Truck },
-    { key: "العملاء", href: "/customers", icon: Users },
-    { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
-    { key: "المنتجات", href: "/products", icon: Package },
-    { key: "المشتريات", href: "/purchase-headers", icon: Package },
-    { key: "مشتريات المستعمل", href: "/used-purchase-headers", icon: Package },
-    { key: "الصيانة", href: "/maintenance-tickets", icon: Wrench },
-    { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
-    { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
-    { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },
-    { key: "إنشاء مرتجع بيع", href: "/sales-returnable", icon: Undo2 },
-    { key: "مرتجعات الشراء", href: "/purchase-returns", icon: RotateCcw },
-    { key: "إنشاء مرتجع شراء", href: "/purchase-returnable", icon: Undo2 },
-    { key: "المصروفات", href: "/expenses", icon: DollarSign },
-    { key: "تخصيصات الرواتب", href: "/salary-assignments", icon: DollarSign },
-    { key: "دفعات الرواتب", href: "/salary-payments", icon: DollarSign },
+  const navGroups = [
+    {
+      section: "المبيعات",
+      items: [
+        { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
+        { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
+        { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },
+        { key: "إنشاء مرتجع بيع", href: "/sales-returnable", icon: Undo2 },
+        { key: "العملاء", href: "/customers", icon: Users },
+      ],
+    },
+    {
+      section: "المخزون",
+      items: [
+        { key: "المنتجات", href: "/products", icon: Package },
+        { key: "التصنيفات", href: "/categories", icon: Tags },
+        { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
+      ],
+    },
+    {
+      section: "المشتريات",
+      items: [
+        { key: "الموردين", href: "/suppliers", icon: Truck },
+        { key: "المشتريات", href: "/purchase-headers", icon: Package },
+        { key: "مشتريات المستعمل", href: "/used-purchase-headers", icon: Package },
+        { key: "مرتجعات الشراء", href: "/purchase-returns", icon: RotateCcw },
+        { key: "إنشاء مرتجع شراء", href: "/purchase-returnable", icon: Undo2 },
+      ],
+    },
+    {
+      section: "الخدمات",
+      items: [
+        { key: "الصيانة", href: "/maintenance-tickets", icon: Wrench },
+      ],
+    },
+    {
+      section: "المالية",
+      items: [
+        { key: "المصروفات", href: "/expenses", icon: DollarSign },
+        { key: "تخصيصات الرواتب", href: "/salary-assignments", icon: DollarSign },
+        { key: "دفعات الرواتب", href: "/salary-payments", icon: DollarSign },
+      ],
+    },
   ];
   return (
     <div
@@ -156,33 +181,41 @@ const Sidebar = ({ isOpen, onToggle }) => {
         </button>
       </div>
 
-      {/* Navigation */}
-{/* Navigation */}
-<nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 space-y-1 scrollbar-thin">        {navItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <NavLink
-              key={item.key}
-              to={item.href}
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
-                  isActive
-                    ? "bg-black text-white"
-                    : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
-                }`
-              }
-            >
-              <Icon className="h-[18px] w-[18px]" strokeWidth={1.5} />
-              <span
-                className={`transition-all duration-300 overflow-hidden ${
-                  isOpen ? "opacity-100 w-auto" : "opacity-0 w-0 hidden"
-                }`}
-              >
-                {item?.key}
-              </span>
-            </NavLink>
-          );
-        })}
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 scrollbar-thin">
+        {navGroups.map((group) => (
+          <div key={group.section}>
+            {isOpen && (
+              <p className="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                {group.section}
+              </p>
+            )}
+            {group.items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.key}
+                  to={item.href}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
+                      isActive
+                        ? "bg-black text-white"
+                        : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    }`
+                  }
+                >
+                  <Icon className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                  <span
+                    className={`transition-all duration-300 overflow-hidden ${
+                      isOpen ? "opacity-100 w-auto" : "opacity-0 w-0 hidden"
+                    }`}
+                  >
+                    {item.key}
+                  </span>
+                </NavLink>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* Settings + Language */}

@@ -21,6 +21,10 @@ import CustomPagination from "@/customs/CustomPagination";
 import ProductFormFields from "./components/ProductFormFields";
 import ProductFilterBar from "./components/ProductFilterBar";
 import ProductCard from "./components/ProductCard";
+import ProductImportDialog from "./components/ProductImportDialog";
+import { downloadProductImportTemplate } from "@/hooks/Actions/Product/useImportProducts";
+import { Button } from "@/components/ui/button";
+import { Download, Upload } from "lucide-react";
 
 const ProductPage = () => {
   const [page, setPage] = React.useState(1);
@@ -28,6 +32,7 @@ const ProductPage = () => {
   const [filterCategory, setFilterCategory] = React.useState("");
   const [filterBrand, setFilterBrand] = React.useState("");
   const [filterType, setFilterType] = React.useState("");
+  const [importOpen, setImportOpen] = React.useState(false);
   const { debouncedSearch, search, handelSearch, setSearch } = useSearch("", 400);
 
   const filters = {
@@ -86,7 +91,7 @@ const ProductPage = () => {
   const transformData = (formData) => ({
     ...formData,
     category_id: Number(formData.category_id),
-    brand_id: Number(formData.brand_id),
+    brand_id: formData.brand_id ? Number(formData.brand_id) : null,
     min_stock: formData.min_stock ? Number(formData.min_stock) : 5,
   });
 
@@ -110,10 +115,18 @@ const ProductPage = () => {
     editForm.reset({
       name: product.name,
       category_id: String(product.category_id),
-      brand_id: String(product.brand_id),
+      brand_id: product.brand_id ? String(product.brand_id) : "",
       type: product.type,
       min_stock: String(product.min_stock ?? 5),
     });
+  };
+
+  const handleDownloadTemplate = async () => {
+    try {
+      await downloadProductImportTemplate();
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Template download failed");
+    }
   };
 
   const confirmDelete = (productId) => {
@@ -157,6 +170,19 @@ const ProductPage = () => {
       >
         <ProductFormFields formInstance={editForm} categories={categories} brands={brands} prefix="edit-" />
       </AppModalEdite>
+
+      <div className="mb-4 flex flex-wrap gap-2">
+        <Button type="button" variant="outline" onClick={() => setImportOpen(true)}>
+          <Upload className="h-4 w-4" />
+          Import Products
+        </Button>
+        <Button type="button" variant="outline" onClick={handleDownloadTemplate}>
+          <Download className="h-4 w-4" />
+          Download Template
+        </Button>
+      </div>
+
+      <ProductImportDialog open={importOpen} onOpenChange={setImportOpen} />
 
       <ProductFilterBar
         search={search}

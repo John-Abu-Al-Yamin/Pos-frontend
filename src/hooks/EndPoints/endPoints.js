@@ -2,6 +2,8 @@ const endPoints = {
   login: "/login",
   categories: "/categories",
   products: "/products",
+  productsImport: "/products/import",
+  productsImportTemplate: "/products/import/template",
   suppliers: "/suppliers",
   customers: "/customers",
   brands: "/brands",

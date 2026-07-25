@@ -1,6 +1,21 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Tags, Users, Bookmark, Package, X, ChevronUp, LogOut, DollarSign } from "lucide-react";
+import {
+  Tags,
+  Truck,
+  Users,
+  Bookmark,
+  Package,
+  ShoppingCart,
+  Receipt,
+  RotateCcw,
+  Undo2,
+  X,
+  ChevronUp,
+  LogOut,
+  DollarSign,
+  Wrench,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
 
@@ -17,6 +32,51 @@ const SidebarMobile = () => {
     { key: "brands", href: "/brands", icon: Bookmark },
     { key: "products", href: "/products", icon: Package },
     { key: "expenses", href: "/expenses", icon: DollarSign },
+  ];
+
+  const navGroups = [
+    {
+      section: "المبيعات",
+      items: [
+        { key: "pos", href: "/pos", icon: ShoppingCart },
+        { key: "sales-headers", href: "/sales-headers", icon: Receipt },
+        { key: "sales-returns", href: "/sales-returns", icon: RotateCcw },
+        { key: "sales-returnable", href: "/sales-returnable", icon: Undo2 },
+        { key: "customers", href: "/customers", icon: Users },
+      ],
+    },
+    {
+      section: "المخزون",
+      items: [
+        { key: "products", href: "/products", icon: Package },
+        { key: "categories", href: "/categories", icon: Tags },
+        { key: "brands", href: "/brands", icon: Bookmark },
+      ],
+    },
+    {
+      section: "المشتريات",
+      items: [
+        { key: "suppliers", href: "/suppliers", icon: Truck },
+        { key: "purchase-headers", href: "/purchase-headers", icon: Package },
+        { key: "used-purchase-headers", href: "/used-purchase-headers", icon: Package },
+        { key: "purchase-returns", href: "/purchase-returns", icon: RotateCcw },
+        { key: "purchase-returnable", href: "/purchase-returnable", icon: Undo2 },
+      ],
+    },
+    {
+      section: "الخدمات",
+      items: [
+        { key: "maintenance-tickets", href: "/maintenance-tickets", icon: Wrench },
+      ],
+    },
+    {
+      section: "المالية",
+      items: [
+        { key: "expenses", href: "/expenses", icon: DollarSign },
+        { key: "salary-assignments", href: "/salary-assignments", icon: DollarSign },
+        { key: "salary-payments", href: "/salary-payments", icon: DollarSign },
+      ],
+    },
   ];
 
   const handleExpand = () => setIsExpanded((prev) => !prev);
@@ -130,8 +190,15 @@ const SidebarMobile = () => {
             </button>
           </div>
 
-          <div className="max-h-[70vh] overflow-y-auto pb-4 px-4 space-y-2">
-            {navItems.map(renderNavLink)}
+          <div className="max-h-[70vh] overflow-y-auto pb-4 px-4">
+            {navGroups.map((group) => (
+              <div key={group.section} className="mb-2">
+                <p className="px-3 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
+                  {group.section}
+                </p>
+                {group.items.map(renderNavLink)}
+              </div>
+            ))}
 
             <button
               onClick={() => {

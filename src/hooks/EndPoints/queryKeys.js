@@ -12,6 +12,7 @@ const queryKeys = {
   addproducts: "/addproducts",
   deleteproducts: "/deleteproducts",
   updateproducts: "/updateproducts",
+  importproducts: "/importproducts",
 
   // suppliers
   suppliers: "/suppliers",
