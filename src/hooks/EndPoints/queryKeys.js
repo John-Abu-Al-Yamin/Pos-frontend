@@ -59,6 +59,9 @@ const queryKeys = {
 
   // users
   users: "/users",
+  addUsers: "/addUsers",
+  deleteUsers: "/deleteUsers",
+  updateUsers: "/updateUsers",
 
   // markupSettings
   markupSettings: "/markup-settings",

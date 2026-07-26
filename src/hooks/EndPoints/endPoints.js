@@ -19,6 +19,7 @@ const endPoints = {
   purchaseReturnable: "/purchase-returnable",
   purchaseReturns: "/purchase-returns",
   users: "/users",
+  adminCreateUser: "/admin/create-user",
   markupSettings: "/markup-settings",
   maintenanceTickets: "/maintenance-tickets",
   maintenanceHeaders: "/maintenance-headers",

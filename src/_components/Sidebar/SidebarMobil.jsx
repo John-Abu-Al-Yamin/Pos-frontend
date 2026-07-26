@@ -16,6 +16,7 @@ import {
   DollarSign,
   Wrench,
   BarChart3,
+  Settings,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
@@ -37,11 +38,6 @@ const SidebarMobile = () => {
     { key: "products", href: "/products", icon: Package },
     { key: "expenses", href: "/expenses", icon: DollarSign },
   ];
-
-  const visibleNavGroups = navGroups.map((group) => ({
-    ...group,
-    items: group.items.filter((item) => canViewReports || !isReportLink(item.href)),
-  }));
 
   const navGroups = [
     {
@@ -93,7 +89,19 @@ const SidebarMobile = () => {
         { key: "salary-payments", href: "/salary-payments", icon: DollarSign },
       ],
     },
+    {
+      section: "الإعدادات",
+      items: [
+        { key: "settings", href: "/settings", icon: Settings },
+        { key: "users", href: "/users", icon: Users },
+      ],
+    },
   ];
+
+  const visibleNavGroups = navGroups.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => canViewReports || (!isReportLink(item.href) && item.href !== "/users" && item.href !== "/settings")),
+  }));
 
   const handleExpand = () => setIsExpanded((prev) => !prev);
 

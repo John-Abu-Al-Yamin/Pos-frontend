@@ -31,6 +31,7 @@ const isReportLink = (href) => href?.startsWith("/reports/");
 
 const settingsItems = [
   { key: "الربح", href: "/settings", icon: Percent },
+  { key: "المستخدمين", href: "/users", icon: Users },
 ];
 
 const SidebarSettingsDropdown = ({ isOpen }) => {
@@ -244,7 +245,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
       {/* Settings + Language */}
       <div className="px-2 mb-4 flex flex-col gap-2">
-        <SidebarSettingsDropdown isOpen={isOpen} />
+        {canViewReports && <SidebarSettingsDropdown isOpen={isOpen} />}
 
         <button
           onClick={() => {

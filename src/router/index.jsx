@@ -66,6 +66,7 @@ import UpdateSalaryAssignment from "@/pages/salary/UpdateSalaryAssignment";
 import SalaryPaymentsPage from "@/pages/salary/SalaryPaymentsPage";
 import AddSalaryPayment from "@/pages/salary/AddSalaryPayment";
 import DetlaisSalaryPayment from "@/pages/salary/DetlaisSalaryPayment";
+import UsersPage from "@/pages/users/UsersPage";
 
 const router = createBrowserRouter([
   {
@@ -119,6 +120,10 @@ const router = createBrowserRouter([
       {
         path: "/settings",
         element: <MarkupSettingsPage />,
+      },
+      {
+        path: "/users",
+        element: <ProtectedRoute requiredRole="admin"><UsersPage /></ProtectedRoute>,
       },
 
       // products Routes
