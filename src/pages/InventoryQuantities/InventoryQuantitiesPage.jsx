@@ -38,7 +38,6 @@ import useSearch from "@/hooks/useSearch/useSearch";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
 
 const typeLabels = {
-  mobile: "موبايل",
   accessory: "إكسسوار",
   spare_part: "قطعة غيار",
 };
@@ -61,6 +60,8 @@ const InventoryQuantitiesPage = () => {
   const [filterType, setFilterType] = React.useState("");
   const [filterCategory, setFilterCategory] = React.useState("");
   const [filterStockStatus, setFilterStockStatus] = React.useState("");
+  const [minQuantity, setMinQuantity] = React.useState("");
+  const [maxQuantity, setMaxQuantity] = React.useState("");
   const [detailsId, setDetailsId] = React.useState(null);
   const { debouncedSearch, search, handelSearch, setSearch } = useSearch("", 400);
 
@@ -69,6 +70,8 @@ const InventoryQuantitiesPage = () => {
     type: filterType || undefined,
     category_id: filterCategory || undefined,
     stock_status: filterStockStatus || undefined,
+    min_quantity: minQuantity || undefined,
+    max_quantity: maxQuantity || undefined,
   };
 
   const { data, isPending } = useGetAllInventoryQuantities(page, per_page, filters);
@@ -77,17 +80,19 @@ const InventoryQuantitiesPage = () => {
 
   React.useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, filterType, filterCategory, filterStockStatus]);
+  }, [debouncedSearch, filterType, filterCategory, filterStockStatus, minQuantity, maxQuantity]);
 
   const clearFilters = () => {
     setSearch("");
     setFilterType("");
     setFilterCategory("");
     setFilterStockStatus("");
+    setMinQuantity("");
+    setMaxQuantity("");
     setPage(1);
   };
 
-  const hasActiveFilters = debouncedSearch || filterType || filterCategory || filterStockStatus;
+  const hasActiveFilters = debouncedSearch || filterType || filterCategory || filterStockStatus || minQuantity || maxQuantity;
 
   const categories = categoriesData?.data?.data ?? [];
   const categoryMap = React.useMemo(
@@ -156,6 +161,30 @@ const InventoryQuantitiesPage = () => {
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="flex items-end gap-2">
+          <div className="w-24">
+            <Input
+              type="number"
+              min="0"
+              placeholder="أقل كمية"
+              value={minQuantity}
+              onChange={(e) => setMinQuantity(e.target.value)}
+              className="text-xs"
+            />
+          </div>
+          <span className="text-muted-foreground text-xs pb-2">—</span>
+          <div className="w-24">
+            <Input
+              type="number"
+              min="0"
+              placeholder="أقصى كمية"
+              value={maxQuantity}
+              onChange={(e) => setMaxQuantity(e.target.value)}
+              className="text-xs"
+            />
+          </div>
         </div>
 
         {hasActiveFilters && (

@@ -33,15 +33,9 @@ import {
   useGetAllInventoryItems,
   useGetInventoryItemById,
 } from "@/hooks/Actions/InventoryItems/useCurdsInventoryItems";
-import { useGetAllCategories } from "@/hooks/Actions/Categories/useCurdsCategories";
+import { useGetAllBrands } from "@/hooks/Actions/brands/useCurdsBrands";
 import useSearch from "@/hooks/useSearch/useSearch";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
-
-const typeLabels = {
-  mobile: "موبايل",
-  accessory: "إكسسوار",
-  spare_part: "قطعة غيار",
-};
 
 const statusConfig = {
   available: { label: "متاح", className: "bg-green-100 text-green-800" },
@@ -72,8 +66,7 @@ const sourceOptions = [
 const InventoryItemsPage = () => {
   const [page, setPage] = React.useState(1);
   const per_page = 12;
-  const [filterType, setFilterType] = React.useState("");
-  const [filterCategory, setFilterCategory] = React.useState("");
+  const [filterBrand, setFilterBrand] = React.useState("");
   const [filterStatus, setFilterStatus] = React.useState("");
   const [filterSource, setFilterSource] = React.useState("");
   const [detailsId, setDetailsId] = React.useState(null);
@@ -81,36 +74,30 @@ const InventoryItemsPage = () => {
 
   const filters = {
     search: debouncedSearch || undefined,
-    type: filterType || undefined,
-    category_id: filterCategory || undefined,
+    brand_id: filterBrand || undefined,
     status: filterStatus || undefined,
     source: filterSource || undefined,
   };
 
   const { data, isPending } = useGetAllInventoryItems(page, per_page, filters);
-  const { data: categoriesData } = useGetAllCategories(1, 100);
+  const { data: brandsData } = useGetAllBrands();
   const { data: detailsData, isPending: detailsPending } = useGetInventoryItemById(detailsId);
 
   React.useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, filterType, filterCategory, filterStatus, filterSource]);
+  }, [debouncedSearch, filterBrand, filterStatus, filterSource]);
 
   const clearFilters = () => {
     setSearch("");
-    setFilterType("");
-    setFilterCategory("");
+    setFilterBrand("");
     setFilterStatus("");
     setFilterSource("");
     setPage(1);
   };
 
-  const hasActiveFilters = debouncedSearch || filterType || filterCategory || filterStatus || filterSource;
+  const hasActiveFilters = debouncedSearch || filterBrand || filterStatus || filterSource;
 
-  const categories = categoriesData?.data?.data ?? [];
-  const categoryMap = React.useMemo(
-    () => Object.fromEntries(categories.map((c) => [String(c.id), c.name])),
-    [categories],
-  );
+  const brands = brandsData?.data?.data ?? [];
 
   if (isPending) return <Loading />;
 
@@ -137,26 +124,13 @@ const InventoryItemsPage = () => {
         </div>
 
         <div className="w-48">
-          <Select value={filterType} onValueChange={setFilterType}>
+          <Select value={filterBrand} onValueChange={setFilterBrand}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="النوع" />
+              <SelectValue placeholder="العلامة التجارية" />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(typeLabels).map(([value, label]) => (
-                <SelectItem key={value} value={value}>{label}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-48">
-          <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="التصنيف" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((cat) => (
-                <SelectItem key={cat.id} value={String(cat.id)}>{cat.name}</SelectItem>
+              {brands.map((brand) => (
+                <SelectItem key={brand.id} value={String(brand.id)}>{brand.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -202,8 +176,6 @@ const InventoryItemsPage = () => {
               <TableHead className="text-right">#</TableHead>
               <TableHead className="text-right">المنتج</TableHead>
               <TableHead className="text-right">الرقم التسلسلي</TableHead>
-              <TableHead className="text-right">النوع</TableHead>
-              <TableHead className="text-right">التصنيف</TableHead>
               <TableHead className="text-right">الحالة</TableHead>
               <TableHead className="text-right">المصدر</TableHead>
               <TableHead className="text-right">سعر التكلفة</TableHead>
@@ -222,12 +194,6 @@ const InventoryItemsPage = () => {
                   </TableCell>
                   <TableCell className="font-mono text-xs">
                     {item.internal_serial}
-                  </TableCell>
-                  <TableCell>
-                    {typeLabels[item.product?.type] || item.product?.type || "—"}
-                  </TableCell>
-                  <TableCell>
-                    {categoryMap[String(item.product?.category_id)] || "—"}
                   </TableCell>
                   <TableCell>
                     <span
@@ -254,7 +220,7 @@ const InventoryItemsPage = () => {
             {items.length === 0 && (
               <TableRow>
                 <TableCell
-                  colSpan={9}
+                  colSpan={7}
                   className="h-24 text-center text-muted-foreground"
                 >
                   لا توجد عناصر مخزون
@@ -289,10 +255,7 @@ const InventoryItemsPage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold">{selectedItem.product?.name || "—"}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {typeLabels[selectedItem.product?.type] || selectedItem.product?.type || "—"}
-                    {selectedItem.product?.category_id && ` • ${categoryMap[String(selectedItem.product?.category_id)] || "—"}`}
-                  </p>
+                  <p className="text-sm text-muted-foreground">موبايل</p>
                 </div>
               </div>
 
