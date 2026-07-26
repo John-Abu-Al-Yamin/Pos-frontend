@@ -46,6 +46,7 @@ import AddMaintenanceUsedPart from "@/pages/MaintenanceSpareParts/AddMaintenance
 import UpdateMaintenanceUsedPart from "@/pages/MaintenanceSpareParts/UpdateMaintenanceSparePart";
 import ExpensesPage from "@/pages/expenses/ExpensesPage";
 import InventoryQuantitiesPage from "@/pages/InventoryQuantities/InventoryQuantitiesPage";
+import InventoryItemsPage from "@/pages/InventoryItems/InventoryItemsPage";
 import AddExpense from "@/pages/expenses/AddExpense";
 import UpdateExpense from "@/pages/expenses/UpdateExpense";
 import DetlaisExpense from "@/pages/expenses/DetlaisExpense";
@@ -299,6 +300,12 @@ const router = createBrowserRouter([
       {
         path: "/inventory-quantities",
         element: <InventoryQuantitiesPage />,
+      },
+
+      // Inventory Items Routes
+      {
+        path: "/inventory-items",
+        element: <InventoryItemsPage />,
       },
 
       // Salary Assignments Routes

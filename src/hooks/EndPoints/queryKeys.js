@@ -129,6 +129,9 @@ const queryKeys = {
 
   // inventoryQuantities
   inventoryQuantities: "/inventory-quantities",
+
+  // inventoryItems
+  inventoryItems: "/inventory-items",
   addSalaryPaymentItems: "/addSalaryPaymentItems",
   deleteSalaryPaymentItems: "/deleteSalaryPaymentItems",
   updateSalaryPaymentItems: "/updateSalaryPaymentItems",
