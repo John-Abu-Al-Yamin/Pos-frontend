@@ -47,6 +47,7 @@ import UpdateMaintenanceUsedPart from "@/pages/MaintenanceSpareParts/UpdateMaint
 import ExpensesPage from "@/pages/expenses/ExpensesPage";
 import InventoryQuantitiesPage from "@/pages/InventoryQuantities/InventoryQuantitiesPage";
 import InventoryItemsPage from "@/pages/InventoryItems/InventoryItemsPage";
+import StockMovementsPage from "@/pages/StockMovements/StockMovementsPage";
 import AddExpense from "@/pages/expenses/AddExpense";
 import UpdateExpense from "@/pages/expenses/UpdateExpense";
 import DetlaisExpense from "@/pages/expenses/DetlaisExpense";
@@ -306,6 +307,12 @@ const router = createBrowserRouter([
       {
         path: "/inventory-items",
         element: <InventoryItemsPage />,
+      },
+
+      // Stock Movements Routes
+      {
+        path: "/stock-movements",
+        element: <StockMovementsPage />,
       },
 
       // Salary Assignments Routes

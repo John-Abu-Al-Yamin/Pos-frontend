@@ -25,6 +25,7 @@ const endPoints = {
   expenses: "/expenses",
   inventoryQuantities: "/inventory-quantities",
   inventoryItems: "/inventory-items",
+  stockMovements: "/stock-movements",
 
   // salary
   salaryAssignments: "/salary-assignments",

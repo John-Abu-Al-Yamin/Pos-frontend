@@ -132,8 +132,11 @@ const queryKeys = {
 
   // inventoryItems
   inventoryItems: "/inventory-items",
-  addSalaryPaymentItems: "/addSalaryPaymentItems",
-  deleteSalaryPaymentItems: "/deleteSalaryPaymentItems",
-  updateSalaryPaymentItems: "/updateSalaryPaymentItems",
+
+  // stockMovements
+  stockMovements: "/stock-movements",
+
+  // salaryPaymentItems
+  salaryPaymentItems: "/salary-payment-items",
 };
 export default queryKeys;

@@ -18,6 +18,7 @@ import {
   DollarSign,
   ClipboardList,
   Scan,
+  TrendingUp,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -134,6 +135,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "المنتجات", href: "/products", icon: Package },
         { key: "كميات المخزون", href: "/inventory-quantities", icon: ClipboardList },
         { key: "عناصر المخزون", href: "/inventory-items", icon: Scan },
+        { key: "حركات المخزون", href: "/stock-movements", icon: TrendingUp },
         { key: "التصنيفات", href: "/categories", icon: Tags },
         { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
       ],
