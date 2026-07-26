@@ -23,6 +23,7 @@ const endPoints = {
   maintenanceHeaders: "/maintenance-headers",
   expenseCategories: "/expense-categories",
   expenses: "/expenses",
+  inventoryQuantities: "/inventory-quantities",
 
   // salary
   salaryAssignments: "/salary-assignments",

@@ -16,6 +16,7 @@ import {
   Percent,
   Wrench,
   DollarSign,
+  ClipboardList,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -130,6 +131,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       section: "المخزون",
       items: [
         { key: "المنتجات", href: "/products", icon: Package },
+        { key: "كميات المخزون", href: "/inventory-quantities", icon: ClipboardList },
         { key: "التصنيفات", href: "/categories", icon: Tags },
         { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
       ],
