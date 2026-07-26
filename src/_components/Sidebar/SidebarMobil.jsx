@@ -15,16 +15,20 @@ import {
   LogOut,
   DollarSign,
   Wrench,
+  BarChart3,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
+import { isAdminUser } from "@/services/authUser";
+
+const isReportLink = (href) => href?.startsWith("/reports/");
 
 const SidebarMobile = () => {
-  const { t, i18n } = useTranslation();
-  const isRtl = i18n.language === "ar";
+  const { t } = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
   const [isExpanded, setIsExpanded] = useState(false);
+  const canViewReports = isAdminUser();
 
   const navItems = [
     { key: "categories", href: "/categories", icon: Tags },
@@ -33,6 +37,11 @@ const SidebarMobile = () => {
     { key: "products", href: "/products", icon: Package },
     { key: "expenses", href: "/expenses", icon: DollarSign },
   ];
+
+  const visibleNavGroups = navGroups.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => canViewReports || !isReportLink(item.href)),
+  }));
 
   const navGroups = [
     {
@@ -43,6 +52,7 @@ const SidebarMobile = () => {
         { key: "sales-returns", href: "/sales-returns", icon: RotateCcw },
         { key: "sales-returnable", href: "/sales-returnable", icon: Undo2 },
         { key: "customers", href: "/customers", icon: Users },
+        { key: "reports-sales", href: "/reports/sales", icon: BarChart3 },
       ],
     },
     {
@@ -51,6 +61,7 @@ const SidebarMobile = () => {
         { key: "products", href: "/products", icon: Package },
         { key: "categories", href: "/categories", icon: Tags },
         { key: "brands", href: "/brands", icon: Bookmark },
+        { key: "reports-inventory", href: "/reports/inventory", icon: BarChart3 },
       ],
     },
     {
@@ -61,18 +72,23 @@ const SidebarMobile = () => {
         { key: "used-purchase-headers", href: "/used-purchase-headers", icon: Package },
         { key: "purchase-returns", href: "/purchase-returns", icon: RotateCcw },
         { key: "purchase-returnable", href: "/purchase-returnable", icon: Undo2 },
+        { key: "reports-purchases", href: "/reports/purchases", icon: BarChart3 },
       ],
     },
     {
       section: "الخدمات",
       items: [
         { key: "maintenance-tickets", href: "/maintenance-tickets", icon: Wrench },
+        { key: "reports-maintenance", href: "/reports/maintenance", icon: BarChart3 },
       ],
     },
     {
       section: "المالية",
       items: [
         { key: "expenses", href: "/expenses", icon: DollarSign },
+        { key: "reports-expenses", href: "/reports/expenses", icon: BarChart3 },
+        { key: "reports-profit-loss", href: "/reports/profit-loss", icon: BarChart3 },
+        { key: "reports-salaries", href: "/reports/salaries", icon: BarChart3 },
         { key: "salary-assignments", href: "/salary-assignments", icon: DollarSign },
         { key: "salary-payments", href: "/salary-payments", icon: DollarSign },
       ],
@@ -191,7 +207,7 @@ const SidebarMobile = () => {
           </div>
 
           <div className="max-h-[70vh] overflow-y-auto pb-4 px-4">
-            {navGroups.map((group) => (
+            {visibleNavGroups.map((group) => (
               <div key={group.section} className="mb-2">
                 <p className="px-3 pt-3 pb-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
                   {group.section}
@@ -203,6 +219,7 @@ const SidebarMobile = () => {
             <button
               onClick={() => {
                 removeAuthToken();
+                localStorage.removeItem("user");
                 window.location.href = "/auth/login";
               }}
               className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 w-full hover:bg-red-50 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400"

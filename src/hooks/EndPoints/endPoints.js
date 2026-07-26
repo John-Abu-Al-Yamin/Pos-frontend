@@ -1,5 +1,6 @@
 const endPoints = {
   login: "/login",
+  me: "/me",
   categories: "/categories",
   products: "/products",
   productsImport: "/products/import",
@@ -26,6 +27,15 @@ const endPoints = {
   inventoryQuantities: "/inventory-quantities",
   inventoryItems: "/inventory-items",
   stockMovements: "/stock-movements",
+
+  // reports
+  reportsSales: "/reports/sales",
+  reportsPurchases: "/reports/purchases",
+  reportsMaintenance: "/reports/maintenance",
+  reportsExpenses: "/reports/expenses",
+  reportsInventory: "/reports/inventory",
+  reportsProfitLoss: "/reports/profit-loss",
+  reportsSalaries: "/reports/salaries",
 
   // salary
   salaryAssignments: "/salary-assignments",

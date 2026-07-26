@@ -19,11 +19,15 @@ import {
   ClipboardList,
   Scan,
   TrendingUp,
+  BarChart3,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
+import { isAdminUser } from "@/services/authUser";
+
+const isReportLink = (href) => href?.startsWith("/reports/");
 
 const settingsItems = [
   { key: "الربح", href: "/settings", icon: Percent },
@@ -117,6 +121,7 @@ const SidebarSettingsDropdown = ({ isOpen }) => {
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
+  const canViewReports = isAdminUser();
 
   const navGroups = [
     {
@@ -127,6 +132,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },
         { key: "إنشاء مرتجع بيع", href: "/sales-returnable", icon: Undo2 },
         { key: "العملاء", href: "/customers", icon: Users },
+        { key: "تقارير المبيعات", href: "/reports/sales", icon: BarChart3 },
       ],
     },
     {
@@ -138,6 +144,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "حركات المخزون", href: "/stock-movements", icon: TrendingUp },
         { key: "التصنيفات", href: "/categories", icon: Tags },
         { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
+        { key: "تقارير المخزون", href: "/reports/inventory", icon: BarChart3 },
       ],
     },
     {
@@ -148,23 +155,34 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "مشتريات المستعمل", href: "/used-purchase-headers", icon: Package },
         { key: "مرتجعات الشراء", href: "/purchase-returns", icon: RotateCcw },
         { key: "إنشاء مرتجع شراء", href: "/purchase-returnable", icon: Undo2 },
+        { key: "تقارير المشتريات", href: "/reports/purchases", icon: BarChart3 },
       ],
     },
     {
       section: "الخدمات",
       items: [
         { key: "الصيانة", href: "/maintenance-tickets", icon: Wrench },
+        { key: "تقارير الصيانة", href: "/reports/maintenance", icon: BarChart3 },
       ],
     },
     {
       section: "المالية",
       items: [
         { key: "المصروفات", href: "/expenses", icon: DollarSign },
+        { key: "تقارير المصروفات", href: "/reports/expenses", icon: BarChart3 },
+        { key: "الأرباح والخسائر", href: "/reports/profit-loss", icon: BarChart3 },
+        { key: "تقارير الرواتب", href: "/reports/salaries", icon: BarChart3 },
         { key: "تخصيصات الرواتب", href: "/salary-assignments", icon: DollarSign },
         { key: "دفعات الرواتب", href: "/salary-payments", icon: DollarSign },
       ],
     },
   ];
+
+  const visibleNavGroups = navGroups.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => canViewReports || !isReportLink(item.href)),
+  }));
+  
   return (
     <div
       className={`fixed top-0 h-screen dark:bg-[#1F1F23] flex flex-col transition-all duration-300 bg-sidebar 
@@ -188,7 +206,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       </div>
 
       <nav className="flex-1 overflow-y-auto overflow-x-hidden px-2 scrollbar-thin">
-        {navGroups.map((group) => (
+        {visibleNavGroups.map((group) => (
           <div key={group.section}>
             {isOpen && (
               <p className="px-3 pt-4 pb-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
@@ -231,6 +249,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
         <button
           onClick={() => {
             removeAuthToken();
+            localStorage.removeItem("user");
             window.location.href = "/auth/login";
           }}
           className={`flex items-center gap-3 bg-red-50 cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-300 w-full hover:bg-red-100 dark:hover:bg-red-900/10 text-red-600 dark:text-red-400`}

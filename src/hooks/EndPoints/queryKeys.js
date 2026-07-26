@@ -1,5 +1,6 @@
 const queryKeys = {
   login: "/login",
+  me: "/me",
 
   // categories
   categories: "/categories",
@@ -138,5 +139,14 @@ const queryKeys = {
 
   // salaryPaymentItems
   salaryPaymentItems: "/salary-payment-items",
+
+  // reports
+  reportsSales: "/reports/sales",
+  reportsPurchases: "/reports/purchases",
+  reportsMaintenance: "/reports/maintenance",
+  reportsExpenses: "/reports/expenses",
+  reportsInventory: "/reports/inventory",
+  reportsProfitLoss: "/reports/profit-loss",
+  reportsSalaries: "/reports/salaries",
 };
 export default queryKeys;

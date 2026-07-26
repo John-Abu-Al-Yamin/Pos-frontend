@@ -48,6 +48,13 @@ import ExpensesPage from "@/pages/expenses/ExpensesPage";
 import InventoryQuantitiesPage from "@/pages/InventoryQuantities/InventoryQuantitiesPage";
 import InventoryItemsPage from "@/pages/InventoryItems/InventoryItemsPage";
 import StockMovementsPage from "@/pages/StockMovements/StockMovementsPage";
+import SalesReportPage from "@/pages/reports/sales/SalesReportPage";
+import PurchaseReportPage from "@/pages/reports/purchases/PurchaseReportPage";
+import MaintenanceReportPage from "@/pages/reports/maintenance/MaintenanceReportPage";
+import ExpensesReportPage from "@/pages/reports/expenses/ExpensesReportPage";
+import InventoryReportPage from "@/pages/reports/inventory/InventoryReportPage";
+import ProfitLossPage from "@/pages/reports/profit-loss/ProfitLossPage";
+import SalariesReportPage from "@/pages/reports/salaries-report/SalariesReportPage";
 import AddExpense from "@/pages/expenses/AddExpense";
 import UpdateExpense from "@/pages/expenses/UpdateExpense";
 import DetlaisExpense from "@/pages/expenses/DetlaisExpense";
@@ -307,6 +314,36 @@ const router = createBrowserRouter([
       {
         path: "/inventory-items",
         element: <InventoryItemsPage />,
+      },
+
+      // Reports Routes
+      {
+        path: "/reports/sales",
+        element: <ProtectedRoute requiredRole="admin"><SalesReportPage /></ProtectedRoute>,
+      },
+      {
+        path: "/reports/purchases",
+        element: <ProtectedRoute requiredRole="admin"><PurchaseReportPage /></ProtectedRoute>,
+      },
+      {
+        path: "/reports/maintenance",
+        element: <ProtectedRoute requiredRole="admin"><MaintenanceReportPage /></ProtectedRoute>,
+      },
+      {
+        path: "/reports/expenses",
+        element: <ProtectedRoute requiredRole="admin"><ExpensesReportPage /></ProtectedRoute>,
+      },
+      {
+        path: "/reports/inventory",
+        element: <ProtectedRoute requiredRole="admin"><InventoryReportPage /></ProtectedRoute>,
+      },
+      {
+        path: "/reports/profit-loss",
+        element: <ProtectedRoute requiredRole="admin"><ProfitLossPage /></ProtectedRoute>,
+      },
+      {
+        path: "/reports/salaries",
+        element: <ProtectedRoute requiredRole="admin"><SalariesReportPage /></ProtectedRoute>,
       },
 
       // Stock Movements Routes
