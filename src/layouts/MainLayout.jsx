@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Sidebar from "@/_components/Sidebar/Sidebar";
 import SidebarMobil from "@/_components/Sidebar/SidebarMobil";
-import { useTranslation } from "next-i18next";
+import { useTranslation } from "react-i18next";
 import { Outlet } from "react-router-dom";
 
 const MainLayout = () => {

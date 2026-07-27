@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,22 +9,32 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import useLogin from "@/hooks/Actions/auth/useLogin";
 
+const loginText = {
+  title: "مرحبًا بعودتك",
+  description: "أدخل بيانات حسابك لتسجيل الدخول",
+  email: "البريد الإلكتروني",
+  emailPlaceholder: "أدخل البريد الإلكتروني",
+  password: "كلمة المرور",
+  passwordPlaceholder: "أدخل كلمة المرور",
+  invalidEmail: "البريد الإلكتروني غير صالح",
+  passwordLength: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  signIn: "تسجيل الدخول",
+  signingIn: "جاري تسجيل الدخول...",
+  loginError: "تعذر تسجيل الدخول. يرجى التحقق من البيانات والمحاولة مرة أخرى.",
+};
+
 const LoginForm = () => {
-  const { t, i18n } = useTranslation();
-  const isRtl = i18n.language === "ar";
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const { mutate, isPending, isError, errorMsg, setErrorMsg } = useLogin();
+  const { mutate, isPending, isError, setErrorMsg } = useLogin();
 
   const LoginSchema = z.object({
     email: z.string().email({
-      message: isRtl ? "البريد الإلكتروني غير صالح" : "Invalid email address",
+      message: loginText.invalidEmail,
     }),
     password: z.string().min(6, {
-      message: isRtl
-        ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
-        : "Password must be at least 6 characters",
+      message: loginText.passwordLength,
     }),
   });
 
@@ -39,6 +48,7 @@ const LoginForm = () => {
   });
 
   const onSubmit = (data) => {
+    setErrorMsg(null);
     mutate(
       { data: data },
       {
@@ -50,7 +60,10 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="w-full h-full flex flex-col justify-center  max-w-md mx-auto bg-transparent rounded-2xl p-6 dark:bg-card">
+    <div
+      dir="rtl"
+      className="w-full h-full flex flex-col justify-center max-w-md mx-auto bg-transparent rounded-2xl p-6 dark:bg-card"
+    >
       {/* Header */}
       <div className="space-y-1 text-center mb-6">
         <div className="flex items-center justify-center mb-4">
@@ -60,10 +73,10 @@ const LoginForm = () => {
         </div>
 
         <h1 className="text-2xl font-bold text-foreground dark:text-foreground">
-          {t("login.welcomeBack")}
+          {loginText.title}
         </h1>
         <p className="text-muted-foreground dark:text-muted-foreground">
-          {t("login.enterCredentials")}
+          {loginText.description}
         </p>
       </div>
 
@@ -75,21 +88,16 @@ const LoginForm = () => {
             htmlFor="email"
             className="text-foreground dark:text-foreground"
           >
-            {t("login.email")}
+            {loginText.email}
           </Label>
           <div className="relative">
-            <Mail
-              className={`absolute top-3 h-4 w-4 text-muted-foreground ${
-                isRtl ? "right-3" : "left-3"
-              }`}
-            />
+            <Mail className="absolute top-3 right-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="email"
               type="email"
-              placeholder={t("login.emailPlaceholder")}
+              placeholder={loginText.emailPlaceholder}
               {...register("email")}
-              className={`bg-background dark:bg-background border-border dark:border-border text-foreground dark:text-foreground placeholder:text-muted-foreground
-                ${isRtl ? "pr-10 pl-3" : "pl-10 pr-3"}`}
+              className="bg-background dark:bg-background border-border dark:border-border text-foreground dark:text-foreground placeholder:text-muted-foreground text-right pr-10 pl-3"
             />
           </div>
           <p className="text-red-500 text-sm">{errors.email?.message}</p>
@@ -101,28 +109,21 @@ const LoginForm = () => {
             htmlFor="password"
             className="text-foreground dark:text-foreground"
           >
-            {t("login.password")}
+            {loginText.password}
           </Label>
           <div className="relative">
-            <Lock
-              className={`absolute top-3 h-4 w-4 text-muted-foreground ${
-                isRtl ? "right-3" : "left-3"
-              }`}
-            />
+            <Lock className="absolute top-3 right-3 h-4 w-4 text-muted-foreground" />
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
-              placeholder={t("login.passwordPlaceholder")}
+              placeholder={loginText.passwordPlaceholder}
               {...register("password")}
-              className={`bg-background dark:bg-background border-border dark:border-border text-foreground placeholder:text-muted-foreground
-                ${isRtl ? "pr-10 pl-3" : "pl-10 pr-3"}`}
+              className="bg-background dark:bg-background border-border dark:border-border text-foreground placeholder:text-muted-foreground text-right pr-10 pl-3"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className={`absolute top-3 text-muted-foreground hover:text-foreground ${
-                isRtl ? "left-3" : "right-3"
-              }`}
+              className="absolute top-3 left-3 text-muted-foreground hover:text-foreground"
             >
               {showPassword ? (
                 <EyeOff className="h-4 w-4" />
@@ -134,25 +135,11 @@ const LoginForm = () => {
           <p className="text-red-500 text-sm">{errors.password?.message}</p>
         </div>
 
-        {/* Remember + Forgot */}
-        {/* <div className="flex items-center justify-between text-sm">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              className="w-4 h-4 rounded border-border dark:border-border"
-            />
-            <span className="text-muted-foreground">
-              {t("login.rememberMe")}
-            </span>
-          </label>
-
-          <Link
-            to="/auth/forgot-password"
-            className="text-foreground hover:underline"
-          >
-            {t("login.forgotPassword")}
-          </Link>
-        </div> */}
+        {isError && (
+          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-600">
+            {loginText.loginError}
+          </p>
+        )}
 
         {/* Submit */}
         <Button
@@ -160,7 +147,7 @@ const LoginForm = () => {
           className="w-full cursor-pointer bg-primary text-primary-foreground hover:bg-primary/90"
           disabled={isPending}
         >
-          {isPending ? t("login.signingIn") : t("login.signIn")}
+          {isPending ? loginText.signingIn : loginText.signIn}
         </Button>
       </form>
     </div>
