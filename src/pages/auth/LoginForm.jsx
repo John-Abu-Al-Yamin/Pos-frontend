@@ -43,7 +43,7 @@ const LoginForm = () => {
       { data: data },
       {
         onSuccess: () => {
-          navigate("/");
+          navigate("/products");
         },
       },
     );

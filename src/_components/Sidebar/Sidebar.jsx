@@ -126,17 +126,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   const navGroups = [
     {
-      section: "المبيعات",
-      items: [
-        { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
-        { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
-        { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },
-        { key: "إنشاء مرتجع بيع", href: "/sales-returnable", icon: Undo2 },
-        { key: "العملاء", href: "/customers", icon: Users },
-        { key: "تقارير المبيعات", href: "/reports/sales", icon: BarChart3 },
-      ],
-    },
-    {
       section: "المخزون",
       items: [
         { key: "المنتجات", href: "/products", icon: Package },
@@ -148,6 +137,18 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "تقارير المخزون", href: "/reports/inventory", icon: BarChart3 },
       ],
     },
+    {
+      section: "المبيعات",
+      items: [
+        { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
+        { key: "فواتير البيع", href: "/sales-headers", icon: Receipt },
+        { key: "مرتجعات البيع", href: "/sales-returns", icon: RotateCcw },
+        { key: "إنشاء مرتجع بيع", href: "/sales-returnable", icon: Undo2 },
+        { key: "العملاء", href: "/customers", icon: Users },
+        { key: "تقارير المبيعات", href: "/reports/sales", icon: BarChart3 },
+      ],
+    },
+    
     {
       section: "المشتريات",
       items: [

@@ -18,14 +18,44 @@ import {
   BarChart3,
   Settings,
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
 import { isAdminUser } from "@/services/authUser";
 
 const isReportLink = (href) => href?.startsWith("/reports/");
 
+const labels = {
+  categories: "الفئات",
+  suppliers: "الموردين",
+  brands: "العلامات التجارية",
+  products: "المنتجات",
+  expenses: "المصروفات",
+  pos: "نقطة البيع",
+  "sales-headers": "فواتير المبيعات",
+  "sales-returns": "مرتجعات المبيعات",
+  "sales-returnable": "مرتجع المبيعات",
+  customers: "العملاء",
+  "reports-sales": "تقارير المبيعات",
+  "reports-inventory": "تقارير المخزون",
+  "purchase-headers": "فواتير المشتريات",
+  "used-purchase-headers": "مشتريات مستخدمة",
+  "purchase-returns": "مرتجعات المشتريات",
+  "purchase-returnable": "مرتجع المشتريات",
+  "reports-purchases": "تقارير المشتريات",
+  "maintenance-tickets": "تذاكر الصيانة",
+  "reports-maintenance": "تقارير الصيانة",
+  "reports-expenses": "تقارير المصروفات",
+  "reports-profit-loss": "تقارير الأرباح والخسائر",
+  "reports-salaries": "تقارير الرواتب",
+  "salary-assignments": "تعيينات الرواتب",
+  "salary-payments": "مدفوعات الرواتب",
+  settings: "الإعدادات",
+  users: "المستخدمين",
+  more: "المزيد",
+  menu: "القائمة",
+  logout: "تسجيل الخروج",
+};
+
 const SidebarMobile = () => {
-  const { t } = useTranslation();
   const location = useLocation();
   const pathname = location.pathname;
   const [isExpanded, setIsExpanded] = useState(false);
@@ -122,7 +152,7 @@ const SidebarMobile = () => {
       >
         <Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.5} />
         <span className="font-medium whitespace-nowrap">
-          {t(`sidebar.${item.key}`)}
+          {labels[item.key]}
         </span>
       </NavLink>
     );
@@ -155,7 +185,7 @@ const SidebarMobile = () => {
                 <Icon className="h-5 w-5" strokeWidth={1.5} />
                 {isActive && (
                   <span className="text-xs font-medium">
-                    {t(`sidebar.${item.key}`)}
+                    {labels[item.key]}
                   </span>
                 )}
               </div>
@@ -179,7 +209,7 @@ const SidebarMobile = () => {
           />
           {isExpanded && (
             <span className="text-xs font-medium ml-2">
-              {t("sidebar.more")}
+              {labels.more}
             </span>
           )}
         </button>
@@ -205,7 +235,7 @@ const SidebarMobile = () => {
 
           {/* Header */}
           <div className="flex items-center justify-between px-6 pb-4 border-b border-gray-300 dark:border-gray-600">
-            <h1 className="text-xl font-semibold">{t("sidebar.menu")}</h1>
+            <h1 className="text-xl font-semibold">{labels.menu}</h1>
             <button
               onClick={handleExpand}
               className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700"
@@ -237,7 +267,7 @@ const SidebarMobile = () => {
                 strokeWidth={1.5}
               />
               <span className="font-medium whitespace-nowrap">
-                {t("sidebar.logout")}
+                {labels.logout}
               </span>
             </button>
           </div>

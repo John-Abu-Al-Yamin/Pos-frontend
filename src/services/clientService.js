@@ -2,7 +2,7 @@ import axios from "axios";
 import getAuthToken from "./cookies";
 
 const clientApi = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: "https://pos-backend-production-1604.up.railway.app/api",
 });
 
 export const request = async (options) => {
