@@ -143,6 +143,9 @@ const queryKeys = {
   // salaryPaymentItems
   salaryPaymentItems: "/salary-payment-items",
 
+  // dashboard
+  dashboard: "/dashboard",
+
   // reports
   reportsSales: "/reports/sales",
   reportsPurchases: "/reports/purchases",

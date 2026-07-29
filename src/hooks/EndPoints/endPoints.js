@@ -42,6 +42,9 @@ const endPoints = {
   salaryAssignments: "/salary-assignments",
   salaryPayments: "/salary-payments",
   salaryPaymentItems: "/salary-payment-items",
+
+  // dashboard
+  dashboard: "/dashboard",
 };
 
 export default endPoints;

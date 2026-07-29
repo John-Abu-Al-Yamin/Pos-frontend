@@ -53,7 +53,7 @@ const LoginForm = () => {
       { data: data },
       {
         onSuccess: () => {
-          navigate("/products");
+          navigate("/");
         },
       },
     );

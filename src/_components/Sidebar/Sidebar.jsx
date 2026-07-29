@@ -20,6 +20,7 @@ import {
   Scan,
   TrendingUp,
   BarChart3,
+  LayoutDashboard,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -125,6 +126,12 @@ const Sidebar = ({ isOpen, onToggle }) => {
   const canViewReports = isAdminUser();
 
   const navGroups = [
+    {
+      section: "الرئيسية",
+      items: [
+        { key: "لوحة القيادة", href: "/", icon: LayoutDashboard },
+      ],
+    },
     {
       section: "المخزون",
       items: [

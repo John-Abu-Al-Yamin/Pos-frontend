@@ -3,6 +3,7 @@ import getAuthToken from "./cookies";
 
 const clientApi = axios.create({
   baseURL: "https://pos-backend-production-1604.up.railway.app/api",
+  // baseURL: "http://127.0.0.1:8000/api",
 });
 
 export const request = async (options) => {

@@ -67,6 +67,7 @@ import SalaryPaymentsPage from "@/pages/salary/SalaryPaymentsPage";
 import AddSalaryPayment from "@/pages/salary/AddSalaryPayment";
 import DetlaisSalaryPayment from "@/pages/salary/DetlaisSalaryPayment";
 import UsersPage from "@/pages/users/UsersPage";
+import DashboardPage from "@/pages/dashboard/DashboardPage";
 
 const router = createBrowserRouter([
   {
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <h1>dashboard</h1>,
+        element: <DashboardPage />,
       },
 
       // categories Routes
