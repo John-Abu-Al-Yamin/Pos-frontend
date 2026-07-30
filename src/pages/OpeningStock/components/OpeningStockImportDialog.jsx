@@ -25,6 +25,13 @@ import {
 
 const allowedExtensions = ["xlsx", "xls", "csv"];
 const maxFileSize = 5 * 1024 * 1024;
+const columnLabels = {
+  row: "الصف",
+  product: "المنتج",
+  field: "الحقل",
+  message: "الرسالة",
+  reason: "السبب",
+};
 
 const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLabel, onImportComplete, onImportError }) => {
   const [selectedFile, setSelectedFile] = React.useState(null);
@@ -40,11 +47,11 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
     const extension = file.name.split(".").pop()?.toLowerCase();
 
     if (!allowedExtensions.includes(extension)) {
-      return "Please choose an xlsx, xls, or csv file.";
+      return "يرجى اختيار ملف xlsx أو xls أو csv.";
     }
 
     if (file.size > maxFileSize) {
-      return "File size must be 5 MB or less.";
+      return "يجب ألا يتجاوز حجم الملف 5 ميجابايت.";
     }
 
     return "";
@@ -98,7 +105,7 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
           setProgress(100);
           setImportErrors([]);
           if (inputRef.current) inputRef.current.value = "";
-          toast.success(response.data.message || "Opening stock import completed");
+          toast.success(response.data.message || "تم استيراد المخزون الافتتاحي بنجاح");
           if (typeof onImportComplete === "function") {
             onImportComplete(importSummary);
           }
@@ -111,7 +118,7 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
             setImportErrors(backendErrors);
           }
 
-          const message = errorData?.message || "Opening stock import failed";
+          const message = errorData?.message || "فشل استيراد المخزون الافتتاحي";
           toast.error(message);
 
           if (typeof onImportError === "function") {
@@ -135,12 +142,12 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
 
   const summaryCards = summary
     ? [
-        ["Total rows", summary.total_rows],
-        ["Quantity rows", summary.quantity_rows],
-        ["Serialized rows", summary.serialized_rows],
-        ["Quantity units", summary.quantity_units],
-        ["Serialized units", summary.serialized_units],
-        ["Stock movements", summary.stock_movements],
+        ["إجمالي الصفوف", summary.total_rows],
+        ["صفوف الكميات", summary.quantity_rows],
+        ["صفوف الجوالات", summary.serialized_rows],
+        ["إجمالي الكميات", summary.quantity_units],
+        ["إجمالي الجوالات", summary.serialized_units],
+        ["حركات المخزون", summary.stock_movements],
       ]
     : [];
 
@@ -148,10 +155,10 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
     <AppModalAdd
       open={open}
       onOpenChange={onOpenChange}
-      title={`Import ${templateLabel} Opening Stock`}
-      description={`Upload the ${templateLabel} opening stock template.`}
-      submitText="Upload"
-      cancelText="Cancel"
+      title={`استيراد المخزون الافتتاحي - ${templateLabel}`}
+      description={`ارفع قالب المخزون الافتتاحي الخاص بـ ${templateLabel}.`}
+      submitText="رفع"
+      cancelText="إلغاء"
       isLoading={importMutation.isPending}
       isDisabled={!selectedFile || !!validationMessage}
       onSubmit={handleUpload}
@@ -168,12 +175,12 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
       >
         <FileSpreadsheet className="h-10 w-10 text-slate-500" />
         <div>
-          <p className="font-medium text-slate-800">Drop Excel file here</p>
-          <p className="text-sm text-slate-500">xlsx, xls, csv up to 5 MB</p>
+          <p className="font-medium text-slate-800">اسحب ملف Excel هنا</p>
+          <p className="text-sm text-slate-500">xlsx أو xls أو csv حتى 5 ميجابايت</p>
         </div>
         <Button type="button" variant="outline" onClick={(event) => { event.stopPropagation(); inputRef.current?.click(); }}>
           <Upload className="h-4 w-4" />
-          Select Excel
+          اختيار ملف Excel
         </Button>
         <input
           ref={inputRef}
@@ -205,7 +212,7 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
           </div>
           <p className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />
-            Uploading and processing...
+            جاري الرفع والمعالجة...
           </p>
         </div>
       )}
@@ -222,32 +229,32 @@ const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLa
       )}
 
       {importErrors.length > 0 && (
-        <ResultTable title="Errors" rows={importErrors} columns={["row", "product", "field", "message"]} />
+        <ResultTable title="الأخطاء" rows={importErrors} columns={["row", "product", "field", "message"]} />
       )}
 
       {errors.length > 0 && (
-        <ResultTable title="Errors" rows={errors} columns={["row", "product", "field", "message"]} />
+        <ResultTable title="الأخطاء" rows={errors} columns={["row", "product", "field", "message"]} />
       )}
 
       {skippedRows.length > 0 && (
-        <ResultTable title="Skipped Products" rows={skippedRows} columns={["row", "product", "reason"]} />
+        <ResultTable title="الصفوف المتجاهلة" rows={skippedRows} columns={["row", "product", "reason"]} />
       )}
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Opening Stock Import</AlertDialogTitle>
+            <AlertDialogTitle>تأكيد استيراد المخزون الافتتاحي</AlertDialogTitle>
             <AlertDialogDescription>
-              This will import {templateLabel} opening stock, create inventory records, and create stock movements from the selected file. This operation cannot be undone.
+              سيتم استيراد مخزون {templateLabel} الافتتاحي وإنشاء سجلات المخزون وحركات المخزون من الملف المحدد. لا يمكن التراجع عن هذه العملية.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="gap-2">
             <AlertDialogCancel type="button" disabled={importMutation.isPending}>
-              Cancel
+              إلغاء
             </AlertDialogCancel>
             <AlertDialogAction type="button" onClick={confirmImport} disabled={importMutation.isPending}>
               {importMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              Confirm Import
+              تأكيد الاستيراد
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -264,7 +271,7 @@ const ResultTable = ({ title, rows, columns }) => (
         <TableHeader>
           <TableRow>
             {columns.map((column) => (
-              <TableHead key={column}>{column}</TableHead>
+              <TableHead key={column}>{columnLabels[column] ?? column}</TableHead>
             ))}
           </TableRow>
         </TableHeader>

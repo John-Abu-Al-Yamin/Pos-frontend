@@ -11,14 +11,14 @@ import OpeningStockImportDialog from "./components/OpeningStockImportDialog";
 
 const templateOptions = {
   [OPENING_STOCK_TEMPLATE_TYPES.mobile]: {
-    label: "Mobile",
-    downloadText: "Download Mobile Template",
-    importText: "Import Mobile Excel",
+    label: "الجوالات",
+    downloadText: "تحميل قالب الجوالات",
+    importText: "استيراد ملف الجوالات",
   },
   [OPENING_STOCK_TEMPLATE_TYPES.quantity]: {
-    label: "Accessories & Spare Parts",
-    downloadText: "Download Accessories & Spare Parts Template",
-    importText: "Import Accessories Excel",
+    label: "الإكسسوارات وقطع الغيار",
+    downloadText: "تحميل قالب الإكسسوارات وقطع الغيار",
+    importText: "استيراد ملف الإكسسوارات",
   },
 };
 
@@ -33,9 +33,9 @@ const OpeningStockPage = () => {
     try {
       setDownloadingTemplateType(templateType);
       await downloadOpeningStockTemplate(templateType);
-      toast.success("Template downloaded successfully");
+      toast.success("تم تحميل القالب بنجاح");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Template download failed");
+      toast.error(error?.response?.data?.message || "فشل تحميل القالب");
     } finally {
       setDownloadingTemplateType(null);
     }
@@ -74,12 +74,12 @@ const OpeningStockPage = () => {
 
   const summaryCards = latestSummary
     ? [
-        ["Total rows", latestSummary.total_rows],
-        ["Quantity rows", latestSummary.quantity_rows],
-        ["Serialized rows", latestSummary.serialized_rows],
-        ["Quantity units", latestSummary.quantity_units],
-        ["Serialized units", latestSummary.serialized_units],
-        ["Stock movements", latestSummary.stock_movements],
+        ["إجمالي الصفوف", latestSummary.total_rows],
+        ["صفوف الكميات", latestSummary.quantity_rows],
+        ["صفوف الجوالات", latestSummary.serialized_rows],
+        ["إجمالي الكميات", latestSummary.quantity_units],
+        ["إجمالي الجوالات", latestSummary.serialized_units],
+        ["حركات المخزون", latestSummary.stock_movements],
       ]
     : [];
 
@@ -87,9 +87,9 @@ const OpeningStockPage = () => {
     <div>
       <header className="flex items-center justify-between text-neutral-950 mb-10">
         <div className="flex-1">
-          <h1 className="text-3xl font-bold text-foreground">Opening Stock</h1>
+          <h1 className="text-3xl font-bold text-foreground">المخزون الافتتاحي</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Import initial inventory from an Excel file. This is a one-time operation.
+            استيراد المخزون الابتدائي من ملفات Excel. هذه العملية تتم مرة واحدة.
           </p>
         </div>
       </header>
@@ -97,9 +97,9 @@ const OpeningStockPage = () => {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Opening Stock</CardTitle>
+            <CardTitle>المخزون الافتتاحي</CardTitle>
             <CardDescription>
-              Download the Excel template, fill in your initial inventory data, and import it.
+              حمل قالب Excel المناسب، املأ بيانات المخزون الابتدائي، ثم قم باستيراده.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -107,8 +107,8 @@ const OpeningStockPage = () => {
               <div className="flex items-start gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800">
                 <CircleCheckBig className="mt-0.5 h-5 w-5 shrink-0" />
                 <div>
-                  <p className="font-medium">Opening stock has been completed</p>
-                  <p className="text-green-700 mt-1">Initial inventory has already been imported.</p>
+                  <p className="font-medium">تم إكمال المخزون الافتتاحي</p>
+                  <p className="text-green-700 mt-1">تم استيراد المخزون الابتدائي بالفعل.</p>
                 </div>
               </div>
             ) : (
@@ -120,7 +120,7 @@ const OpeningStockPage = () => {
                   disabled={!!downloadingTemplateType}
                 >
                   {downloadingTemplateType === OPENING_STOCK_TEMPLATE_TYPES.mobile ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                  {downloadingTemplateType === OPENING_STOCK_TEMPLATE_TYPES.mobile ? "Downloading..." : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.mobile].downloadText}
+                  {downloadingTemplateType === OPENING_STOCK_TEMPLATE_TYPES.mobile ? "جاري التحميل..." : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.mobile].downloadText}
                 </Button>
                 <Button
                   type="button"
@@ -129,7 +129,7 @@ const OpeningStockPage = () => {
                   disabled={!!downloadingTemplateType}
                 >
                   {downloadingTemplateType === OPENING_STOCK_TEMPLATE_TYPES.quantity ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                  {downloadingTemplateType === OPENING_STOCK_TEMPLATE_TYPES.quantity ? "Downloading..." : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.quantity].downloadText}
+                  {downloadingTemplateType === OPENING_STOCK_TEMPLATE_TYPES.quantity ? "جاري التحميل..." : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.quantity].downloadText}
                 </Button>
                 <Button
                   type="button"
@@ -137,7 +137,7 @@ const OpeningStockPage = () => {
                   disabled={isTemplateCompleted(OPENING_STOCK_TEMPLATE_TYPES.mobile)}
                 >
                   <Upload className="h-4 w-4" />
-                  {isTemplateCompleted(OPENING_STOCK_TEMPLATE_TYPES.mobile) ? "Mobile Completed" : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.mobile].importText}
+                  {isTemplateCompleted(OPENING_STOCK_TEMPLATE_TYPES.mobile) ? "تم استيراد الجوالات" : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.mobile].importText}
                 </Button>
                 <Button
                   type="button"
@@ -145,7 +145,7 @@ const OpeningStockPage = () => {
                   disabled={isTemplateCompleted(OPENING_STOCK_TEMPLATE_TYPES.quantity)}
                 >
                   <Upload className="h-4 w-4" />
-                  {isTemplateCompleted(OPENING_STOCK_TEMPLATE_TYPES.quantity) ? "Accessories Completed" : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.quantity].importText}
+                  {isTemplateCompleted(OPENING_STOCK_TEMPLATE_TYPES.quantity) ? "تم استيراد الإكسسوارات" : templateOptions[OPENING_STOCK_TEMPLATE_TYPES.quantity].importText}
                 </Button>
               </div>
             )}
@@ -154,22 +154,22 @@ const OpeningStockPage = () => {
 
         <Card>
           <CardHeader>
-            <CardTitle>Important Information</CardTitle>
+            <CardTitle>معلومات مهمة</CardTitle>
             <CardDescription>
-              Opening stock can only be imported once.
+              يمكن استيراد المخزون الافتتاحي مرة واحدة فقط لكل قالب.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
               <Info className="mt-0.5 h-5 w-5 shrink-0" />
               <div className="space-y-1">
-                <p className="font-medium">Before you begin</p>
+                <p className="font-medium">قبل البدء</p>
                 <ul className="list-disc pl-4 text-blue-700 space-y-1">
-                  <li>Make sure all products are already created in the system.</li>
-                  <li>Use the template file to prepare your data.</li>
-                  <li>Mobile products require serial numbers / IMEI.</li>
-                  <li>Accessories and spare parts require quantities.</li>
-                  <li>This operation cannot be undone.</li>
+                  <li>تأكد من إنشاء جميع المنتجات في النظام مسبقًا.</li>
+                  <li>استخدم ملف القالب المناسب لتجهيز البيانات.</li>
+                  <li>إذا لم يتم إدخال serial للجوالات، سيقوم النظام بتوليده تلقائيًا.</li>
+                  <li>الإكسسوارات وقطع الغيار تحتاج إلى كميات.</li>
+                  <li>لا يمكن التراجع عن هذه العملية.</li>
                 </ul>
               </div>
             </div>
@@ -180,8 +180,8 @@ const OpeningStockPage = () => {
       {summaryCards.length > 0 && (
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Last Import Summary</CardTitle>
-            <CardDescription>Opening stock import completed successfully.</CardDescription>
+            <CardTitle>ملخص آخر استيراد</CardTitle>
+            <CardDescription>تم استيراد المخزون الافتتاحي بنجاح.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
