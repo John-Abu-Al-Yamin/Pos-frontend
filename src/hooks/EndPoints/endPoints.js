@@ -47,6 +47,10 @@ const endPoints = {
   openingStockTemplate: "/opening-stock/template",
   openingStockImport: "/opening-stock/import",
 
+  // invoices
+  invoicePurchase: "/invoices/purchases",
+  invoiceSale: "/invoices/sales",
+
   // dashboard
   dashboard: "/dashboard",
 };

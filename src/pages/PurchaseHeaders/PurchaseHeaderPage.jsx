@@ -1,7 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, Pencil, CheckCheck, XCircle, Plus, Search, X } from "lucide-react";
+import { Eye, Pencil, CheckCheck, XCircle, Plus, Printer, Search, X } from "lucide-react";
 import { toast } from "sonner";
+import PrintInvoiceButton from "@/components/invoice/PrintInvoiceButton";
 
 import CustomHeader from "@/customs/CustomHeader";
 import CustomPagination from "@/customs/CustomPagination";
@@ -203,6 +204,9 @@ const PurchaseHeaderPage = () => {
                         <Eye className="h-4 w-4" />
                         عرض
                       </Button>
+                      {header.status === "completed" && (
+                        <PrintInvoiceButton type="purchase" id={header.id} />
+                      )}
                       {header.status === "draft" && (
                         <>
                           <Button

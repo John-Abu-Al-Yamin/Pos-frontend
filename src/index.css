@@ -161,3 +161,23 @@
     transform: translateX(200%);
   }
 }
+
+@media print {
+  body {
+    visibility: hidden;
+  }
+
+  #invoice-print-root {
+    visibility: visible;
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 9999;
+    direction: rtl;
+  }
+
+  #invoice-print-root * {
+    visibility: visible;
+  }
+}
+

@@ -3,7 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const AddEditHeader = ({ title, description, backPath, backText }) => {
+const AddEditHeader = ({
+  title,
+  description,
+  backPath,
+  backText,
+  showBack = true,
+}) => {
   const navigate = useNavigate();
 
   return (
@@ -15,15 +21,17 @@ const AddEditHeader = ({ title, description, backPath, backText }) => {
         )}
       </div>
 
-      <Button
-        onClick={() => navigate(backPath)}
-        variant="outline"
-        size="sm"
-        className="gap-2 self-start sm:self-center"
-      >
-        <ArrowRight className="h-4 w-4" />
-        {backText}
-      </Button>
+      {showBack && (
+        <Button
+          onClick={() => navigate(backPath)}
+          variant="outline"
+          size="sm"
+          className="gap-2 self-start sm:self-center"
+        >
+          <ArrowRight className="h-4 w-4" />
+          {backText}
+        </Button>
+      )}
     </header>
   );
 };

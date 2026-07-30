@@ -15,8 +15,9 @@ import {
 import { useGetPurchaseHeadersById } from "@/hooks/Actions/PurchaseHeader/useCurdsPurchaseHeader";
 import { useDeletePurchaseItems } from "@/hooks/Actions/PurchaseItem/useCurdsPurchaseItem";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { ArrowRight, Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import PrintInvoiceButton from "@/components/invoice/PrintInvoiceButton";
 
 const statusConfig = {
   draft: { label: "مسودة", className: "bg-yellow-100 text-yellow-800" },
@@ -51,12 +52,27 @@ const DetlaisPurchaseHeader = () => {
 
   return (
     <div>
-      <AddEditHeader
-        title={`فاتورة شراء رقم ${purchaseHeader.purchaseHeader_number}`}
-        description={purchaseHeader.notes || "لا توجد ملاحظات"}
-        backPath="/purchase-headers"
-        backText="رجوع"
-      />
+      <div className="flex items-start justify-between mb-8">
+        <AddEditHeader
+          title={`فاتورة شراء رقم ${purchaseHeader.purchaseHeader_number}`}
+          description={purchaseHeader.notes || "لا توجد ملاحظات"}
+          backPath="/purchase-headers"
+          backText="رجوع"
+          showBack={false}
+        />
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button
+            onClick={() => navigate("/purchase-headers")}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            <ArrowRight className="h-4 w-4" />
+            رجوع
+          </Button>
+          {!isDraft && <PrintInvoiceButton type="purchase" id={id} />}
+        </div>
+      </div>
 
       <div className=" p-6 mb-6 ">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

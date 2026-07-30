@@ -147,6 +147,10 @@ const queryKeys = {
   openingStockImport: "/opening-stock/import",
   openingStockTemplate: "/opening-stock/template",
 
+  // invoices
+  invoicePurchase: "/invoices/purchases",
+  invoiceSale: "/invoices/sales",
+
   // dashboard
   dashboard: "/dashboard",
 

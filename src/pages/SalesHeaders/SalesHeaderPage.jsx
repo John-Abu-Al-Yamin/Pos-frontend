@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, RotateCcw, Search, X } from "lucide-react";
+import { Eye, Printer, RotateCcw, Search, X } from "lucide-react";
+import PrintInvoiceButton from "@/components/invoice/PrintInvoiceButton";
 
 import CustomHeader from "@/customs/CustomHeader";
 import CustomPagination from "@/customs/CustomPagination";
@@ -174,6 +175,7 @@ const SalesHeaderPage = () => {
                       <Eye className="h-4 w-4" />
                       عرض
                     </Button>
+                    <PrintInvoiceButton type="sale" id={header.id} />
                     <Button
                       variant="outline"
                       size="sm"

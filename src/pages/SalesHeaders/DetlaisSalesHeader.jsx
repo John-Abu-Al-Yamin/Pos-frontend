@@ -12,9 +12,10 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { ArrowRight, RotateCcw } from "lucide-react";
 import { useGetSalesHeaderById } from "@/hooks/Actions/SalesHeaders/useCurdsSalesHeaders";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
+import PrintInvoiceButton from "@/components/invoice/PrintInvoiceButton";
 
 const DetlaisSalesHeader = () => {
   const { id } = useParams();
@@ -35,17 +36,30 @@ const DetlaisSalesHeader = () => {
           description={sale.notes || "لا توجد ملاحظات"}
           backPath="/sales-headers"
           backText="رجوع"
+          showBack={false}
         />
-        <Button
-          variant="default"
-          size="sm"
-          onClick={() =>
-            navigate(`/sales-returnable/${sale.id}`)
-          }
-        >
-          <RotateCcw className="h-4 w-4" />
-          إنشاء مرتجع
-        </Button>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button
+            onClick={() => navigate("/sales-headers")}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            <ArrowRight className="h-4 w-4" />
+            رجوع
+          </Button>
+          <PrintInvoiceButton type="sale" id={id} />
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() =>
+              navigate(`/sales-returnable/${sale.id}`)
+            }
+          >
+            <RotateCcw className="h-4 w-4" />
+            إنشاء مرتجع
+          </Button>
+        </div>
       </div>
 
       <div className="p-6 mb-6">
