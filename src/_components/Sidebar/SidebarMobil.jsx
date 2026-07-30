@@ -17,11 +17,13 @@ import {
   Wrench,
   BarChart3,
   Settings,
+  Warehouse,
 } from "lucide-react";
 import { removeAuthToken } from "@/services/cookies";
 import { isAdminUser } from "@/services/authUser";
 
 const isReportLink = (href) => href?.startsWith("/reports/");
+const isAdminLink = (href) => href === "/opening-stock";
 
 const labels = {
   categories: "الفئات",
@@ -48,6 +50,7 @@ const labels = {
   "reports-salaries": "تقارير الرواتب",
   "salary-assignments": "تعيينات الرواتب",
   "salary-payments": "مدفوعات الرواتب",
+  "opening-stock": "المخزون الافتتاحي",
   settings: "الإعدادات",
   users: "المستخدمين",
   more: "المزيد",
@@ -87,6 +90,7 @@ const SidebarMobile = () => {
         { key: "products", href: "/products", icon: Package },
         { key: "categories", href: "/categories", icon: Tags },
         { key: "brands", href: "/brands", icon: Bookmark },
+        { key: "opening-stock", href: "/opening-stock", icon: Warehouse },
         { key: "reports-inventory", href: "/reports/inventory", icon: BarChart3 },
       ],
     },
@@ -130,7 +134,7 @@ const SidebarMobile = () => {
 
   const visibleNavGroups = navGroups.map((group) => ({
     ...group,
-    items: group.items.filter((item) => canViewReports || (!isReportLink(item.href) && item.href !== "/users" && item.href !== "/settings")),
+    items: group.items.filter((item) => canViewReports || (!isReportLink(item.href) && !isAdminLink(item.href) && item.href !== "/users" && item.href !== "/settings")),
   }));
 
   const handleExpand = () => setIsExpanded((prev) => !prev);

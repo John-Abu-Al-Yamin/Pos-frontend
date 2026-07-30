@@ -68,6 +68,7 @@ import AddSalaryPayment from "@/pages/salary/AddSalaryPayment";
 import DetlaisSalaryPayment from "@/pages/salary/DetlaisSalaryPayment";
 import UsersPage from "@/pages/users/UsersPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
+import OpeningStockPage from "@/pages/OpeningStock/OpeningStockPage";
 
 const router = createBrowserRouter([
   {
@@ -350,6 +351,12 @@ const router = createBrowserRouter([
       {
         path: "/reports/salaries",
         element: <ProtectedRoute requiredRole="admin"><SalariesReportPage /></ProtectedRoute>,
+      },
+
+      // Opening Stock Routes
+      {
+        path: "/opening-stock",
+        element: <ProtectedRoute requiredRole="admin"><OpeningStockPage /></ProtectedRoute>,
       },
 
       // Stock Movements Routes

@@ -143,6 +143,10 @@ const queryKeys = {
   // salaryPaymentItems
   salaryPaymentItems: "/salary-payment-items",
 
+  // opening stock
+  openingStockImport: "/opening-stock/import",
+  openingStockTemplate: "/opening-stock/template",
+
   // dashboard
   dashboard: "/dashboard",
 

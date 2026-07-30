@@ -21,6 +21,7 @@ import {
   TrendingUp,
   BarChart3,
   LayoutDashboard,
+  Warehouse,
 } from "lucide-react";
 
 import { NavLink, useLocation } from "react-router-dom";
@@ -29,6 +30,7 @@ import { removeAuthToken } from "@/services/cookies";
 import { isAdminUser } from "@/services/authUser";
 
 const isReportLink = (href) => href?.startsWith("/reports/");
+const isAdminLink = (href) => href === "/opening-stock";
 
 const settingsItems = [
   { key: "الربح", href: "/settings", icon: Percent },
@@ -139,6 +141,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "كميات المخزون", href: "/inventory-quantities", icon: ClipboardList },
         { key: "عناصر المخزون", href: "/inventory-items", icon: Scan },
         { key: "حركات المخزون", href: "/stock-movements", icon: TrendingUp },
+        { key: "المخزون الافتتاحي", href: "/opening-stock", icon: Warehouse },
         { key: "التصنيفات", href: "/categories", icon: Tags },
         { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
         { key: "تقارير المخزون", href: "/reports/inventory", icon: BarChart3 },
@@ -189,7 +192,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   const visibleNavGroups = navGroups.map((group) => ({
     ...group,
-    items: group.items.filter((item) => canViewReports || !isReportLink(item.href)),
+    items: group.items.filter((item) => canViewReports || (!isReportLink(item.href) && !isAdminLink(item.href))),
   }));
   
   return (

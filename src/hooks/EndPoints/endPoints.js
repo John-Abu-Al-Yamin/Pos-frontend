@@ -43,6 +43,10 @@ const endPoints = {
   salaryPayments: "/salary-payments",
   salaryPaymentItems: "/salary-payment-items",
 
+  // opening stock
+  openingStockTemplate: "/opening-stock/template",
+  openingStockImport: "/opening-stock/import",
+
   // dashboard
   dashboard: "/dashboard",
 };
