@@ -5,7 +5,6 @@ import {
   ChevronLeft,
   LayoutDashboard,
   Filter,
-  Search,
   X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -25,7 +24,6 @@ import { useGetDashboard } from "@/hooks/Actions/dashboard/useCurdsDashboard";
 import ReportErrorState from "@/pages/reports/components/ReportErrorState";
 
 import KpiCards from "./components/KpiCards";
-import ComparisonCards from "./components/ComparisonCards";
 import DashboardCharts from "./components/DashboardCharts";
 import SalesSection from "./components/SalesSection";
 import OperationsSection from "./components/OperationsSection";
@@ -47,12 +45,8 @@ const DashboardPage = () => {
     period: "today",
   });
 
-  const [appliedFilters, setAppliedFilters] = useState({
-    period: "today",
-  });
-
   const { data, isPending, isError, error, refetch } =
-    useGetDashboard(appliedFilters);
+    useGetDashboard(filters);
 
   const dashboardData = data?.data?.data || {};
   const {
@@ -70,18 +64,11 @@ const DashboardPage = () => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleApplyFilters = () => {
-    setAppliedFilters({ period: filters.period || "today" });
-  };
-
   const handleResetFilters = () => {
     setFilters({ period: "today" });
-    setAppliedFilters({ period: "today" });
   };
-  const hasActiveFilters =
-    appliedFilters.date_from ||
-    appliedFilters.date_to ||
-    appliedFilters.period !== "today";
+
+  const hasActiveFilters = filters.period !== "today";
 
   const hasData =
     kpis ||
@@ -148,25 +135,25 @@ const DashboardPage = () => {
           </Select>
         </div>
 
-        <div className="flex items-center gap-2 mt-4">
-          <Button onClick={handleApplyFilters} size="sm">
-            <Search className="h-4 w-4 ml-1" />
-            تطبيق الفلترة
-          </Button>
-          {hasActiveFilters && (
+        {hasActiveFilters && (
+          <div className="flex items-center gap-2 mt-4">
             <Button variant="outline" size="sm" onClick={handleResetFilters}>
               <X className="h-4 w-4 ml-1" />
               إعادة تعيين
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {isPending ? (
         <>
           <KpiCards isPending />
-          <ComparisonCards isPending />
           <DashboardCharts isPending />
+          <SalesSection isPending />
+          <OperationsSection isPending />
+          <InventorySection isPending />
+          <AlertsSection isPending />
+          <RecentActivity isPending />
         </>
       ) : isError ? (
         <ReportErrorState error={error} onRetry={() => refetch()} />
@@ -184,14 +171,13 @@ const DashboardPage = () => {
         </Card>
       ) : (
         <>
-          <KpiCards kpis={kpis} />
-          <ComparisonCards comparison={comparison} />
+          <KpiCards kpis={kpis} comparison={comparison} />
           <DashboardCharts
             dailySummary={charts?.daily_summary}
             revenueBreakdown={charts?.revenue_breakdown}
             expenseBreakdown={charts?.expense_breakdown}
           />
-          <SalesSection sales={sales} />
+          <SalesSection sales={sales} kpis={kpis} />
           <OperationsSection operations={operations} />
           <InventorySection inventory={inventory} />
           <AlertsSection alerts={alerts} />

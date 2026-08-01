@@ -15,12 +15,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
-import {
-  ShoppingCart,
-  Wrench,
-  DollarSign,
-  Package,
-} from "lucide-react";
+import { ShoppingCart, Activity } from "lucide-react";
+import SectionTitle from "./SectionTitle";
 
 const movementTypeLabels = {
   purchase: "مشتريات",
@@ -243,12 +239,13 @@ const LatestStockMovements = ({ data }) => {
 const RecentActivity = ({ recentActivity, isPending }) => {
   if (isPending) {
     return (
-      <div className="space-y-6 mb-6">
+      <section className="mb-8">
+        <Skeleton className="mb-4 h-6 w-40" />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <SectionSkeleton />
           <SectionSkeleton />
         </div>
-      </div>
+      </section>
     );
   }
 
@@ -262,14 +259,15 @@ const RecentActivity = ({ recentActivity, isPending }) => {
   if (!hasSales && !hasMaintenance && !hasExpenses && !hasStock) return null;
 
   return (
-    <div className="space-y-6 mb-6">
+    <section className="mb-8">
+      <SectionTitle title="النشاط الأخير" icon={Activity} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {hasSales && <LatestSales data={recentActivity.latest_sales} />}
         {hasMaintenance && <LatestMaintenance data={recentActivity.latest_maintenance_tickets} />}
         {hasExpenses && <LatestExpenses data={recentActivity.latest_expenses} />}
         {hasStock && <LatestStockMovements data={recentActivity.latest_stock_movements} />}
       </div>
-    </div>
+    </section>
   );
 };
 

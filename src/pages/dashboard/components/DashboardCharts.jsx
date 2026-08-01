@@ -20,6 +20,8 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { BarChart3, PieChart as PieChartIcon } from "lucide-react";
+import SectionTitle from "./SectionTitle";
 
 const CHART_COLORS = [
   "hsl(0, 0%, 20%)",
@@ -49,13 +51,43 @@ const CustomTooltip = ({ active, payload, label, formatter }) => {
   );
 };
 
+const RADIAN = Math.PI / 180;
+
+const CenteredPieLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  name,
+  percent,
+}) => {
+  const radius = (innerRadius + outerRadius) / 2;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      x={x}
+      y={y}
+      fill="#fff"
+      textAnchor="middle"
+      dominantBaseline="central"
+      fontSize={14}
+      fontWeight={600}
+    >
+      {`${name} ${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+
 const ChartSkeleton = () => (
   <Card className="overflow-hidden">
     <CardHeader>
       <Skeleton className="h-5 w-40" />
     </CardHeader>
     <CardContent>
-        <Skeleton className="h-[350px] w-full rounded-lg" />
+      <Skeleton className="h-[320px] w-full rounded-lg" />
     </CardContent>
   </Card>
 );
@@ -63,12 +95,14 @@ const ChartSkeleton = () => (
 const DailyTrendChart = ({ data }) => {
   if (!data || data.length === 0) return null;
   return (
-    <Card className="overflow-hidden transition-all duration-200 hover:shadow-md">
+    <Card className="h-full overflow-hidden transition-all duration-200 hover:shadow-md">
       <CardHeader>
-        <CardTitle className="text-base">اتجاه المبيعات والأرباح اليومي</CardTitle>
+        <CardTitle className="text-base">
+          اتجاه المبيعات والأرباح اليومي
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer width="100%" height={320}>
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis
@@ -122,14 +156,15 @@ const DailyTrendChart = ({ data }) => {
 };
 
 const RevenueBreakdownChart = ({ data }) => {
-  if (!data) return null;
   const chartData = [
-    { name: "المبيعات", value: data.sales || 0 },
-    ...(data.maintenance ? [{ name: "الصيانة", value: data.maintenance }] : []),
+    { name: "المبيعات", value: data?.sales || 0 },
+    ...(data?.maintenance
+      ? [{ name: "الصيانة", value: data.maintenance }]
+      : []),
   ];
 
   const total = chartData.reduce((sum, d) => sum + d.value, 0);
-  if (total === 0) return null;
+  const isEmpty = total === 0;
 
   return (
     <Card className="overflow-hidden transition-all duration-200 hover:shadow-md">
@@ -137,30 +172,42 @@ const RevenueBreakdownChart = ({ data }) => {
         <CardTitle className="text-base">توزيع الإيرادات</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <PieChart>
-            <Pie
-              data={chartData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label={({ name, percent }) =>
-                `${name} ${(percent * 100).toFixed(0)}%`
-              }
-            >
-              {chartData.map((_, idx) => (
-                <Cell
-                  key={idx}
-                  fill={CHART_COLORS[idx % CHART_COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip content={<CustomTooltip formatter={formatCurrencyValue} />} />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+        {isEmpty ? (
+          <div className="flex h-[320px] flex-col items-center justify-center gap-3 text-center">
+            <PieChartIcon className="h-10 w-10 text-muted-foreground/50" />
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                لا توجد بيانات متاحة لهذه الفترة
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground/80">
+                سيظهر توزيع الإيرادات هنا بمجرد توفر بيانات
+              </p>
+            </div>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={320}>
+            <PieChart>
+              <Pie
+                data={chartData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                label={CenteredPieLabel}
+              >
+                {chartData.map((_, idx) => (
+                  <Cell
+                    key={idx}
+                    fill={CHART_COLORS[idx % CHART_COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip formatter={formatCurrencyValue} />} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </CardContent>
     </Card>
   );
@@ -174,7 +221,7 @@ const ExpenseBreakdownChart = ({ data }) => {
         <CardTitle className="text-base">توزيع المصروفات</CardTitle>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
+        <ResponsiveContainer width="100%" height={320}>
           <BarChart data={data} layout="vertical">
             <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
             <XAxis
@@ -187,7 +234,7 @@ const ExpenseBreakdownChart = ({ data }) => {
               type="category"
               dataKey="expense_category"
               tick={{ fontSize: 10 }}
-              width={100}
+              width={90}
               className="text-muted-foreground"
             />
             <Tooltip content={<CustomTooltip formatter={formatCurrencyValue} />} />
@@ -200,28 +247,62 @@ const ExpenseBreakdownChart = ({ data }) => {
   );
 };
 
-const DashboardCharts = ({ dailySummary, revenueBreakdown, expenseBreakdown, isPending }) => {
+const DashboardCharts = ({
+  dailySummary,
+  revenueBreakdown,
+  expenseBreakdown,
+  isPending,
+}) => {
   if (isPending) {
     return (
-      <div className="space-y-6 mb-6">
-        <ChartSkeleton />
-        <ChartSkeleton />
-      </div>
+      <section className="mb-8">
+        <Skeleton className="mb-4 h-6 w-40" />
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <ChartSkeleton />
+          </div>
+          <ChartSkeleton />
+        </div>
+      </section>
     );
   }
 
-  const hasDailyData = dailySummary?.length > 0;
-  const hasRevenueData = revenueBreakdown && (revenueBreakdown.sales > 0 || revenueBreakdown.maintenance > 0);
-  const hasExpenseData = expenseBreakdown?.length > 0;
+  const showDaily = dailySummary?.length > 0;
+  const showExpense = expenseBreakdown?.length > 0;
 
-  if (!hasDailyData && !hasRevenueData && !hasExpenseData) return null;
+  const secondaryCharts = [
+    <RevenueBreakdownChart key="revenue" data={revenueBreakdown} />,
+  ];
+  if (showExpense) {
+    secondaryCharts.push(
+      <ExpenseBreakdownChart key="expense" data={expenseBreakdown} />
+    );
+  }
 
   return (
-    <div className="space-y-6 mb-6">
-      {hasDailyData && <DailyTrendChart data={dailySummary} />}
-      {hasRevenueData && <RevenueBreakdownChart data={revenueBreakdown} />}
-      {hasExpenseData && <ExpenseBreakdownChart data={expenseBreakdown} />}
-    </div>
+    <section className="mb-8">
+      <SectionTitle title="التحليلات والاتجاهات" icon={BarChart3} />
+      {!showDaily ? (
+        <div
+          className={
+            secondaryCharts.length === 1
+              ? "max-w-2xl"
+              : "grid grid-cols-1 gap-6 lg:grid-cols-2"
+          }
+        >
+          {secondaryCharts}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+          <div className="xl:col-span-2">
+            <DailyTrendChart data={dailySummary} />
+          </div>
+          {secondaryCharts.length > 0 && (
+            <div className="space-y-6">{secondaryCharts}</div>
+          )}
+        </div>
+      )}
+    </section>
   );
 };
 

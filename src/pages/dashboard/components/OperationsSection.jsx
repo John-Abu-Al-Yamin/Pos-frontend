@@ -7,7 +7,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
-import { Wrench, ShoppingCart, DollarSign, Wallet } from "lucide-react";
+import { Wrench, ShoppingCart, DollarSign, Wallet, Settings2 } from "lucide-react";
+import SectionTitle from "./SectionTitle";
 
 const statusLabels = {
   pending: "قيد الانتظار",
@@ -29,11 +30,13 @@ const statusVariants = {
 
 const SectionSkeleton = () => (
   <Card>
-    <CardHeader><Skeleton className="h-5 w-40" /></CardHeader>
+    <CardHeader>
+      <Skeleton className="h-5 w-40" />
+    </CardHeader>
     <CardContent>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 rounded-lg" />
+      <div className="grid grid-cols-2 gap-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-16 rounded-lg" />
         ))}
       </div>
     </CardContent>
@@ -49,8 +52,9 @@ const StatBox = ({ label, value }) => (
 
 const MaintenanceStatus = ({ maintenance }) => {
   if (!maintenance) return null;
+  const statusEntries = Object.entries(maintenance.status_counts || {});
   return (
-    <Card className="transition-all duration-200 hover:shadow-md">
+    <Card className="h-full transition-all duration-200 hover:shadow-md">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Wrench className="h-4 w-4 text-primary" />
@@ -58,20 +62,20 @@ const MaintenanceStatus = ({ maintenance }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {Object.entries(maintenance.status_counts || {}).map(([status, count]) => (
-            <Badge key={status} variant={statusVariants[status] || "outline"}>
-              {statusLabels[status] || status}: {count}
-            </Badge>
-          ))}
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          <StatBox label="قيد الانتظار" value={maintenance.pending ?? 0} />
-          <StatBox label="قيد الإصلاح" value={maintenance.under_repair ?? 0} />
+        {statusEntries.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {statusEntries.map(([status, count]) => (
+              <Badge key={status} variant={statusVariants[status] || "outline"}>
+                {statusLabels[status] || status}: {count}
+              </Badge>
+            ))}
+          </div>
+        )}
+        <div className="grid grid-cols-2 gap-3">
+          <StatBox label="مستلمة" value={maintenance.received_in_period ?? 0} />
+          <StatBox label="مسلمة" value={maintenance.delivered_in_period ?? 0} />
           <StatBox label="بانتظار القطع" value={maintenance.waiting_parts ?? 0} />
           <StatBox label="تم الإصلاح" value={maintenance.repaired_not_delivered ?? 0} />
-          <StatBox label="مستلمة في الفترة" value={maintenance.received_in_period ?? 0} />
-          <StatBox label="مسلمة في الفترة" value={maintenance.delivered_in_period ?? 0} />
         </div>
       </CardContent>
     </Card>
@@ -81,17 +85,20 @@ const MaintenanceStatus = ({ maintenance }) => {
 const PurchaseStatus = ({ purchases }) => {
   if (!purchases) return null;
   return (
-    <Card className="transition-all duration-200 hover:shadow-md">
+    <Card className="h-full transition-all duration-200 hover:shadow-md">
       <CardHeader>
         <div className="flex items-center gap-2">
           <ShoppingCart className="h-4 w-4 text-primary" />
-          <CardTitle className="text-base">حالة المشتريات</CardTitle>
+          <CardTitle className="text-base">المشتريات</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <StatBox label="مسودة" value={purchases.draft_count ?? 0} />
-          <StatBox label="مكتملة في الفترة" value={purchases.completed_in_period ?? 0} />
+          <StatBox
+            label="مكتملة في الفترة"
+            value={purchases.completed_in_period ?? 0}
+          />
         </div>
       </CardContent>
     </Card>
@@ -101,20 +108,26 @@ const PurchaseStatus = ({ purchases }) => {
 const PendingExpenses = ({ expenses }) => {
   if (!expenses) return null;
   return (
-    <Card className="transition-all duration-200 hover:shadow-md">
+    <Card className="h-full transition-all duration-200 hover:shadow-md">
       <CardHeader>
         <div className="flex items-center gap-2">
           <DollarSign className="h-4 w-4 text-primary" />
-          <CardTitle className="text-base">المصروفات المعلقة</CardTitle>
+          <CardTitle className="text-base">المصروفات</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           <StatBox label="معلقة" value={expenses.pending_count ?? 0} />
+          <StatBox
+            label="مدفوعة في الفترة"
+            value={expenses.paid_in_period ?? 0}
+          />
           {expenses.pending_amount !== undefined && (
-            <StatBox label="القيمة المعلقة" value={formatCurrency(expenses.pending_amount ?? 0)} />
+            <StatBox
+              label="القيمة المعلقة"
+              value={formatCurrency(expenses.pending_amount ?? 0)}
+            />
           )}
-          <StatBox label="مدفوعة في الفترة" value={expenses.paid_in_period ?? 0} />
         </div>
       </CardContent>
     </Card>
@@ -124,11 +137,11 @@ const PendingExpenses = ({ expenses }) => {
 const SalaryStatus = ({ salaries }) => {
   if (!salaries) return null;
   return (
-    <Card className="transition-all duration-200 hover:shadow-md">
+    <Card className="h-full transition-all duration-200 hover:shadow-md">
       <CardHeader>
         <div className="flex items-center gap-2">
           <Wallet className="h-4 w-4 text-primary" />
-          <CardTitle className="text-base">حالة الرواتب</CardTitle>
+          <CardTitle className="text-base">الرواتب</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
@@ -141,10 +154,14 @@ const SalaryStatus = ({ salaries }) => {
 const OperationsSection = ({ operations, isPending }) => {
   if (isPending) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <SectionSkeleton />
-        <SectionSkeleton />
-      </div>
+      <section className="mb-8">
+        <Skeleton className="mb-4 h-6 w-40" />
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <SectionSkeleton key={i} />
+          ))}
+        </div>
+      </section>
     );
   }
 
@@ -154,15 +171,20 @@ const OperationsSection = ({ operations, isPending }) => {
     <MaintenanceStatus key="maintenance" maintenance={operations.maintenance} />,
     <PurchaseStatus key="purchases" purchases={operations.purchases} />,
     <PendingExpenses key="expenses" expenses={operations.expenses} />,
-    operations.salaries && <SalaryStatus key="salaries" salaries={operations.salaries} />,
+    operations.salaries && (
+      <SalaryStatus key="salaries" salaries={operations.salaries} />
+    ),
   ].filter(Boolean);
 
   if (sections.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      {sections}
-    </div>
+    <section className="mb-8">
+      <SectionTitle title="العمليات" icon={Settings2} />
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        {sections}
+      </div>
+    </section>
   );
 };
 

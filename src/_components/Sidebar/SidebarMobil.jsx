@@ -18,6 +18,7 @@ import {
   BarChart3,
   Settings,
   Warehouse,
+  LayoutDashboard,
 } from "lucide-react";
 import { removeAuthToken } from "@/services/cookies";
 import { isAdminUser } from "@/services/authUser";
@@ -26,6 +27,7 @@ const isReportLink = (href) => href?.startsWith("/reports/");
 const isAdminLink = (href) => href === "/opening-stock";
 
 const labels = {
+  dashboard: "لوحة القيادة",
   categories: "الفئات",
   suppliers: "الموردين",
   brands: "العلامات التجارية",
@@ -65,14 +67,20 @@ const SidebarMobile = () => {
   const canViewReports = isAdminUser();
 
   const navItems = [
+    { key: "products", href: "/products", icon: Package },
+    { key: "expenses", href: "/expenses", icon: DollarSign },
     { key: "categories", href: "/categories", icon: Tags },
     { key: "suppliers", href: "/suppliers", icon: Users },
     { key: "brands", href: "/brands", icon: Bookmark },
-    { key: "products", href: "/products", icon: Package },
-    { key: "expenses", href: "/expenses", icon: DollarSign },
   ];
 
   const navGroups = [
+    {
+      section: "الرئيسية",
+      items: [
+        { key: "dashboard", href: "/", icon: LayoutDashboard },
+      ],
+    },
     {
       section: "المبيعات",
       items: [
@@ -82,16 +90,6 @@ const SidebarMobile = () => {
         { key: "sales-returnable", href: "/sales-returnable", icon: Undo2 },
         { key: "customers", href: "/customers", icon: Users },
         { key: "reports-sales", href: "/reports/sales", icon: BarChart3 },
-      ],
-    },
-    {
-      section: "المخزون",
-      items: [
-        { key: "products", href: "/products", icon: Package },
-        { key: "categories", href: "/categories", icon: Tags },
-        { key: "brands", href: "/brands", icon: Bookmark },
-        { key: "opening-stock", href: "/opening-stock", icon: Warehouse },
-        { key: "reports-inventory", href: "/reports/inventory", icon: BarChart3 },
       ],
     },
     {
@@ -106,6 +104,16 @@ const SidebarMobile = () => {
       ],
     },
     {
+      section: "المخزون",
+      items: [
+        { key: "products", href: "/products", icon: Package },
+        { key: "categories", href: "/categories", icon: Tags },
+        { key: "brands", href: "/brands", icon: Bookmark },
+        { key: "opening-stock", href: "/opening-stock", icon: Warehouse },
+        { key: "reports-inventory", href: "/reports/inventory", icon: BarChart3 },
+      ],
+    },
+    {
       section: "الخدمات",
       items: [
         { key: "maintenance-tickets", href: "/maintenance-tickets", icon: Wrench },
@@ -116,11 +124,11 @@ const SidebarMobile = () => {
       section: "المالية",
       items: [
         { key: "expenses", href: "/expenses", icon: DollarSign },
-        { key: "reports-expenses", href: "/reports/expenses", icon: BarChart3 },
-        { key: "reports-profit-loss", href: "/reports/profit-loss", icon: BarChart3 },
-        { key: "reports-salaries", href: "/reports/salaries", icon: BarChart3 },
         { key: "salary-assignments", href: "/salary-assignments", icon: DollarSign },
         { key: "salary-payments", href: "/salary-payments", icon: DollarSign },
+        { key: "reports-profit-loss", href: "/reports/profit-loss", icon: BarChart3 },
+        { key: "reports-expenses", href: "/reports/expenses", icon: BarChart3 },
+        { key: "reports-salaries", href: "/reports/salaries", icon: BarChart3 },
       ],
     },
     {

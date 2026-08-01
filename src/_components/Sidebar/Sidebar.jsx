@@ -135,19 +135,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
       ],
     },
     {
-      section: "المخزون",
-      items: [
-        { key: "المنتجات", href: "/products", icon: Package },
-        { key: "كميات المخزون", href: "/inventory-quantities", icon: ClipboardList },
-        { key: "عناصر المخزون", href: "/inventory-items", icon: Scan },
-        { key: "حركات المخزون", href: "/stock-movements", icon: TrendingUp },
-        { key: "المخزون الافتتاحي", href: "/opening-stock", icon: Warehouse },
-        { key: "التصنيفات", href: "/categories", icon: Tags },
-        { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
-        { key: "تقارير المخزون", href: "/reports/inventory", icon: BarChart3 },
-      ],
-    },
-    {
       section: "المبيعات",
       items: [
         { key: "نقطة البيع", href: "/pos", icon: ShoppingCart },
@@ -158,7 +145,6 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "تقارير المبيعات", href: "/reports/sales", icon: BarChart3 },
       ],
     },
-    
     {
       section: "المشتريات",
       items: [
@@ -168,6 +154,19 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "مرتجعات الشراء", href: "/purchase-returns", icon: RotateCcw },
         { key: "إنشاء مرتجع شراء", href: "/purchase-returnable", icon: Undo2 },
         { key: "تقارير المشتريات", href: "/reports/purchases", icon: BarChart3 },
+      ],
+    },
+    {
+      section: "المخزون",
+      items: [
+        { key: "المنتجات", href: "/products", icon: Package },
+        { key: "كميات المخزون", href: "/inventory-quantities", icon: ClipboardList },
+        { key: "عناصر المخزون", href: "/inventory-items", icon: Scan },
+        { key: "حركات المخزون", href: "/stock-movements", icon: TrendingUp },
+        { key: "التصنيفات", href: "/categories", icon: Tags },
+        { key: "العلامات التجارية", href: "/brands", icon: Bookmark },
+        { key: "المخزون الافتتاحي", href: "/opening-stock", icon: Warehouse },
+        { key: "تقارير المخزون", href: "/reports/inventory", icon: BarChart3 },
       ],
     },
     {
@@ -181,11 +180,11 @@ const Sidebar = ({ isOpen, onToggle }) => {
       section: "المالية",
       items: [
         { key: "المصروفات", href: "/expenses", icon: DollarSign },
-        { key: "تقارير المصروفات", href: "/reports/expenses", icon: BarChart3 },
-        { key: "الأرباح والخسائر", href: "/reports/profit-loss", icon: BarChart3 },
-        { key: "تقارير الرواتب", href: "/reports/salaries", icon: BarChart3 },
         { key: "تخصيصات الرواتب", href: "/salary-assignments", icon: DollarSign },
         { key: "دفعات الرواتب", href: "/salary-payments", icon: DollarSign },
+        { key: "الأرباح والخسائر", href: "/reports/profit-loss", icon: BarChart3 },
+        { key: "تقارير المصروفات", href: "/reports/expenses", icon: BarChart3 },
+        { key: "تقارير الرواتب", href: "/reports/salaries", icon: BarChart3 },
       ],
     },
   ];

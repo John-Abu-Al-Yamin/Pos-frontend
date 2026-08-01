@@ -11,22 +11,16 @@ const alertConfig = {
   draft_purchases: { icon: FileText, label: "مشتريات مسودة" },
 };
 
-const AlertItem = ({ alertKey, alert }) => {
-  const config = alertConfig[alertKey];
-  if (!config || !alert) return null;
-
+const AlertItem = ({ config, alert }) => {
+  const { icon: Icon, label } = config;
   return (
     <div className="flex items-center gap-3 rounded-lg border border-border bg-muted p-3 transition-all duration-200 hover:bg-accent hover:border-accent">
-      <config.icon className="h-5 w-5 text-foreground" />
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground">{config.label}</p>
-        {alert.amount !== undefined ? (
+      <Icon className="h-5 w-5 shrink-0 text-foreground" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-foreground">{label}</p>
+        {alert.amount !== undefined && (
           <p className="text-xs text-muted-foreground mt-0.5">
-            {alert.count ?? 0} تنبيه - {formatCurrency(alert.amount)}
-          </p>
-        ) : (
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {alert.count ?? 0} تنبيه
+            {formatCurrency(alert.amount)}
           </p>
         )}
       </div>
@@ -40,10 +34,12 @@ const AlertItem = ({ alertKey, alert }) => {
 const AlertsSection = ({ alerts, isPending }) => {
   if (isPending) {
     return (
-      <Card className="mb-6">
-        <CardHeader><Skeleton className="h-5 w-32" /></CardHeader>
+      <Card className="mb-8">
+        <CardHeader>
+          <Skeleton className="h-5 w-32" />
+        </CardHeader>
         <CardContent>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-14 rounded-lg" />
             ))}
@@ -55,23 +51,28 @@ const AlertsSection = ({ alerts, isPending }) => {
 
   if (!alerts) return null;
 
-  const alertKeys = Object.keys(alertConfig);
-  const hasAlerts = alertKeys.some((key) => alerts[key]);
+  const activeAlerts = Object.entries(alertConfig)
+    .map(([key, config]) => ({ config, alert: alerts[key] }))
+    .filter(
+      ({ alert }) =>
+        alert &&
+        (alert.count > 0 || (alert.amount !== undefined && alert.amount > 0))
+    );
 
-  if (!hasAlerts) return null;
+  if (activeAlerts.length === 0) return null;
 
   return (
-    <Card className="mb-6 transition-all duration-200 hover:shadow-md">
+    <Card className="mb-8 transition-all duration-200 hover:shadow-md">
       <CardHeader>
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-4 w-4 text-foreground" />
-          <CardTitle className="text-base">التنبيهات</CardTitle>
+          <CardTitle className="text-base">يتطلب انتباهك</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          {alertKeys.map((key) => (
-            <AlertItem key={key} alertKey={key} alert={alerts[key]} />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {activeAlerts.map(({ config, alert }) => (
+            <AlertItem key={config.label} config={config} alert={alert} />
           ))}
         </div>
       </CardContent>
