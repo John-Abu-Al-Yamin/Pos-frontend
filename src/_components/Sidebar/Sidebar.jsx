@@ -10,9 +10,7 @@ import {
   RotateCcw,
   Undo2,
   Menu,
-  Settings,
   LogOut,
-  ChevronDown,
   Percent,
   Wrench,
   DollarSign,
@@ -22,106 +20,20 @@ import {
   BarChart3,
   LayoutDashboard,
   Warehouse,
+  ScrollText,
 } from "lucide-react";
 
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { removeAuthToken } from "@/services/cookies";
 import { isAdminUser } from "@/services/authUser";
 
 const isReportLink = (href) => href?.startsWith("/reports/");
-const isAdminLink = (href) => href === "/opening-stock";
-
-const settingsItems = [
-  { key: "الربح", href: "/settings", icon: Percent },
-  { key: "المستخدمين", href: "/users", icon: Users },
-];
-
-const SidebarSettingsDropdown = ({ isOpen }) => {
-  const [expanded, setExpanded] = React.useState(false);
-  const location = useLocation();
-  const isActive = location.pathname.startsWith("/settings");
-  const hasActiveChild = settingsItems.some(
-    (item) => location.pathname === item.href,
-  );
-
-  const toggle = () => setExpanded((prev) => !prev);
-
-  React.useEffect(() => {
-    if (hasActiveChild) {
-      setExpanded(true);
-    }
-  }, [hasActiveChild]);
-
-  return (
-    <div>
-      <button
-        onClick={toggle}
-        className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium w-full cursor-pointer transition-all duration-300 ease-in-out ${
-          isActive || expanded
-            ? "bg-black text-white"
-            : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
-        }`}
-      >
-        <Settings
-          className={`h-[18px] w-[18px] shrink-0 transition-transform duration-300 ease-in-out ${
-            expanded ? "scale-110" : ""
-          }`}
-          strokeWidth={1.5}
-        />
-        <span
-          className={`flex items-center justify-between flex-1 overflow-hidden transition-all duration-300 ease-in-out ${
-            isOpen ? "opacity-100 w-auto" : "opacity-0 w-0 hidden"
-          }`}
-        >
-          <span>الاعدادات</span>
-          <ChevronDown
-            className={`h-4 w-4 transition-all duration-300 ease-in-out ${
-              expanded ? "rotate-180" : ""
-            }`}
-          />
-        </span>
-      </button>
-
-      <div
-        className={`grid transition-all duration-300 ease-in-out ${
-          expanded && isOpen
-            ? "grid-rows-[1fr] opacity-100 mt-1"
-            : "grid-rows-[0fr] opacity-0"
-        }`}
-      >
-        <div className="overflow-hidden">
-          <div className="mr-5 border-r-2 border-gray-200 dark:border-gray-700 pr-3 space-y-1 py-0.5">
-            {settingsItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <NavLink
-                  key={item.href}
-                  to={item.href}
-                  className={({ isActive }) =>
-                    `group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ease-in-out ${
-                      isActive
-                        ? "bg-black/10 dark:bg-white/10 text-black dark:text-white shadow-sm"
-                        : "hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-                    }`
-                  }
-                >
-                  <Icon
-                    className={`h-4 w-4 shrink-0 transition-all duration-200 ${
-                      hasActiveChild ? "opacity-70" : ""
-                    }`}
-                    strokeWidth={1.5}
-                  />
-                  <span>{item.key}</span>
-                </NavLink>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+const isAdminLink = (href) =>
+  href === "/opening-stock" ||
+  href === "/settings" ||
+  href === "/users" ||
+  href === "/audit-logs";
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const { i18n } = useTranslation();
@@ -185,6 +97,14 @@ const Sidebar = ({ isOpen, onToggle }) => {
         { key: "الأرباح والخسائر", href: "/reports/profit-loss", icon: BarChart3 },
         { key: "تقارير المصروفات", href: "/reports/expenses", icon: BarChart3 },
         { key: "تقارير الرواتب", href: "/reports/salaries", icon: BarChart3 },
+      ],
+    },
+    {
+      section: "الإعدادات",
+      items: [
+        { key: "الربح", href: "/settings", icon: Percent },
+        { key: "المستخدمين", href: "/users", icon: Users },
+        { key: "سجل النشاطات", href: "/audit-logs", icon: ScrollText },
       ],
     },
   ];
@@ -253,10 +173,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
         ))}
       </nav>
 
-      {/* Settings + Language */}
+      {/* Logout */}
       <div className="px-2 mb-4 flex flex-col gap-2">
-        {canViewReports && <SidebarSettingsDropdown isOpen={isOpen} />}
-
         <button
           onClick={() => {
             removeAuthToken();

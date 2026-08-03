@@ -140,6 +140,13 @@ const queryKeys = {
   // stockMovements
   stockMovements: "/stock-movements",
 
+  // auditLogs
+  auditLogs: "/audit-logs",
+  auditLogsById: "/audit-logs-by-id",
+  auditLogsStats: "/audit-logs-stats",
+  auditLogsFilters: "/audit-logs-filters",
+  auditLogsRelated: "/audit-logs-related",
+
   // salaryPaymentItems
   salaryPaymentItems: "/salary-payment-items",
 

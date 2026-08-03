@@ -19,12 +19,14 @@ import {
   Settings,
   Warehouse,
   LayoutDashboard,
+  ScrollText,
 } from "lucide-react";
 import { removeAuthToken } from "@/services/cookies";
 import { isAdminUser } from "@/services/authUser";
 
 const isReportLink = (href) => href?.startsWith("/reports/");
-const isAdminLink = (href) => href === "/opening-stock";
+const isAdminLink = (href) =>
+  href === "/opening-stock" || href === "/audit-logs";
 
 const labels = {
   dashboard: "لوحة القيادة",
@@ -55,6 +57,7 @@ const labels = {
   "opening-stock": "المخزون الافتتاحي",
   settings: "الإعدادات",
   users: "المستخدمين",
+  "audit-logs": "سجل النشاطات",
   more: "المزيد",
   menu: "القائمة",
   logout: "تسجيل الخروج",
@@ -136,6 +139,7 @@ const SidebarMobile = () => {
       items: [
         { key: "settings", href: "/settings", icon: Settings },
         { key: "users", href: "/users", icon: Users },
+        { key: "audit-logs", href: "/audit-logs", icon: ScrollText },
       ],
     },
   ];

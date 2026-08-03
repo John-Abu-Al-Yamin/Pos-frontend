@@ -29,6 +29,12 @@ const endPoints = {
   inventoryItems: "/inventory-items",
   stockMovements: "/stock-movements",
 
+  // audit logs
+  auditLogs: "/admin/audit-logs",
+  auditLogsStats: "/admin/audit-logs/stats",
+  auditLogsFilters: "/admin/audit-logs/filters",
+  auditLogsRelated: "/admin/audit-logs/",
+
   // reports
   reportsSales: "/reports/sales",
   reportsPurchases: "/reports/purchases",

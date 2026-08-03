@@ -67,6 +67,7 @@ import SalaryPaymentsPage from "@/pages/salary/SalaryPaymentsPage";
 import AddSalaryPayment from "@/pages/salary/AddSalaryPayment";
 import DetlaisSalaryPayment from "@/pages/salary/DetlaisSalaryPayment";
 import UsersPage from "@/pages/users/UsersPage";
+import AuditLogsPage from "@/pages/auditLogs/AuditLogsPage";
 import DashboardPage from "@/pages/dashboard/DashboardPage";
 import OpeningStockPage from "@/pages/OpeningStock/OpeningStockPage";
 
@@ -126,6 +127,10 @@ const router = createBrowserRouter([
       {
         path: "/users",
         element: <ProtectedRoute requiredRole="admin"><UsersPage /></ProtectedRoute>,
+      },
+      {
+        path: "/audit-logs",
+        element: <ProtectedRoute requiredRole="admin"><AuditLogsPage /></ProtectedRoute>,
       },
 
       // products Routes
