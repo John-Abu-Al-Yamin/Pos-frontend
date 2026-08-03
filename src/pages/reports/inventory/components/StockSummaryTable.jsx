@@ -50,12 +50,12 @@ const StockSummaryTable = ({ products, isPending }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>المنتج</TableHead>
-              <TableHead>النوع</TableHead>
-              <TableHead>الكمية المتاحة</TableHead>
-              <TableHead>الحد الأدنى</TableHead>
-              <TableHead>متوسط السعر</TableHead>
-              <TableHead>قيمة المخزون</TableHead>
+              <TableHead className="text-center">المنتج</TableHead>
+              <TableHead className="text-center">النوع</TableHead>
+              <TableHead className="text-center">الكمية المتاحة</TableHead>
+              <TableHead className="text-center">الحد الأدنى</TableHead>
+              <TableHead className="text-center">متوسط السعر</TableHead>
+              <TableHead className="text-center">قيمة المخزون</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -70,18 +70,26 @@ const StockSummaryTable = ({ products, isPending }) => {
             ) : (
               products?.map((product) => (
                 <TableRow key={product.product_id}>
-                  <TableCell className="font-medium truncate max-w-[180px]">
+                  <TableCell className="font-medium truncate max-w-[180px] text-center align-middle">
                     {product.product_name || "—"}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center align-middle">
                     <Badge variant={TYPE_BADGE_VARIANTS[product.product_type] || "outline"}>
                       {TYPE_LABELS[product.product_type] || product.product_type}
                     </Badge>
                   </TableCell>
-                  <TableCell>{product.available_quantity ?? 0}</TableCell>
-                  <TableCell>{product.min_stock ?? "—"}</TableCell>
-                  <TableCell>{formatCurrency(product.avg_cost_price || 0)}</TableCell>
-                  <TableCell>{formatCurrency(product.stock_value || 0)}</TableCell>
+                  <TableCell className="text-center align-middle tabular-nums">
+                    {product.available_quantity ?? 0}
+                  </TableCell>
+                  <TableCell className="text-center align-middle tabular-nums">
+                    {product.min_stock ?? "—"}
+                  </TableCell>
+                  <TableCell className="text-center align-middle tabular-nums">
+                    {formatCurrency(product.avg_cost_price || 0)}
+                  </TableCell>
+                  <TableCell className="text-center align-middle font-semibold tabular-nums">
+                    {formatCurrency(product.stock_value || 0)}
+                  </TableCell>
                 </TableRow>
               ))
             )}

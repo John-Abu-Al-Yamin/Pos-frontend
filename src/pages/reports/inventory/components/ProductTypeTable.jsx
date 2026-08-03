@@ -52,10 +52,10 @@ const ProductTypeTable = ({ data, isPending }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>النوع</TableHead>
-              <TableHead>عدد المنتجات</TableHead>
-              <TableHead>الكمية الإجمالية</TableHead>
-              <TableHead>قيمة المخزون</TableHead>
+              <TableHead className="text-center">النوع</TableHead>
+              <TableHead className="text-center">عدد المنتجات</TableHead>
+              <TableHead className="text-center">الكمية الإجمالية</TableHead>
+              <TableHead className="text-center">قيمة المخزون</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,14 +64,20 @@ const ProductTypeTable = ({ data, isPending }) => {
             ) : (
               data?.map((row) => (
                 <TableRow key={row.product_type}>
-                  <TableCell>
+                  <TableCell className="text-center align-middle">
                     <Badge variant={TYPE_BADGE_VARIANTS[row.product_type] || "outline"}>
                       {TYPE_LABELS[row.product_type] || row.product_type}
                     </Badge>
                   </TableCell>
-                  <TableCell>{row.product_count}</TableCell>
-                  <TableCell>{row.total_quantity}</TableCell>
-                  <TableCell>{formatCurrency(row.stock_value || 0)}</TableCell>
+                  <TableCell className="text-center align-middle tabular-nums">
+                    {row.product_count}
+                  </TableCell>
+                  <TableCell className="text-center align-middle tabular-nums">
+                    {row.total_quantity}
+                  </TableCell>
+                  <TableCell className="text-center align-middle font-semibold tabular-nums">
+                    {formatCurrency(row.stock_value || 0)}
+                  </TableCell>
                 </TableRow>
               ))
             )}

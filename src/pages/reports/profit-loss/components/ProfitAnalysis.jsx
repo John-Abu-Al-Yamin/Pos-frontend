@@ -91,7 +91,7 @@ const ProfitAnalysis = ({ cogs, maintenanceCosts, netProfit, profitMargin, isPen
             icon={Wrench}
             label="ربح الصيانة"
             value={formatCurrency(maintenanceProfit)}
-            subtext="Maintenance Profit"
+            subtext="ربح الصيانة"
             accent="teal"
           />
           <MetricCard

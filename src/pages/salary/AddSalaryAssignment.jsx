@@ -107,7 +107,7 @@ const AddSalaryAssignment = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="reason">السبب</Label>
+            <Label htmlFor="reason">الوصف</Label>
             <Textarea id="reason" rows={3} {...form.register("reason")} />
           </div>
 

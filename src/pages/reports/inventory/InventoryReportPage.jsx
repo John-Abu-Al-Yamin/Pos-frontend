@@ -1,5 +1,6 @@
 import React from "react";
 import { useGetInventoryReport } from "@/hooks/Actions/reports/useCurdsInventoryReport";
+import CustomPagination from "@/customs/CustomPagination";
 import InventoryFilters from "./components/InventoryFilters";
 import InventorySummaryCards from "./components/InventorySummaryCards";
 import InventoryCharts from "./components/InventoryCharts";
@@ -22,8 +23,14 @@ const DEFAULT_FILTERS = {
 const InventoryReportPage = () => {
   const [filters, setFilters] = React.useState(DEFAULT_FILTERS);
   const [appliedFilters, setAppliedFilters] = React.useState(DEFAULT_FILTERS);
+  const [page, setPage] = React.useState(1);
+  const per_page = 10;
 
-  const { data, isPending, isError, error, refetch } = useGetInventoryReport(appliedFilters);
+  const { data, isPending, isError, error, refetch } = useGetInventoryReport({
+    ...appliedFilters,
+    page,
+    per_page,
+  });
 
   const hasActiveFilters = Object.entries(appliedFilters).some(
     ([key, value]) => value !== "" && key !== "period",
@@ -34,10 +41,12 @@ const InventoryReportPage = () => {
   };
 
   const handleApply = () => {
+    setPage(1);
     setAppliedFilters({ ...filters });
   };
 
   const handleReset = () => {
+    setPage(1);
     setFilters(DEFAULT_FILTERS);
     setAppliedFilters(DEFAULT_FILTERS);
   };
@@ -90,10 +99,16 @@ const InventoryReportPage = () => {
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <StockSummaryTable
-                products={stock_summary?.products}
-                isPending={isPending}
-              />
+              <div className="space-y-4">
+                <StockSummaryTable
+                  products={stock_summary?.products}
+                  isPending={isPending}
+                />
+                <CustomPagination
+                  pagination={stock_summary?.pagination}
+                  onPageChange={(p) => setPage(p)}
+                />
+              </div>
               <ProductTypeTable
                 data={by_product_type}
                 isPending={isPending}

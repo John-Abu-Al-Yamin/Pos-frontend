@@ -27,32 +27,40 @@ import {
   useGetAllSalaryAssignments,
   useDeleteSalaryAssignment,
 } from "@/hooks/Actions/Salary/useCurdsSalaryAssignments";
-import useSearch from "@/hooks/useSearch/useSearch";
 import { formatDate, formatCurrency } from "@/lib/utils";
 
 const SalaryAssignmentsPage = () => {
   const navigate = useNavigate();
   const [page, setPage] = React.useState(1);
   const per_page = 12;
-  const { debouncedSearch, search, handelSearch, setSearch } = useSearch("", 400);
+  const [search, setSearch] = React.useState("");
+  const [appliedSearch, setAppliedSearch] = React.useState("");
 
   const filters = {
-    search: debouncedSearch || undefined,
+    search: appliedSearch || undefined,
   };
 
   const { data, isPending, refetch } = useGetAllSalaryAssignments(page, per_page, filters);
   const { mutate: deleteMutate } = useDeleteSalaryAssignment();
 
-  React.useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch]);
-
-  const clearFilters = () => {
-    setSearch("");
+  const handleSearch = () => {
+    setAppliedSearch(search);
     setPage(1);
   };
 
-  const hasActiveFilters = debouncedSearch;
+  const handleSearchKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const clearFilters = () => {
+    setSearch("");
+    setAppliedSearch("");
+    setPage(1);
+  };
+
+  const hasActiveFilters = appliedSearch;
 
   const confirmDelete = (id) => {
     toast("هل أنت متأكد من الحذف؟", {
@@ -81,10 +89,16 @@ const SalaryAssignmentsPage = () => {
           <Input
             placeholder="بحث باسم الموظف..."
             value={search}
-            onChange={handelSearch}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={handleSearchKeyDown}
             className="pr-9"
           />
         </div>
+
+        <Button onClick={handleSearch}>
+          <Search className="h-4 w-4" />
+          بحث
+        </Button>
 
         {hasActiveFilters && (
           <Button variant="outline" size="icon" onClick={clearFilters} title="مسح الفلترة">

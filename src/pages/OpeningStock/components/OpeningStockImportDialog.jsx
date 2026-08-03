@@ -30,7 +30,7 @@ const columnLabels = {
   product: "المنتج",
   field: "الحقل",
   message: "الرسالة",
-  reason: "السبب",
+  reason: "الوصف",
 };
 
 const OpeningStockImportDialog = ({ open, onOpenChange, templateType, templateLabel, onImportComplete, onImportError }) => {
