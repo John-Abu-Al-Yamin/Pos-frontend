@@ -52,10 +52,7 @@ import {
 import useSearch from "@/hooks/useSearch/useSearch";
 import { formatDateTime } from "@/lib/utils";
 import {
-  moduleLabels,
-  actionLabels,
-  statusLabels,
-  severityLabels,
+  actionCategories,
   statusVariant,
   severityVariant,
   getModuleLabel,
@@ -77,10 +74,8 @@ const prettyJson = (value) => {
 const AuditLogsPage = () => {
   const [page, setPage] = React.useState(1);
   const per_page = 25;
-  const [filterModule, setFilterModule] = React.useState("");
+  const [filterUser, setFilterUser] = React.useState("");
   const [filterAction, setFilterAction] = React.useState("");
-  const [filterStatus, setFilterStatus] = React.useState("");
-  const [filterSeverity, setFilterSeverity] = React.useState("");
   const [filterFrom, setFilterFrom] = React.useState("");
   const [filterTo, setFilterTo] = React.useState("");
   const [appliedFrom, setAppliedFrom] = React.useState("");
@@ -89,12 +84,12 @@ const AuditLogsPage = () => {
   const [detailsId, setDetailsId] = React.useState(null);
   const { debouncedSearch, search, handelSearch, setSearch } = useSearch("", 400);
 
+  const selectedCategory = actionCategories.find((c) => c.key === filterAction);
+
   const filters = {
     search: debouncedSearch || undefined,
-    module: filterModule || undefined,
-    action: filterAction || undefined,
-    status: filterStatus || undefined,
-    severity: filterSeverity || undefined,
+    user_id: filterUser || undefined,
+    actions: selectedCategory?.actions,
     from: appliedFrom || undefined,
     to: appliedTo || undefined,
   };
@@ -107,7 +102,7 @@ const AuditLogsPage = () => {
 
   React.useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, filterModule, filterAction, filterStatus, filterSeverity, appliedFrom, appliedTo]);
+  }, [debouncedSearch, filterUser, filterAction, appliedFrom, appliedTo]);
 
   const handleApplyFilters = () => {
     const hasFrom = !!filterFrom;
@@ -124,10 +119,8 @@ const AuditLogsPage = () => {
 
   const clearFilters = () => {
     setSearch("");
-    setFilterModule("");
+    setFilterUser("");
     setFilterAction("");
-    setFilterStatus("");
-    setFilterSeverity("");
     setFilterFrom("");
     setFilterTo("");
     setAppliedFrom("");
@@ -138,10 +131,8 @@ const AuditLogsPage = () => {
 
   const hasActiveFilters =
     debouncedSearch ||
-    filterModule ||
+    filterUser ||
     filterAction ||
-    filterStatus ||
-    filterSeverity ||
     appliedFrom ||
     appliedTo;
 
@@ -152,10 +143,7 @@ const AuditLogsPage = () => {
   const selectedItem = detailsData?.data?.data;
   const relatedItems = relatedData?.data?.data ?? [];
 
-  const modules = filtersData?.data?.data?.modules ?? Object.keys(moduleLabels);
-  const actions = filtersData?.data?.data?.actions ?? Object.keys(actionLabels);
-  const statuses = filtersData?.data?.data?.statuses ?? ["success", "failed"];
-  const severities = filtersData?.data?.data?.severities ?? ["info", "warning", "critical"];
+  const users = filtersData?.data?.data?.users ?? [];
 
   return (
     <div>
@@ -227,14 +215,14 @@ const AuditLogsPage = () => {
         </div>
 
         <div className="w-44">
-          <Select value={filterModule} onValueChange={setFilterModule}>
+          <Select value={filterUser} onValueChange={setFilterUser}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="الوحدة" />
+              <SelectValue placeholder="المستخدم" />
             </SelectTrigger>
             <SelectContent>
-              {modules.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {moduleLabels[opt] || opt}
+              {users.map((user) => (
+                <SelectItem key={user.id} value={String(user.id)}>
+                  {user.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -247,39 +235,9 @@ const AuditLogsPage = () => {
               <SelectValue placeholder="الإجراء" />
             </SelectTrigger>
             <SelectContent>
-              {actions.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {actionLabels[opt] || opt}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-40">
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="الحالة" />
-            </SelectTrigger>
-            <SelectContent>
-              {statuses.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {statusLabels[opt] || opt}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="w-40">
-          <Select value={filterSeverity} onValueChange={setFilterSeverity}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="الخطورة" />
-            </SelectTrigger>
-            <SelectContent>
-              {severities.map((opt) => (
-                <SelectItem key={opt} value={opt}>
-                  {severityLabels[opt] || opt}
+              {actionCategories.map((cat) => (
+                <SelectItem key={cat.key} value={cat.key}>
+                  {cat.label}
                 </SelectItem>
               ))}
             </SelectContent>

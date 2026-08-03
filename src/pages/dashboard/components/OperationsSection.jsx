@@ -7,7 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
-import { Wrench, ShoppingCart, DollarSign, Wallet, Settings2 } from "lucide-react";
+import { Wrench, ShoppingCart, DollarSign, Wallet, Settings2, HandCoins } from "lucide-react";
 import SectionTitle from "./SectionTitle";
 
 const statusLabels = {
@@ -151,13 +151,27 @@ const SalaryStatus = ({ salaries }) => {
   );
 };
 
-const OperationsSection = ({ operations, isPending }) => {
+const PaidSalaries = ({ amount }) => (
+  <Card className="h-full transition-all duration-200 hover:shadow-md">
+    <CardHeader>
+      <div className="flex items-center gap-2">
+        <HandCoins className="h-4 w-4 text-primary" />
+        <CardTitle className="text-base">الرواتب المدفوعة</CardTitle>
+      </div>
+    </CardHeader>
+    <CardContent>
+      <StatBox label="القيمة المدفوعة" value={formatCurrency(amount ?? 0)} />
+    </CardContent>
+  </Card>
+);
+
+const OperationsSection = ({ operations, isPending, kpis }) => {
   if (isPending) {
     return (
       <section className="mb-8">
         <Skeleton className="mb-4 h-6 w-40" />
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <SectionSkeleton key={i} />
           ))}
         </div>
@@ -174,6 +188,7 @@ const OperationsSection = ({ operations, isPending }) => {
     operations.salaries && (
       <SalaryStatus key="salaries" salaries={operations.salaries} />
     ),
+    kpis && <PaidSalaries key="paid-salaries" amount={kpis.salaries_confirmed} />,
   ].filter(Boolean);
 
   if (sections.length === 0) return null;

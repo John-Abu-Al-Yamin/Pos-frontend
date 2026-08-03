@@ -178,7 +178,7 @@ const DashboardPage = () => {
             expenseBreakdown={charts?.expense_breakdown}
           />
           <SalesSection sales={sales} kpis={kpis} />
-          <OperationsSection operations={operations} />
+          <OperationsSection operations={operations} kpis={kpis} />
           <InventorySection inventory={inventory} />
           <AlertsSection alerts={alerts} />
           <RecentActivity recentActivity={recent_activity} />

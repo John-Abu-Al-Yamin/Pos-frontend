@@ -47,21 +47,45 @@ const SummaryCard = ({
   isCurrency,
 }) => {
   const Icon = icon;
+  const numericValue = Number(value);
+  const isNegative = Number.isFinite(numericValue) && numericValue < 0;
+
+  const containerClass = isNegative
+    ? "rounded-xl border border-red-200 bg-red-50 p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+    : "rounded-xl border border-border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md";
+
+  const iconClass = isNegative
+    ? "shrink-0 rounded-lg bg-red-100 p-2 text-red-600 ring-1 ring-red-200"
+    : "shrink-0 rounded-lg bg-primary/5 p-2 text-primary ring-1 ring-primary/5";
+
+  const displayValue = isNegative
+    ? `-${formatCurrency(Math.abs(numericValue))}`
+    : isCurrency
+      ? formatCurrency(value)
+      : value;
+
   return (
-    <div className="rounded-xl border border-border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <div className={containerClass}>
       <div className="flex items-start justify-between gap-2">
         <div className="flex min-w-0 items-center gap-2.5">
-          <div className="shrink-0 rounded-lg bg-primary/5 p-2 text-primary ring-1 ring-primary/5">
+          <div className={iconClass}>
             <Icon className="h-4 w-4" />
           </div>
           <p className="truncate text-xs font-medium text-muted-foreground">
             {label}
           </p>
+          {isNegative && (
+            <span className="shrink-0 rounded-full border border-red-200 bg-red-100 px-1.5 py-0.5 text-[11px] font-medium text-red-600">
+              خسارة
+            </span>
+          )}
         </div>
         <ChangeIndicator changePercent={changePercent} />
       </div>
-      <p className="mt-3 truncate text-xl font-bold text-foreground">
-        {value ?? "—"}
+      <p
+        className={`mt-3 truncate text-xl font-bold ${isNegative ? "text-red-600" : "text-foreground"}`}
+      >
+        {displayValue ?? "—"}
       </p>
       {previous !== undefined && previous !== null && (
         <p className="mt-1 text-[11px] text-muted-foreground">
@@ -105,7 +129,7 @@ const KpiCards = ({ kpis, comparison, isPending }) => {
     {
       icon: DollarSign,
       label: "إيرادات المبيعات",
-      value: formatCurrency(kpis.sales_net_revenue ?? 0),
+      value: kpis.sales_net_revenue ?? 0,
       changePercent: comparison?.sales_net_revenue?.change_percent,
       previous: comparison?.sales_net_revenue?.previous,
       isCurrency: true,
@@ -113,7 +137,7 @@ const KpiCards = ({ kpis, comparison, isPending }) => {
     {
       icon: TrendingUp,
       label: "صافي الربح",
-      value: formatCurrency(kpis.net_profit ?? 0),
+      value: kpis.net_profit ?? 0,
       changePercent: comparison?.net_profit?.change_percent,
       previous: comparison?.net_profit?.previous,
       isCurrency: true,
@@ -121,12 +145,14 @@ const KpiCards = ({ kpis, comparison, isPending }) => {
     {
       icon: ShoppingCart,
       label: "متوسط قيمة المعاملة",
-      value: formatCurrency(kpis.average_transaction_value ?? 0),
+      value: kpis.average_transaction_value ?? 0,
+      isCurrency: true,
     },
     {
       icon: Package,
       label: "قيمة المخزون",
-      value: formatCurrency(kpis.inventory_stock_value ?? 0),
+      value: kpis.inventory_stock_value ?? 0,
+      isCurrency: true,
     },
   ];
 

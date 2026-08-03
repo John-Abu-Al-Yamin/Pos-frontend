@@ -59,6 +59,68 @@ export const actionLabels = {
   products_imported: "استيراد منتجات",
 };
 
+export const actionCategories = [
+  {
+    key: "create",
+    label: "إنشاء",
+    actions: [
+      "created",
+      "user_created",
+      "sale_completed",
+      "purchase_completed",
+      "sales_return_created",
+      "purchase_return_created",
+      "refund_processed",
+      "expense_created",
+      "salary_payment_created",
+      "maintenance_created",
+      "opening_stock_imported",
+      "products_imported",
+    ],
+  },
+  {
+    key: "update",
+    label: "تعديل",
+    actions: [
+      "updated",
+      "role_changed",
+      "expense_updated",
+      "expense_paid",
+      "maintenance_status_changed",
+      "repair_completed",
+      "spare_parts_used",
+      "spare_parts_updated",
+      "stock_correction",
+      "stock_adjusted",
+      "inventory_cost_changed",
+      "product_price_changed",
+      "product_cost_changed",
+      "salary_payment_confirmed",
+    ],
+  },
+  {
+    key: "delete",
+    label: "حذف",
+    actions: [
+      "deleted",
+      "force_deleted",
+      "purchase_deleted",
+      "used_device_purchase_deleted",
+      "purchase_cancelled",
+      "expense_deleted",
+      "expense_cancelled",
+      "maintenance_deleted",
+      "spare_parts_removed",
+      "salary_payment_cancelled",
+    ],
+  },
+  {
+    key: "login",
+    label: "تسجيل الدخول / الخروج",
+    actions: ["login_success", "login_failed", "logout"],
+  },
+];
+
 export const statusLabels = {
   success: "ناجح",
   failed: "فشل",
